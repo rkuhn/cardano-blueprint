@@ -16,11 +16,29 @@ After all, software quality is not only about rigor and testing, but also "how e
 
 While some documentation for [users](https://docs.cardano.org/about-cardano/explore-more/cardano-architecture/) and [developers](https://developers.cardano.org/docs/get-started/cardano-node/cardano-components) can be found, the available documents about the "inner workings" of the Cardano node is scarce.
 
-The main repository is [cardano-node](https://github.com/IntersectMBO/cardano-node) which integrates the several components. The linked repository do contain individual Haskell package dependency diagrams, but generally it's quite hard to read about how the various components interact with each other.
+The main repository is [cardano-node](https://github.com/IntersectMBO/cardano-node) which integrates the several components. The linked repository do contain individual Haskell package dependency diagrams and bigger technical specification documents, but generally it's quite hard to read about how the various components interact with each other.
 
-Consequently, the **first contribution** by this document is the following component diagram:
+Consequently, the **first contribution** by this document is the following high-level component diagram:
 
 TODO: Draw a proper diagram here with mermaid or miro
+```mermaid
+flowchart BT
+    A[Plutus]
+    B[Ledger]
+    C[Ouroboros Network]
+    D[Ouroboros Consensus]
+    E[Cardano API]
+    F[Cardano CLI]
+    G[Cardano Node]
+    
+    B --> A
+    D --> B
+    D --> C
+    E --> D
+    F --> E
+    G --> F
+```
+
 ```mermaid
 block-beta
   columns 2
