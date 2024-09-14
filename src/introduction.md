@@ -2,7 +2,7 @@
 
 This document is an exploration on the `cardano-node` architecture and how it could be made more modular, approachable and flexible.
 
-## Why
+## Why should we care
 
 The Cardano Node was developed over the last 5+ years as the reference implementations of the Ouroboros consensus, extended UTxO (eUTxO) account model and plutus smart contract language at Input Output Group (IOG, or just IO).
 
@@ -18,56 +18,20 @@ While some documentation for [users](https://docs.cardano.org/about-cardano/expl
 
 The main repository is [cardano-node](https://github.com/IntersectMBO/cardano-node) which integrates the several components. The linked repository do contain individual Haskell package dependency diagrams and bigger technical specification documents, but generally it's quite hard to read about how the various components interact with each other.
 
-Consequently, the **first contribution** by this document is the following high-level component diagram:
+The lack of an easy accessible and clear visual breakdown of the individual responsibilities of a `cardano-node` and how they could be re-used is maybe already a hint to why external contributors are seeing it as non-inviting to be re-used or extended. In fact, the rotating release engineers at IO even needed to come up with dependency diagrams on their own to get an overview (for example Yura and his mermaid diagram).
 
-TODO: Draw a proper diagram here with mermaid or miro
-```mermaid
-flowchart BT
-    A[Plutus]
-    B[Ledger]
-    C[Ouroboros Network]
-    D[Ouroboros Consensus]
-    E[Cardano API]
-    F[Cardano CLI]
-    G[Cardano Node]
-    
-    B --> A
-    D --> B
-    D --> C
-    E --> D
-    F --> E
-    G --> F
-```
+For this document, the following diagram of relevant components and their relations will make do:
 
-```mermaid
-block-beta
-  columns 2
-  
-  TimeLock plutus["Plutus Interpreter"]
-  ledger["Ledger"]:2
-  block:consensus:2
-    cl["Consensus"]
-    PBFT TPraos Praos
-  
-    style cl fill:none,stroke:none
-  end
-
-  block:network:2
-    nl["Network"]
-    n2n n2c
-    
-    style nl fill:none,stroke:none
-  end
-```
-
+![](components.excalidraw.svg)
 
 ### Plutus
 
-- Plutus core interpreter
+- Plutus Intermediate Representation (IR) and Plutus Core syntax
+- Plutus Core interpreter
 - Cost model estimation
-- Plinth: Separate compiler
+- plutus-tx / plinth is separate, compiler to build plutus core
 
-### Cardano ledger
+### Ledger
 - Validates transactions according to ledger rules
 - Updates stake distribution
 - Keeps reward accounts
@@ -90,3 +54,42 @@ block-beta
   - Local variants of chain sync and tx submission
   - State Query
   - Mempool monitor
+
+
+# Ideas
+
+Driving forces that could improve the situation of the Cardano node architecture.
+
+## Alternatives 
+
+Modularization and interfaces are only enforced when there are alternatives.
+
+For each interface, either maintain multiple alternatives or realize that its not modular.
+
+- Alternative implementations of components
+  - Is PBFT still maintained?
+  - Alternative ledger to enforce separation?
+  - Plutus intended to be only one of many interpreters - is it really losely coupled?
+
+- Alternative compositions / variants of nodes
+  - Permissioned nodes?
+  - Client / data nodes with different storage requirements
+
+## Interface first
+- Conformance tests
+- CIPs?
+
+## Is Haskell a deterrent?
+
+- Current teams / components are not a "bad cut" per se
+- Without external contributions, tight (process) coupling ensues
+- Feature teams concerning about one aspect across components?
+
+- Competing implementations was already tried in the past
+  - Rust vs. Haskell -> Jormungandr vs. cardano-node
+
+## Case study: mithril
+
+- Evolution from userspace to kernel
+- How can experiments and new ideas transcend into "the node" eventually?
+- Mithril completely separate -> Mithril side-car / network re-use -> Signer part of node -> Use signed data in node (for consensus)
