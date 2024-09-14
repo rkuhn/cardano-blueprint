@@ -6,6 +6,10 @@ Driving forces that could improve the situation of the Cardano node architecture
 - Conformance tests
 - CIPs?
 - Open standards / avoid not invented here / off-the-shelf especially close to the user
+  - Node-to-client niche way to implement an API
+  - Many components built by the community to work around the limitations
+  - Would have happened anyways, but maybe some could have been avoided?
+  - Example: ogmios, was started out of frustration about unusability of n2c, now de-facto standard sidecar to a cardano-node
 
 <!--
 Which is a shame, because there is even a need for variants _within_ the Cardano network. For example: making the cardano ledger state available to other applications, so-called "indexers". The tricky thing with this is that there exists as many opinions in how that data should be made available as there are use cases and developers out there. Some prefer a `PostgreSQL` database ([DBSync](https://github.com/IntersectMBO/cardano-db-sync), [karp](https://github.com/dcSpark/carp)), while others fancy more light-weight `SQLite` ([kupo](https://github.com/CardanoSolutions/kupo)), or programmable filters ([scrolls](https://github.com/txpipe/scrolls)). (There are even more indexers and variants cropping up by the day)
@@ -18,16 +22,20 @@ While there have been many indexers for all kinds of `DBSync` in particular is .
 ## Is Haskell a deterrent?
 
 - Current teams / components are not a "bad cut" per se
-- Communication the issue? demonstrate re-use?
 - Without external contributions, tight (process) coupling ensues
 - Feature teams concerning about one aspect across components?
 
 - Competing implementations was already tried in the past
   - Rust vs. Haskell -> Jormungandr vs. cardano-node
+  
+- In-language re-use vs. language-agnostic re-use
+  - foreign function interfaces
+  - process boundaries
+  - WebAssembly based frameworks ([hermes](https://github.com/input-output-hk/hermes))
 
 
 ## Case study: mithril
 
-- Evolution from userspace to kernel
+- Evolution from userspace to kernel space
 - How can experiments and new ideas transcend into "the node" eventually?
 - Mithril completely separate -> Mithril side-car / network re-use -> Signer part of node -> Use signed data in node (for consensus)
