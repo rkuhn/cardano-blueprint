@@ -60,33 +60,43 @@ For this document, the following diagram of relevant components and their relati
 
 Driving forces that could improve the situation of the Cardano node architecture.
 
-## Alternatives 
+## About alternatives
 
-Modularization and interfaces are only enforced when there are alternatives.
+Modularization and clear interfaces are only enforced when there are alternatives. That is, alternative implementations of components or alternative compositions of components.
 
-For each interface, either maintain multiple alternatives or realize that its not modular.
+Large parts of the Cardano codebase created by IO is optimizied for a single target use case: producing blocks for the public Cardano network. While this is certainly the main use case that requires special care and tuning of performance characteristics to meet the timing demands of the consensus protocols, it currently does not leave much room for experimentation and re-use outside of that use case.
 
-- Alternative implementations of components
-  - Is PBFT still maintained?
-  - Alternative ledger to enforce separation?
-  - Plutus intended to be only one of many interpreters - is it really losely coupled?
+In the past, one could use the `cardano-node` to create permissioned networks more suitable for enterprise deployments. This was basically done by setting up [Ouroboros-BFT](https://eprint.iacr.org/2018/1049.pdf) consensus networks (through a transitional protocol named `TPraos`, e.g. in [`Alonzo`](https://github.com/input-output-hk/ouroboros-consensus/blob/bc672368654c9cb3bfff351035962e60a1f92dab/ouroboros-consensus-cardano/src/ouroboros-consensus-cardano/Ouroboros/Consensus/Cardano/CanHardFork.hs#L275)), but since `Babbage` the parameters allowing for operating in that mode had been removed ([CIP-55](https://cips.cardano.org/cip/CIP-55)) and in `Praos` this is [not possible anymore](https://github.com/input-output-hk/ouroboros-consensus/blob/bc672368654c9cb3bfff351035962e60a1f92dab/ouroboros-consensus-cardano/src/ouroboros-consensus-cardano/Ouroboros/Consensus/Cardano/CanHardFork.hs#L277). Making this alternative use case more prominent could have naturally ensured individual components are modular enough for being used in this **alternative composition**, demonstrated the flexibility, and consequently could have made setting up side chains (e.g. partner chains and midnight) using the cardano codebase more appealing.
 
-- Alternative compositions / variants of nodes
-  - Permissioned nodes?
-  - Client / data nodes with different storage requirements
+A good example of an alternative composition that enforces a well defined interface of the `cardano-ledger` is the [Hydra project](https://hydra.family/head-protocol/docs/dev/architecture/). In this case, the exact same ledger rules are re-used in a completely different process and any "corruption" of the [applyTx](https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/shelley/impl/src/Cardano/Ledger/Shelley/API/Mempool.hs#L129-L136) interface (used [here](https://github.com/cardano-scaling/hydra/blob/1ffe7c6b505e3f38b5546ae5e5b97de26bc70425/hydra-node/src/Hydra/Ledger/Cardano.hs#L69)) would be detected from that separate usage site.
+
+Arguably, the ledger is easiest to re-use component in the Cardano stack as it is "only" a pure function from evolving `LedgerState`, roughly: `applyTx :: LedgerState -> Tx -> LedgerState`. However, it is quite directly used by the `Consensus` layer and not clear (at least from the outside) that alternative ledgers could be used? Intuitively this should be possible, but ledger eras are also defined in the consensus layer and whether it would be straight-forward or complicated to establish alternative eras with an account-based ledger? Such an **alternative implementation** of `cardano-ledger` for example would not only demonstrate the flexibility and re-usability of the hosting consensus layer, but also ensure that the ledger *abstraction does not leak*.
+
+In summary, for each component we should either demonstrate and maintain alternatives or realize that its not modular.
 
 ## Interface first
 - Conformance tests
 - CIPs?
+- Open standards / avoid not invented here / off-the-shelf especially close to the user
+
+<!-- 
+Which is a shame, because there is even a need for variants _within_ the Cardano network. For example: making the cardano ledger state available to other applications, so-called "indexers". The tricky thing with this is that there exists as many opinions in how that data should be made available as there are use cases and developers out there. Some prefer a `PostgreSQL` database ([DBSync](https://github.com/IntersectMBO/cardano-db-sync), [karp](https://github.com/dcSpark/carp)), while others fancy more light-weight `SQLite` ([kupo](https://github.com/CardanoSolutions/kupo)), or programmable filters ([scrolls](https://github.com/txpipe/scrolls)). (There are even more indexers and variants cropping up by the day)
+
+With the `cardano-node` being architected (or at least communicated through this [prominent diagram](https://docs.cardano.org/about-cardano/explore-more/cardano-architecture/)) as that opaque, impenetratable component, the only option these ...
+
+While there have been many indexers for all kinds of `DBSync` in particular is ..
+-->
 
 ## Is Haskell a deterrent?
 
 - Current teams / components are not a "bad cut" per se
+- Communication the issue? demonstrate re-use?
 - Without external contributions, tight (process) coupling ensues
 - Feature teams concerning about one aspect across components?
 
 - Competing implementations was already tried in the past
   - Rust vs. Haskell -> Jormungandr vs. cardano-node
+
 
 ## Case study: mithril
 
