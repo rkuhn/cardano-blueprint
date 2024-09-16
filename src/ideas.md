@@ -9,7 +9,13 @@ Driving forces that could improve the situation of the Cardano node architecture
   - Node-to-client niche way to implement an API
   - Many components built by the community to work around the limitations
   - Would have happened anyways, but maybe some could have been avoided?
-  - Example: ogmios, was started out of frustration about unusability of n2c, now de-facto standard sidecar to a cardano-node
+  - Example: ogmios, was started out of frustration about unusability of n2c, now [de-facto standard](https://ogmios.dev/faq/#are-there-any-projectscompanies-using-it) sidecar to a cardano-node
+    - many workarounds of arcane / hard-to use n2c quirks 
+    - transaction submission / backward compatibility of transactions
+    - fee estimation
+    - test vectors
+  - Missing documentation requires many projects to fill in the gaps and even reverse-engineer the haskell code, e.g. https://arsmagna.xyz/docs/network-lsq/
+  - mention utxo-grpc?
 
 <!--
 Which is a shame, because there is even a need for variants _within_ the Cardano network. For example: making the cardano ledger state available to other applications, so-called "indexers". The tricky thing with this is that there exists as many opinions in how that data should be made available as there are use cases and developers out there. Some prefer a `PostgreSQL` database ([DBSync](https://github.com/IntersectMBO/cardano-db-sync), [karp](https://github.com/dcSpark/carp)), while others fancy more light-weight `SQLite` ([kupo](https://github.com/CardanoSolutions/kupo)), or programmable filters ([scrolls](https://github.com/txpipe/scrolls)). (There are even more indexers and variants cropping up by the day)
@@ -39,3 +45,10 @@ While there have been many indexers for all kinds of `DBSync` in particular is .
 - Evolution from userspace to kernel space
 - How can experiments and new ideas transcend into "the node" eventually?
 - Mithril completely separate -> Mithril side-car / network re-use -> Signer part of node -> Use signed data in node (for consensus)
+
+## Why substrate?
+- Why were partner chains and midnight have been resorting to use substrate?
+- How is substrate doing it (people seem to like to use their framework)? https://substrate.io/
+- In the past: Advertised as a framework where polkadot node is _just one_ way of combining components (pellets)
+- However, just recently substrate moved even now more _into_ a definite Polkadot SDK?
+  - Making it less a re-usable framework and already less appealling now?
