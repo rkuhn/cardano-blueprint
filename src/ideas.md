@@ -45,6 +45,9 @@ While there have been many indexers for all kinds of `DBSync` in particular is .
 - Evolution from userspace to kernel space
 - How can experiments and new ideas transcend into "the node" eventually?
 - Mithril completely separate -> Mithril side-car / network re-use -> Signer part of node -> Use signed data in node (for consensus)
+- Modular decentralized message queue (DMQ) node architecture we built
+
+![](./mithril-dmq-architecture-2024-09-17.jpg)
 
 ## Why substrate?
 - Why were partner chains and midnight have been resorting to use substrate?
