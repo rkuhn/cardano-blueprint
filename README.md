@@ -1,6 +1,6 @@
 # Cardano Blueprint
 
-A sketch of architectural ideas in how to make the `cardano-node` more modular and approachable.
+TODO: update introduction and content with new vision & mission
 
 [Check it out]()
 
