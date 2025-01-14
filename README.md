@@ -2,7 +2,7 @@
 
 TODO: update introduction and content with new vision & mission
 
-[Check it out]()
+[Start here](https://cardano-scaling.github.io/cardano-blueprint/)
 
 ## Building
 
