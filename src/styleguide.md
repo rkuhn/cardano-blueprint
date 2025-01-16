@@ -18,6 +18,18 @@ $$
   \mathcal{U} = ( \Phi \times \mathcal{O} )^*
 $$
 
+```admonish warn
+Don't overdo this. Too much match is hindering approachability.
+```
+
 ```admonish example
 The `admonish` code blocks are useful to give notes, example and indicate todos. Docs are [here](https://tommilligan.github.io/mdbook-admonish/overview.html).
 ```
+
+Additional information that would complicate the read-flow can be put into footnes [^example].
+
+[^example]: Example footnote
+
+## Other stuff
+
+asdfkjasdkfj

@@ -2,6 +2,8 @@
 
 Driving forces that led to a demand for wider knowledge share through blueprints.
 
+- [Alternatives](./alternatives.md)
+
 ## Interface first
 - Conformance tests
 - CIPs?
