@@ -1,25 +1,61 @@
 # Introduction
 
-Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge foundation about _how_ the Cardano blockchain is built. Blueprints are implementation independent assets, diagrams, specifications, test data, etc. that will enable a wide developer audience to understand and build on Cardano. 
+Welcome to the Cardano Blueprint, a project that aims to serve as a
+knowledge foundation about _how_ the Cardano blockchain is
+built. Blueprints are implementation-independent assets, diagrams,
+specifications, test data, etc. that will enable a wide developer
+audience to understand and build on Cardano.
 
-## Why should we care
+## Why it's needed
 
-> [!NOTE]
-> TODO: Reword into a better _why_, this was more about why node architecture should be improved
+The Cardano Node was developed over the last 8+ years to become the
+reference implementation of the Ouroboros consensus protocols,
+extended UTxO (eUTxO) ledger model and Plutus smart contract language
+at Input Output Group (IO).
 
+All of these things are documented, but the documentation is spread across
+multiple repositories, in different formats, some in very dense formal
+methods syntax, and some mixed with implementation details of the Haskell node.
 
-The Cardano Node was developed over the last 8+ years to become the reference implementation of the Ouroboros consensus protocols, extended UTxO (eUTxO) ledger model and plutus smart contract language at Input Output Group (IOG, or just IO).
+This project aims to produce a 'greenfield' set of blueprints for Cardano,
+which are:
 
-While based on peer-reviewed research and significant engineering efforts in ensuring correctness through formal methods with extensive testing, the **codebase is largely opaque** for non-IO Cardano developers and definitely unused outside of the Cardano ecosystem. For example, it is concerning that even IO's sister projects to Cardano like Midnight and Partner-Chains were reaching to other frameworks to build their blockchain components, despite building sidechains of Cardano.
+* Collected together in a single place
+* Expressed in a single, universal format (markdown)
+* Written for ordinary software developers
+* Abstracted from any particular implementation
 
-There will always be demand for "node diversity" in a public blockchain and multiple teams using their favorite tools and languages to build them. Hence, we must not shy away of making the ways the Cardano node is built **more approachable** to a wider developer community. This will not only improve development capacity, but also enable maintenance to outlive the current company & team structures. Furthermore, if we could make the components of the Cardano node be re-used **more flexibly** in diverse scenarios, this would lead to a rich feature-set and at the same time counter-act natural fragmentation to a healthy balance.
+The audience includes:
 
-After all, software quality is not only about rigor and testing, but also "how easy a system can be changed".
+* Developers in the node teams who are new or may need information
+  outside their current area
+* Developers in other teams in IO and external partners, wishing to
+  integrate with the node
+* Developers of future alternative nodes and clients
+* Anyone wanting to understand Cardano at a deeper technical level
+
+Hosting this project
+[on Github](https://github.com/cardano-scaling/cardano-blueprint) means
+that it can become a community effort with all the usual processes of
+a good Open Source software project - Pull Requests, reviews, issues,
+branches, release tags...
 
 ## What makes a good blueprint
 
-> [!NOTE]
-> TODO: Introduce our values
+A good blueprint should be:
+
+* **Abstract** - it should define protocols and behaviour, not code
+* **Accessible** - it should be written so any competent software engineer.
+  with some knowledge of the field can understand it - think about the level
+  of a typical Internet RFC.  It should use diagrams
+  (in [Mermaid](https://mermaid.js.org/)) to help understanding.
+* **Complete** - it should contain *all* the information required to implement
+  the component, not refer to any external source (which may go out of date).
+* **Minimal** - it should define what an implementation *must* do (and see
+  the [Style Guide](./styleguide.md) for how to express this) and leave
+  implementation details to implementors.
+* **Up to date** - it should be kept up to date with any changes - ideally
+  leading and informing them rather than the other way round.
 
 ## What about Cardano Improvement Proposals (CIPs)?
 
