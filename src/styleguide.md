@@ -3,6 +3,50 @@
 > [!NOTE]
 > Expand this as needed with examples, tips, glossary and general language used. Try not to replicate upstream docs, e.g. for mermaid or math markup.
 
+## Overall style
+
+**The blueprints should be well written.**
+
+It might seem this should go without saying, but it's put here to
+emphasise its importance.  When writing you should always be keeping
+the reader in mind, thinking what is the best way to pass on the
+knowledge you have given the current state of knowledge they have.
+This is a hard thing to do, but it is worth aiming for!
+
+People take in information in different ways.  Some like literate
+prose, many like visual diagrams and pseudo-code, and a few like
+mathematical formulae.  If you can do all of these, so much the
+better, but good diagrams are often the place to start.
+
+## Language
+
+Text should be written in American English, at the reading level of a
+competent software developer - which is often extremely high, but there is no
+need to be conspicuously erudite.
+
+### Normative vs declarative style
+
+Some standards documentation is very SHOUTY about MUST, SHALL and so on.
+Even if it doesn't SHOUT it can still be rather clumsy to read.  Instead,
+we want to use a *declarative* style.  We can express what an implementation
+has to do conform to the specification as a simple descriptive fact - e.g.
+
+> The tester discards widgets with broken flibbits.
+
+rather than the 'normative'
+
+> The tester SHALL discard widgets with broken flibbits.
+
+So in this style there is an implicit 'must'.  If something is optional, this
+can be said explicitly:
+
+> The package may use extra sproggles if required.
+
+It's still OK to use 'must' to emphasise cases which are absolutely
+critical, but still, please don't SHOUT.
+
+## Diagrams & Maths
+
 We can use [mermaid](https://mermaid.js.org) diagrams ([live editor](https://mermaid.live)):
 
 ```mermaid
@@ -11,7 +55,7 @@ graph LR;
     A-->C;
 ```
 
-and math using [katex](https://katex.org/docs/supported.html):
+and maths using [katex](https://katex.org/docs/supported.html):
 
 $$
   \mathcal{U} = ( \Phi \times \mathcal{O} )^*

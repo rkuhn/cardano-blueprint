@@ -45,7 +45,7 @@ branches, release tags...
 A good blueprint should be:
 
 * **Abstract** - it should define protocols and behaviour, not code
-* **Accessible** - it should be written so any competent software engineer.
+* **Accessible** - it should be written so any competent software engineer
   with some knowledge of the field can understand it - think about the level
   of a typical Internet RFC.  It should use diagrams
   (in [Mermaid](https://mermaid.js.org/)) to help understanding.
