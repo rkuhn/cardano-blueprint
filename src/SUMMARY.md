@@ -4,4 +4,4 @@
 - [Archive](archive.md)
   - [Node architecture](architecture.md)
   - [About alternatives](alternatives.md)
-- [Test](test.md)
+- [Styleguide](styleguide.md)
