@@ -3,7 +3,7 @@ name: Deploy mdbook to github pages
 on:
   push:
     branches:
-      - master
+      - main
 
   workflow_dispatch:
 
