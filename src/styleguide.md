@@ -28,11 +28,21 @@ Don't overdo this. Too much match is hindering approachability.
 The `admonish` code blocks are useful to give notes, example and indicate todos. Docs are [here](https://tommilligan.github.io/mdbook-admonish/overview.html).
 ```
 
+~~~admonish tip
+```
+cargo install mdbook-alerts
+```
+~~~
+
 > [!WARNING] 
 > This is the github version for admonitions, documented [here](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts)
 
 > [!NOTE] 
 > A friendly note in github.
+> How about code blocks?
+> ```
+> cargo install mdbook-alerts
+> ```
 
 ## Footnotes
 

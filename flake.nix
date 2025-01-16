@@ -24,6 +24,7 @@
                 mdbook-admonish
                 mdbook-mermaid
                 mdbook-katex
+                mdbook-alerts
               ];
               phases = [ "unpackPhase" "buildPhase" ];
               buildPhase = ''

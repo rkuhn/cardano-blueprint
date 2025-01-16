@@ -14,6 +14,8 @@ build-dir = "out"
 command = "mdbook-admonish"
 assets_version = "3.0.2" # do not edit: managed by `mdbook-admonish install`
 
+[preprocessor.alerts]
+
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
 
