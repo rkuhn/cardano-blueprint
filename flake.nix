@@ -9,22 +9,7 @@
   outputs = inputs@{ self, flake-utils, nixpkgs, ... }:
     flake-utils.lib.eachSystem flake-utils.lib.defaultSystems (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            (self: super: {
-              mdbook-mermaid = super.mdbook-mermaid.overrideAttrs (prev: {
-                version = "0.13.0+mermaid-1.11";
-                src = pkgs.fetchFromGitHub {
-                  owner = "ch1bo";
-                  repo = "mdbook-mermaid";
-                  rev = "860c2ff8ec97bd9e4959799906fc76ecbb2a675b";
-                  sha256 = "sha256-6+QLZnkr2yse4nYxNtKE9clfxhhaXscbt8KLJnWNs2M=";
-                };
-              });
-            })
-          ];
-        };
+        pkgs = import nixpkgs { inherit system; };
       in
       rec {
         inherit inputs;
