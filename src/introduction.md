@@ -4,9 +4,9 @@ Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge fo
 
 ## Why should we care
 
-```admonish todo
-Reword into a better _why_, this was more about why node architecture should be improved
-```
+> [!NOTE]
+> TODO: Reword into a better _why_, this was more about why node architecture should be improved
+
 
 The Cardano Node was developed over the last 8+ years to become the reference implementation of the Ouroboros consensus protocols, extended UTxO (eUTxO) ledger model and plutus smart contract language at Input Output Group (IOG, or just IO).
 
@@ -18,15 +18,13 @@ After all, software quality is not only about rigor and testing, but also "how e
 
 ## What makes a good blueprint
 
-```admonish todo
-Introduce our values
-```
+> [!NOTE]
+> TODO: Introduce our values
 
 ## What about Cardano Improvement Proposals (CIPs)?
 
-```admonish todo
-State how this relates to CIPs
-```
+> [!NOTE]
+> TODO: State how this relates to CIPs
 
 - Perfect for new features and discussion
 - Blueprints will try to live up to the CIP process

@@ -21,7 +21,6 @@
               src = ./.;
               buildInputs = with pkgs; [
                 mdbook
-                mdbook-admonish
                 mdbook-mermaid
                 mdbook-katex
                 mdbook-alerts

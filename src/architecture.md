@@ -1,8 +1,7 @@
 # Node architecture
 
-```admonish warning
-This was a collection / write-up for a different purpose
-```
+> [!WARNING]
+> This was a collection / write-up for a different purpose
 
 While some documentation for [users](https://docs.cardano.org/about-cardano/explore-more/cardano-architecture/) and [developers](https://developers.cardano.org/docs/get-started/cardano-node/cardano-components) can be found, the available documents about the "inner workings" of the Cardano node is scarce.
 
@@ -14,9 +13,8 @@ For this document, the following diagram of relevant components and their relati
 
 ![](components.excalidraw.svg)
 
-```admonish todo
-Introduce relevant components sufficient for remainder of document
-```
+> [!NOTE]
+> TODO: Introduce relevant components sufficient for remainder of document
 
 ### Plutus
 
