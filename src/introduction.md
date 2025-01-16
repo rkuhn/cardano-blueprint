@@ -1,6 +1,6 @@
 # Introduction
 
-Welcome to the Cardano Blueprint, a project that aims to serve as a
+Welcome to the Cardano Blueprint project, which aims to serve as a
 knowledge foundation about _how_ the Cardano blockchain is
 built. Blueprints are implementation-independent assets, diagrams,
 specifications, test data, etc. that will enable a wide developer
@@ -54,17 +54,32 @@ A good blueprint should be:
 * **Minimal** - it should define what an implementation *must* do (and see
   the [Style Guide](./styleguide.md) for how to express this) and leave
   implementation details to implementors.
-* **Up to date** - it should be kept up to date with any changes - ideally
+* **Current** - it should be kept up to date with any changes - ideally
   leading and informing them rather than the other way round.
 
 ## What about Cardano Improvement Proposals (CIPs)?
 
-> [!NOTE]
-> TODO: State how this relates to CIPs
+The [Cardano Improvement Proposal](https://cips.cardano.org/) (CIP) process
+is the standard way that new features are proposed, discussed and ratified
+for the Cardano network, and it does this job well.
 
-- Perfect for new features and discussion
-- Blueprints will try to live up to the CIP process
-- CIPs are incremental, creating a big picture proposal-by-proposal
-- Blueprint aims to aggregate by default
-- Retroactively distilling knowledge, hence more flexible in the beginning
-- Should ratify Blueprint approach as CIP!
+We did consider whether these blueprints could be CIPs themselves, but
+were concerned that the sheer volume of information could overwhelm
+the technical and personal capacity of the CIP process, particularly
+in the initial bootstrap phase.  Also, the single-layer nature of the
+CIP documents could be restrictive for the highly-connected tree of
+documentation we envisage.
+
+That said, this project will of course tightly integrate with the CIP process:
+
+* CIPs will of course remain the place for new features and discussion
+
+* After an initial bootstrap phase, when we are retroactively distilling
+  existing knowledge, we intend to build a review and editing process
+  mirroring the CIP one
+
+* This project may itself be presented as a CIP, given the Cardano
+  community final say over its status
+
+
+
