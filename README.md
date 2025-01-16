@@ -8,23 +8,21 @@ Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge fo
 
 ## Building
 
-The report is written using markdown and can be viewed via the Github rendering [here](./src/introduction.md) or built into a HTML using [nix][nix]:
-
-``` shell
-nix build .#book
-```
-
-To open the result navigate your browser to `result/index.html`
-
-Alternatively, you would need to have a [mdbook][mdbook], as well as the relevant preprocessors (see `buildInputs` in [flake.nix](./flake.nix)) to produce the same output in `build/` with:
+The report is written using markdown and can be viewed via the Github rendering [here](./src/introduction.md) or built into a HTML using [mdbook][mdbook]:
 
 ``` shell
 mdbook build
 ```
 
+You can also use [nix][nix]:
+
+``` shell
+nix build -o out
+```
+
 ## Editing
 
-We do use [mdbook][mdbook] so with the tools installed or inside a `nix develop` shell, you can live preview the result with:
+With [mdbook][mdbook] installed or inside a `nix develop` shell, you can live preview the result with:
 
 ``` shell
 mdbook serve --open
