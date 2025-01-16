@@ -1,6 +1,10 @@
 # <p align="center">Cardano Blueprint :blue_book: :triangular_ruler:</p>
 
-Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge foundation about _how_ the Cardano blockchain is built. Blueprints are implementation independent assets, diagrams, specifications, test data, etc. that will enable a wide developer audience to understand and build on Cardano. 
+Welcome to the Cardano Blueprint, a project that aims to serve as a
+knowledge foundation about _how_ the Cardano blockchain is
+built. Blueprints are implementation independent assets, diagrams,
+specifications, test data, etc. that will enable a wide developer
+audience to understand and build on Cardano.
 
 <div align="center">
   👉 <a href="https://cardano-scaling.github.io/cardano-blueprint"><big>Introduction</big></a> 👈
@@ -8,11 +12,17 @@ Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge fo
 
 ## Building
 
-The report is written using markdown and can be viewed via the Github rendering [here](./src/introduction.md) or built into a HTML using [mdbook][mdbook]:
+The blueprints are written using markdown and can be viewed
+[direcly in Github](./src/introduction.md) or built into
+[the HTML site](https://cardano-scaling.github.io/cardano-blueprint)
+using [mdbook][mdbook]:
 
 ``` shell
 mdbook build
 ```
+
+There are more [tips for building](./building/) if you need help installing
+[mdbook][mdbook].
 
 You can also use [nix][nix]:
 
@@ -22,13 +32,15 @@ nix build -o out
 
 ## Editing
 
-With [mdbook][mdbook] installed or inside a `nix develop` shell, you can live preview the result with:
+With [mdbook][mdbook] installed or inside a `nix develop` shell, you
+can live preview the result with:
 
 ``` shell
 mdbook serve --open
 ```
 
-See the [mdbook manual][mdbook] or [github flavored markdown][gfm] for more information on what is available for editing.
+See the [mdbook manual][mdbook] or [github flavored markdown][gfm] for
+more information on what is available for editing.
 
 [mdbook]: https://rust-lang.github.io/mdBook/index.html
 [gfm]: https://github.github.com/gfm/
