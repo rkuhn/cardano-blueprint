@@ -1,6 +1,6 @@
-# Ideas
+# Archive
 
-Driving forces that could improve the situation of the Cardano node architecture.
+Driving forces that led to a demand for wider knowledge share through blueprints.
 
 ## Interface first
 - Conformance tests
