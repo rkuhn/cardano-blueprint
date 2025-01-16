@@ -27,3 +27,10 @@ Introduce our values
 ```admonish todo
 State how this relates to CIPs
 ```
+
+- Perfect for new features and discussion
+- Blueprints will try to live up to the CIP process
+- CIPs are incremental, creating a big picture proposal-by-proposal
+- Blueprint aims to aggregate by default
+- Retroactively distilling knowledge, hence more flexible in the beginning
+- Should ratify Blueprint approach as CIP!
