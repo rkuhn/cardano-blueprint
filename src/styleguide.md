@@ -18,6 +18,14 @@ prose, many like visual diagrams and pseudo-code, and a few like
 mathematical formulae.  If you can do all of these, so much the
 better, but good diagrams are often the place to start.
 
+Other tips:
+
+* Create one file per major topic
+* Divide text up into logical, hierarchical sections
+* Break up long paragraphs into bulleted lists
+* Use code blocks to give short examples
+* Use `backquote` to set off identifiers - e.g. message or state names
+
 ## Language
 
 Text should be written in American English, at the reading level of a
