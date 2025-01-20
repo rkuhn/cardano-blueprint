@@ -29,8 +29,18 @@ Other tips:
 ## Language
 
 Text should be written in American English, at the reading level of a
-competent software developer - which is often extremely high, but there is no
-need to be conspicuously erudite.
+competent software developer - which is often very high, but bear in mind
+that English may not be their first language.  Use technical language by all
+means, but there is no need to be egregiously erudite in your elucidation.
+
+It may not be necessary to talk about humans in much of this documentation,
+but if you do, please use gender-neutral pronouns - 'they' and 'their':
+
+> A user must keep the keys to their wallet safe.
+
+If you find this difficult, cast it into the plural:
+
+> Users must keep the keys to their wallets safe.
 
 ### Normative vs declarative style
 

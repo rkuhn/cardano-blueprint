@@ -8,10 +8,10 @@ audience to understand and build on Cardano.
 
 ## Why it's needed
 
-The Cardano Node was developed over the last 8+ years to become the
-reference implementation of the Ouroboros consensus protocols,
-extended UTxO (eUTxO) ledger model and Plutus smart contract language
-at Input Output Group (IO).
+The Cardano Node was developed over the last 8+ years at Input Output
+Group (IO) to become the reference implementation of the Ouroboros
+consensus protocols, extended UTxO (eUTxO) ledger model and Plutus
+smart contract language.
 
 All of these things are documented, but the documentation is spread across
 multiple repositories, in different formats, some in very dense formal
@@ -51,11 +51,13 @@ A good blueprint should be:
   (in [Mermaid](https://mermaid.js.org/)) to help understanding.
 * **Complete** - it should contain *all* the information required to implement
   the component, not refer to any external source (which may go out of date).
-* **Minimal** - it should define what an implementation *must* do (and see
-  the [Style Guide](./styleguide.md) for how to express this) and leave
-  implementation details to implementors.
+* **Minimal** - it should define the required functionality of an
+  implementation and leave implementation details to implementors.
 * **Current** - it should be kept up to date with any changes - ideally
   leading and informing them rather than the other way round.
+
+There is more specific guidance on language and format in the
+[Style Guide](./styleguide.md).
 
 ## What about Cardano Improvement Proposals (CIPs)?
 
