@@ -6,6 +6,12 @@ built. Blueprints are implementation-independent assets, diagrams,
 specifications, test data, etc. that will enable a wide developer
 audience to understand and build on Cardano.
 
+## Mission
+
+To make Cardano the best-documented blockchain in the industry, with
+its rules defined explicitly in community documentation rather than
+implicitly in the code of one implementation.
+
 ## Why it's needed
 
 The Cardano Node was developed over the last 8+ years at Input Output
