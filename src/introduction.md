@@ -12,6 +12,20 @@ To make Cardano the best-documented blockchain in the industry, with
 its rules defined explicitly in community documentation rather than
 implicitly in the code of one implementation.
 
+```mermaid
+graph TB
+    COM((Community))
+    BP(Blueprints)
+    N1[Node Implementation 1]
+    N2[Node Implementation 2]
+    C[Ecosystem Clients]
+
+    COM --> BP
+    BP --> N1
+    BP --> N2
+    BP --> C
+```
+
 ## Why it's needed
 
 The Cardano Node was developed over the last 8+ years at Input Output
