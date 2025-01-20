@@ -89,5 +89,4 @@ That said, this project will of course tightly integrate with the CIP process:
 * This project may itself be presented as a CIP, given the Cardano
   community final say over its status
 
-
-
+* The CIP process could include proposed changes to the Blueprints
