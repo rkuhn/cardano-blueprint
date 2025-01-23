@@ -1,10 +1,9 @@
 # Introduction
 
-Welcome to the Cardano Blueprint project, which aims to serve as a
-knowledge foundation about _how_ the Cardano blockchain is
-built. Blueprints are implementation-independent assets, diagrams,
-specifications, test data, etc. that will enable a wide developer
-audience to understand and build on Cardano.
+Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge
+foundation about how the Cardano protocol works. Blueprints are implementation
+independent assets, diagrams, specifications, test data, etc. that will enable a
+wide developer audience to understand the protocol and build Cardano components.
 
 ## Mission
 

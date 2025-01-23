@@ -1,10 +1,9 @@
 # <p align="center">Cardano Blueprint :blue_book: :triangular_ruler:</p>
 
-Welcome to the Cardano Blueprint, a project that aims to serve as a
-knowledge foundation about _how_ the Cardano blockchain is
-built. Blueprints are implementation independent assets, diagrams,
-specifications, test data, etc. that will enable a wide developer
-audience to understand and build on Cardano.
+Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge
+foundation about how the Cardano protocol works. Blueprints are implementation
+independent assets, diagrams, specifications, test data, etc. that will enable a
+wide developer audience to understand the protocol and build Cardano components.
 
 <div align="center">
   👉 <a href="https://cardano-scaling.github.io/cardano-blueprint"><big>Introduction</big></a> 👈
