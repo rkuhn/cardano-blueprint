@@ -12,7 +12,7 @@ wide developer audience to understand the protocol and build Cardano components.
 ## Building
 
 The blueprints are written using markdown and can be viewed
-[direcly in Github](./src/introduction.md) or built into
+[direcly in Github](./src/introduction/README.md) or built into
 [the HTML site](https://cardano-scaling.github.io/cardano-blueprint)
 using [mdbook][mdbook]:
 
