@@ -14,18 +14,39 @@ wide developer audience to understand the protocol and build Cardano components.
 The blueprints are written using markdown and can be viewed
 [direcly in Github](./src/introduction/README.md) or built into
 [the HTML site](https://cardano-scaling.github.io/cardano-blueprint)
-using [mdbook][mdbook]:
+using [mdbook][mdbook].
 
-``` shell
+### With cargo
+
+You can install [mdbook][mdbook] and the plugins we use with `cargo`:
+
+```shell
+cargo install mdbook mdbook-katex mdbook-mermaid mdbook-alerts
+```
+
+Then, build with:
+
+```shell
 mdbook build
 ```
 
-There are more [tips for building](./building/) if you need help installing
-[mdbook][mdbook].
+<details>
+<summary>Binary install</summary>
+
+There's also an option to install directly from binaries with `cargo binstall`:
+
+```shell
+cargo install cargo-binstall         # If you don't already have it
+cargo binstall mdbook mdbook-katex mdbook-mermaid mdbook-alerts
+```
+
+</details>
+
+### With nix
 
 You can also use [nix][nix]:
 
-``` shell
+```shell
 nix build -o out
 ```
 
@@ -34,7 +55,7 @@ nix build -o out
 With [mdbook][mdbook] installed or inside a `nix develop` shell, you
 can live preview the result with:
 
-``` shell
+```shell
 mdbook serve --open
 ```
 
