@@ -1,12 +1,14 @@
 # Summary
 
-- [Introduction](introduction.md)
+- [Introduction](introduction/README.md)
 - [Blueprints]()
-  - [Ledger](ledger/README.md)
+  - [Network](network/README.md)
   - [Consensus]()
     - [Chain selection]()
     - [Block production]()
-- [Archive](archive.md)
-  - [Node architecture](architecture.md)
-  - [About alternatives](alternatives.md)
+  - [Ledger](ledger/README.md)
+
+------
+
 - [Styleguide](styleguide.md)
+- [Contribution Guidelines](CONTRIBUTING.md)

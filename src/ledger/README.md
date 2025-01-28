@@ -1,3 +1,3 @@
 # Ledger
 
-Stuff
+Cardano uses the Extended Unspent Transaction Output (EUTxO) ledger model...
