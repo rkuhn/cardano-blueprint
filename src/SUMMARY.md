@@ -5,6 +5,7 @@
   - [Network](network/README.md)
     - [Multiplexing](network/multiplexing.md)
     - [Mini-protocols](network/mini-protocols.md)
+    - [Handshake Mini-protocol](network/handshake.md)
   - [Consensus]()
     - [Chain selection]()
     - [Block production]()

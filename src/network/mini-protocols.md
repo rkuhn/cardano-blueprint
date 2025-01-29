@@ -31,7 +31,7 @@ keep agency and send a follow-up message later.
 
 We can draw this state machine in the standard way, with circles and
 arrows, but with the addition of an indicator of which side has
-agency.  This one is for the simplest mini-protocol, [Ping
+agency.  This one is for the minimal example mini-protocol, [Ping
 Pong](ping-pong.md):
 
 ```mermaid
@@ -84,36 +84,6 @@ Definition Language)(https://datatracker.ietf.org/doc/rfc8610/).
 Here's the CDDL for the node-to-node handshake protocol:
 
 ```cddl
-;
-; NodeToNode Handshake, v7 to v10
-;
-
-handshakeMessage
-    = msgProposeVersions
-    / msgAcceptVersion
-    / msgRefuse
-
-msgProposeVersions = [0, versionTable]
-msgAcceptVersion   = [1, versionNumber, nodeToNodeVersionData]
-msgRefuse          = [2, refuseReason]
-
-versionTable = { * versionNumber => nodeToNodeVersionData }
-
-versionNumber = 7 / 8 / 9 / 10
-
-nodeToNodeVersionData = [ networkMagic, initiatorOnlyDiffusionMode ]
-
-; range between 0 and 0xffffffff
-networkMagic = 0..4294967295
-initiatorOnlyDiffusionMode = bool
-
-refuseReason
-    = refuseReasonVersionMismatch
-    / refuseReasonHandshakeDecodeError
-    / refuseReasonRefused
-
-refuseReasonVersionMismatch      = [0, [ *versionNumber ] ]
-refuseReasonHandshakeDecodeError = [1, versionNumber, tstr]
-refuseReasonRefused              = [2, versionNumber, tstr]
+{{#include specs/handshake-node-to-node.cddl}}
 ```
 
