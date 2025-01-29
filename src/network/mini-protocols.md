@@ -83,6 +83,9 @@ Definition Language](https://datatracker.ietf.org/doc/rfc8610/)).
 
 Here's the CDDL for the node-to-node handshake protocol:
 
+
 ```cddl
 {{#include handshake-node-to-node.cddl}}
 ```
+
+https://github.com/cardano-scaling/cardano-blueprint/blob/40a76c89bddf08af1d456aafa5f8c4639f28111a/src/network/handshake-node-to-node.cddl#L1-L31
