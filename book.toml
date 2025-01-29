@@ -22,3 +22,7 @@ after = ["links"]
 
 [output.html]
 additional-js = [".mdbook/mermaid.min.js", ".mdbook/mermaid-init.js"]
+smart-punctuation = true
+site-url = "/cardano-blueprint/"
+git-repository-url = "https://github.com/cardano-scaling/cardano-blueprint/tree/main"
+edit-url-template = "https://github.com/cardano-scaling/cardano-blueprint/edit/main/{path}"
