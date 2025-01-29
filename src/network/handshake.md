@@ -82,7 +82,7 @@ a mutually acceptable version and set of parameters.
 
 The `MsgRefuse` message is returned by the responder to indicate there is
 no acceptable version match, or other reason.  If it is a version mismatch
-it returns a set version numbers it could have accepted.
+it returns a set of version numbers that it could have accepted.
 
 > [!WARNING]
 > The content of `MsgRefuse` is inconsistent between the paper and CDDL -
@@ -92,7 +92,12 @@ it returns a set version numbers it could have accepted.
 
 Because the Handshake protocol operates before the multiplexer is fully
 set up, the messages must not be split into segments, and this imposes
-a size limit of 5760 bytes
+a size limit of 5760 bytes.
+
+> [!WARNING]
+> This seems like a protocol level mix, and since the negotiated parameters
+> don't seem to affect the mux config (and could be changed dynamically even
+> if they did), it's not clear why this constraint is needed.
 
 > [!NOTE]
 > Why 5076 when the mux protocol can handle 65535? Implementation detail?
