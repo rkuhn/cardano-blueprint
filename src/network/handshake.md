@@ -17,7 +17,7 @@ stateDiagram
     StPropose --> StConfirm: MsgProposeVersions
     StConfirm --> [*]: MsgAcceptVersion
     StConfirm --> [*]: MsgReplyVersion
-    StConfirm --> [*]: MsgRefuseVersion
+    StConfirm --> [*]: MsgRefuse
 
     direction LR
 
