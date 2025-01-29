@@ -79,41 +79,10 @@ doesn't carry any:
 The messages of the mini-protocols are encoded in
 [CBOR](https://cbor.io), a compact binary encoding of JSON.  The
 syntax of valid messages is expressed in CDDL ([Concise Data
-Definition Language)(https://datatracker.ietf.org/doc/rfc8610/).
+Definition Language](https://datatracker.ietf.org/doc/rfc8610/)).
 
 Here's the CDDL for the node-to-node handshake protocol:
 
 ```cddl
-;
-; NodeToNode Handshake, v7 to v10
-;
-
-handshakeMessage
-    = msgProposeVersions
-    / msgAcceptVersion
-    / msgRefuse
-
-msgProposeVersions = [0, versionTable]
-msgAcceptVersion   = [1, versionNumber, nodeToNodeVersionData]
-msgRefuse          = [2, refuseReason]
-
-versionTable = { * versionNumber => nodeToNodeVersionData }
-
-versionNumber = 7 / 8 / 9 / 10
-
-nodeToNodeVersionData = [ networkMagic, initiatorOnlyDiffusionMode ]
-
-; range between 0 and 0xffffffff
-networkMagic = 0..4294967295
-initiatorOnlyDiffusionMode = bool
-
-refuseReason
-    = refuseReasonVersionMismatch
-    / refuseReasonHandshakeDecodeError
-    / refuseReasonRefused
-
-refuseReasonVersionMismatch      = [0, [ *versionNumber ] ]
-refuseReasonHandshakeDecodeError = [1, versionNumber, tstr]
-refuseReasonRefused              = [2, versionNumber, tstr]
+{{#include handshake-node-to-node.cddl}}
 ```
-
