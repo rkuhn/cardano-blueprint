@@ -76,7 +76,7 @@ A good blueprint should be:
   leading and informing them rather than the other way round.
 
 There is more specific guidance on language and format in the
-[Style Guide](./styleguide.md).
+[Style Guide](../styleguide.md).
 
 ## What about Cardano Improvement Proposals (CIPs)?
 
