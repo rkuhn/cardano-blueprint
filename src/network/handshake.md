@@ -110,10 +110,10 @@ should be torn down.
 
 ## CDDL
 
-Here's the CDDL for the node-to-node handshake protocol:
+Here's the CDDL for the latest node-to-node handshake protocol:
 
 ```cddl
-{{#include specs/handshake-node-to-node.cddl}}
+{{#include specs/handshake-node-to-node-v13.cddl}}
 ```
 
 And the node-to-client version:
