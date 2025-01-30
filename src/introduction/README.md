@@ -7,9 +7,8 @@ wide developer audience to understand the protocol and build Cardano components.
 
 ## Mission
 
-To make Cardano the best-documented blockchain in the industry, with
-its rules defined explicitly in community documentation rather than
-implicitly in the code of one implementation.
+Create technical documents for creating and underpinning a Cardano node
+implementation, without needing to reverse engineer existing implementations.
 
 ```mermaid
 graph TB
