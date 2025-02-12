@@ -6,10 +6,7 @@
     - [Multiplexing](network/multiplexing.md)
     - [Mini-protocols](network/mini-protocols.md)
     - [Handshake Mini-protocol](network/handshake.md)
-  - [Consensus]()
-    - [Draft](consensus/draft.md)
-    - [Chain selection]()
-    - [Block production]()
+  - [Consensus](consensus/README.md)
   - [Ledger](ledger/README.md)
 
 ------
