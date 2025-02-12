@@ -15,10 +15,10 @@ The progress of the communication is defined by a state machine, which
 is replicated at each end.  The transitions of the state machine
 are messages being sent/received.  As well as defining which messages
 are valid to send and receive in each state, the state machine also
-defines which side has **agency** - that is, should be the one to send
+defines which side has *agency* - that is, should be the one to send
 the next message.
 
-The *initiator* or a connection is the one that requested the
+The *initiator* of a connection is the one that requested the
 connection be opened - the client in a simple client/server model.
 
 The *responder* or is the one that responds to the connection request - the

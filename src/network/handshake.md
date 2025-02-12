@@ -6,7 +6,7 @@ The Handshake mini-protocol is used to establish a connection and
 negotiate protocol versions and parameters between the initiator
 (client) and responder (server).  There are two versions, one for
 node-to-node (N2N) and one for node-to-client (N2C), which differ only
-in the parameters.
+in their protocol parameters.
 
 ## State machine
 
@@ -81,7 +81,7 @@ The `MsgAcceptVersion` message is returned by the responder to confirm
 a mutually acceptable version and set of parameters.
 
 The `MsgRefuse` message is returned by the responder to indicate there is
-no acceptable version match, or other reason.  If it is a version mismatch
+no acceptable version match, or another reason.  If it is a version mismatch
 it returns a set of version numbers that it could have accepted.
 
 > [!WARNING]
