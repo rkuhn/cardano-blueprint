@@ -1,28 +1,12 @@
 # Introduction
 
-Welcome to the Cardano Blueprint, a project that creates the knowledge
-foundation about how the Cardano protocol works. Blueprints are implementation
-independent assets like explanations, diagrams, interface specifications, test
-data, etc. that will enable a wide developer audience to understand the protocol
-and build Cardano components.
+Welcome to the Cardano Blueprint, a project that creates the knowledge foundation about how the Cardano protocol works. Blueprints are implementation independent assets like explanations, diagrams, interface specifications, test data, etc. that will enable a wide developer audience to understand the protocol and build Cardano components.
 
 ## Goal
 
-Make the Cardano protocol documentation and specifications **implementation-independent** and **accessible** to a wider audience of builders in the Cardano community.
+Our goal is to make the Cardano protocol documentation and specifications **implementation-independent** and **accessible** to a wider audience of builders in the Cardano community.
 
-```mermaid
-graph TB
-    COM((Community))
-    BP(Blueprints)
-    N1[Node Implementation 1]
-    N2[Node Implementation 2]
-    C[Component 3]
-
-    COM <-..-> BP
-    BP --> N1
-    BP --> N2
-    BP --> C
-```
+Ultimately, **sharing knowledge** will support node diversity and is the only way to maintain security of the Cardano network as its software stack becomes more and more decentralized.
 
 ## Why it's needed
 
@@ -32,9 +16,9 @@ Most of these things are rigorously researched, specified and documented, but th
 
 This project aims to produce a set of blueprints for Cardano in a grassroots initiative to make existing documentation:
 
-- *understandable* by a wide audience
-- *owned* by the Cardano community
-- *useful* to multiple implementations
+- **understandable** by a wide audience
+- **owned** by the Cardano community
+- **useful** to multiple implementations
 
 Where the audience includes primarily developers of cardano nodes, current and future implementations, but also builders of applications and integrations, or anyone wanting to understand Cardano at a deeper technical level.
 
@@ -67,3 +51,17 @@ That being said, this project will of course tightly integrate with the CIP proc
 * The Cardano blueprint itself may be presented and ratified as a CIP, given the Cardano community final say over its status
 
 * CIPs could include changes to the `cardano-blueprint` in their "Path to Active"
+
+```mermaid
+graph TB
+    COM((Community))
+    BP(Blueprints)
+    N1[Node Implementation 1]
+    N2[Node Implementation 2]
+    C[Component 3]
+
+    COM <-..-> BP
+    BP --> N1
+    BP --> N2
+    BP --> C
+```
