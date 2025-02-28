@@ -1,0 +1,25 @@
+flowchart LR
+    EGC[EraRule GOV Conway]
+    EGC --> govTransition
+        govTransition --> badHardFork(failOnJust badHardFork)
+        govTransition --> actionWellFormed(actionWellFormed)
+        govTransition --> refundAddress(refundAddress)
+        govTransition --> nonRegisteredAccounts(nonRegisteredAccounts)
+        govTransition --> pProcDepost(pProcDeposit == expectedDeposit)
+        govTransition --> pProcReturnAddr(pProcReturnAddr == expectedNetworkId)
+        govTransition --> govAction{case pProcGovAction}
+            govAction --> |TreasuryWithdrawals| twDoBlock[do]
+                twDoBlock --> mismatchedAccounts(mismatchedAccounts)
+                twDoBlock --> twCheckPolicy(checkPolicy)
+            govAction --> |UpdateCommittee| ucDoBlock[do]
+                ucDoBlock --> setNull(Set.null conflicting)
+                ucDoBlock --> mapNull(Map.null invalidMembers)
+            govAction --> |ParameterChange| pcDoBlock[do]
+                pcDoBlock --> checkPolicy(checkPolicy)
+        govTransition --> ancestryCheck(ancestryCheck)
+        govTransition --> unknownVoters(failOnNonEmpty unknownVoters)
+        govTransition --> unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+        govTransition --> checkBootstrapVotes(checkBootstrapVotes)
+        govTransition --> checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
+        govTransition --> checkVotersAreValid(checkVotersAreValid)
+        govTransition --> updatedProposalStates[(updatedProposalStates)]

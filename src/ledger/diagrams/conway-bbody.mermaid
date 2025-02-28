@@ -1,0 +1,10 @@
+flowchart LR
+    EBBC[EraRule BBODY Conway]
+        EBBC --> CBBT[conwayBbodyTransition]
+            CBBT --> totalScriptRefSize(totalScriptRefSize <= maxRefScriptSizePerBlock)
+            CBBT --> S[(state)]
+
+        EBBC --> ABBT[alonzoBbodyTransition]
+            ABBT --> ELC[EraRule LEDGERS Conway]
+            ABBT --> txTotalExUnits(txTotal <= ppMax ExUnits)
+            ABBT --> BBodyState[(BbodyState @era ls')]
