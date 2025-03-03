@@ -21,7 +21,7 @@ using [mdbook][mdbook].
 You can install [mdbook][mdbook] and the plugins we use with `cargo`:
 
 ```shell
-cargo install mdbook mdbook-katex mdbook-mermaid mdbook-alerts
+cargo install mdbook mdbook-katex mdbook-mermaid mdbook-alerts mdbook-toc
 ```
 
 Then, build with:
@@ -37,7 +37,7 @@ There's also an option to install directly from binaries with `cargo binstall`:
 
 ```shell
 cargo install cargo-binstall         # If you don't already have it
-cargo binstall mdbook mdbook-katex mdbook-mermaid mdbook-alerts
+cargo binstall mdbook mdbook-katex mdbook-mermaid mdbook-alerts mdbook-toc
 ```
 
 </details>
