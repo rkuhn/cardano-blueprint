@@ -1,4 +1,7 @@
-# <p align="center">Cardano Blueprint :blue_book: :triangular_ruler:</p>
+<div align="center">
+  <img src="logo-only.svg"></img> 
+  <h1>Cardano Blueprint</h1>
+</div>
 
 Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge
 foundation about how the Cardano protocol works. Blueprints are implementation
@@ -65,3 +68,9 @@ more information on what is available for editing.
 [mdbook]: https://rust-lang.github.io/mdBook/index.html
 [gfm]: https://github.github.com/gfm/
 [nix]: https://nixos.org/download.html
+
+---
+
+<p align="center">
+Thanks for visiting and hopefully the cardano blueprint is useful to you 💙!
+</p>
