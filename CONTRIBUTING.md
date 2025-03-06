@@ -61,7 +61,7 @@ The Cardano Blueprint aims to be a community effort and we would love to have yo
 
 ## Publishing
 
-Any changes to the `main` branch are automatically published to the live version of the blueprints hosted [via Github Pages](https://cardano-scaling.github.io/cardano-blueprint/). If you have made changes and they are not propagated to the live version, please check the build status on [GitHub Actions](https://github.com/cardano-scaling/cardano-blueprint/actions).
+Any changes to the `main` branch are automatically published to the live version of the blueprints hosted [via Github Pages](https://cardano-scaling.github.io/cardano-blueprint/). If you have made changes and they are not propagated to the live version, please check the build status on [GitHub Actions](https://github.com/cardano-scaling/cardano-blueprint/actions), or make sure you fully reload the webpage (Ctrl+Shift+R on firefox).
 
 ## Versioning
 
