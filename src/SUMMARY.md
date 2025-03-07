@@ -20,7 +20,8 @@
   - [Mempool](mempool/README.md)
     - [TxSubmission2](mempool/txsubmission2.md)
   - [Ledger](ledger/README.md)
-------
+
+---
 
 - [Styleguide](styleguide.md)
-- [Contribution Guidelines](CONTRIBUTING.md)
+- [Contributing](CONTRIBUTING.md)
