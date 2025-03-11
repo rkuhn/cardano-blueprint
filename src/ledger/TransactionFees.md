@@ -21,7 +21,7 @@ Next, calculate the untagged size of each `scriptRef` on each of the input and r
 
 Next, calculate the reference script fee. First, sum up the length in bytes of each of script reference. The `minFeeReferenceScripts` parameter consists of a base, a multiplier, and a range. (Note that in conway, the multiplier and the range are hard coded, rather than protocol parameters, but the intention is to change this at the next hardfork.)
 
-To calculate the fee, starting from a `baseFee` of `minFeeReferenceScripts.base`, for each `minFeeReferenceScripts.base` bytes, add `baseFee * totalRefScriptSize` and then scale `baseFee` by `minFeeReferenceScripts.multiplier`.
+To calculate the fee, starting from a `baseFee` of `minFeeReferenceScripts.base` and remaining bytes of `sum(scriptRefLengths)`, until remaining bytes is zero, add `baseFee * min(remainingBytes, minFeeReferenceScripts.range)`, scale `baseFee` by `minFeeReferenceScripts.multiplier`, and decrease remainingBytes by `min(remainingBytes, minFeeReferenceScripts.range)`.
 
 The above calculation can result in rational values (as the multiplier can be rational), and so at the *end* of this calculation you should take the ceiling.
 
