@@ -3,23 +3,25 @@
 > [!WARNING]
 > This is only a quick write-up of how transaction fees are calculated. Ideally this would not exist in a vacuum and instead benefit from a general explanation on Cardano transactions.
 
-Inputs:
+## Inputs
  - Serialized Transaction Bytes
  - Transaction Redeemers
  - Protocol Parameters
-   - minFeeConstant
-   - minFeeCoefficient
-   - minFeeReferenceScripts
-   - prices.memory
-   - prices.steps
+   - `minFeeConstant`
+   - `minFeeCoefficient`
+   - `minFeeReferenceScripts`
+   - `prices.memory`
+   - `prices.steps`
+
+## Algorithm
 
 At a high level, the fee is composed of a minimum constant, plus a cost per transaction byte, plus a cost per reference script byte, plus an execution cost per budgeted script redeemer.
 
-Calculate the base fee by adding the minFeeConstant to (minFeeCoefficient * serialized transaction length in bytes). These numbers are all integers, so you shouldn't end up with a fractional amount of lovelace.
+Calculate the base fee by adding the `minFeeConstant` to (minFeeCoefficient * serialized transaction length in bytes). These numbers are all integers, so you shouldn't end up with a fractional amount of lovelace.
 
 Next, calculate the untagged size of each `scriptRef` on each of the input and reference input UTxOs. Specifically, each `scriptRef` field is serialized as a cbor tag, an integer plutus version, and then the raw script bytes. We're interested in the size of the raw script bytes only.
 
-Next, calculate the reference script fee. First, sum up the length in bytes of each of script reference. The `minFeeReferenceScripts` parameter consists of a base, a multiplier, and a range. (Note that in conway, the multiplier and the range are hard coded, rather than protocol parameters, but the intention is to change this at the next hardfork.)
+Next, calculate the reference script fee. First, sum up the length in bytes of each of script reference. The `minFeeReferenceScripts` parameter consists of a `base`, a `multiplier`, and a `range`. (Note that in conway, the multiplier and the range are hard coded, rather than protocol parameters, but the intention is to change this at the next hardfork.)
 
 To calculate the fee, starting from a `baseFee` of `minFeeReferenceScripts.base` and remaining bytes of `sum(scriptRefLengths)`, until remaining bytes is zero, add `baseFee * min(remainingBytes, minFeeReferenceScripts.range)`, scale `baseFee` by `minFeeReferenceScripts.multiplier`, and decrease remainingBytes by `min(remainingBytes, minFeeReferenceScripts.range)`.
 
@@ -29,7 +31,11 @@ Finally, to calculate the evaluation fee, for each redeemer, multiply the redeem
 
 The final minimum fee is the base fee, plus the reference script fee, plus the evaluation fee.
 
-Lets do a decently complex worked example, from mainnet transaction `f06e17af7b0085b44bcc13f76008202c69865795841c692875810bc92948d609`
+## Example
+
+Lets do a decently complex worked example, from mainnet transaction with id (body hash)
+
+`f06e17af7b0085b44bcc13f76008202c69865795841c692875810bc92948d609`
 
 The script bytes are:
 ```
@@ -39,8 +45,8 @@ The script bytes are:
 This is **1358 bytes**.
 Among the inputs and reference inputs, there are 2 inputs with refScripts:
 
-- reference input f5f1bdfad3eb4d67d2fc36f36f47fc2938cf6f001689184ab320735a28642cf2#0 with **2469 bytes**
-- reference input fa46a1d162c59cece3308c5a9d4db9ff2ea17f9c0146ff821c9b445588b017c9#0 with **15728 bytes**
+- reference input `f5f1bdfad3eb4d67d2fc36f36f47fc2938cf6f001689184ab320735a28642cf2#0` with **2469 bytes**
+- reference input `fa46a1d162c59cece3308c5a9d4db9ff2ea17f9c0146ff821c9b445588b017c9#0` with **15728 bytes**
 
 And there are three redeemers:
 
