@@ -25,7 +25,7 @@ To calculate the fee, starting from a `baseFee` of `minFeeReferenceScripts.base`
 
 The above calculation can result in rational values (as the multiplier can be rational), and so at the *end* of this calculation you should take the ceiling.
 
-Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol paramters (`prices.memory` and `prices.steps`), and add them sum them together. These are integer parameters, so you should end with a whole number of lovelace.
+Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol paramters (`prices.memory` and `prices.steps`), and add them sum them together. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.
 
 The final minimum fee is the base fee, plus the reference script fee, plus the evaluation fee.
 
