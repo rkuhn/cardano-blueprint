@@ -1,11 +1,22 @@
 # Transaction fees
 
 > [!WARNING]
-> This is only a quick write-up of how transaction fees are calculated. Ideally this would not exist in a vacuum and instead benefit from a general explanation on Cardano transactions.
+> Ideally this would not exist in a vacuum and instead benefit from a general explanation on Cardano transactions.
+
+This is a write-up of how transaction fees are calculated. In fact, the minimum transaction fee for transaction to be deemed valid by the Cardano ledger.
+
+This document describes the situation as of
+- Protocol version: `10`
+- Era: `Conway`
+
+See also:
+
+- Formal ledger specification: [Alonzo, Figure 4, minfee](file:///home/ch1bo/Downloads/alonzo-ledger-2.pdf) and [Conway, chapter 4](https://intersectmbo.github.io/formal-ledger-specifications/pdfs/conway-ledger.pdf#section.4)
+- Haskell implementation: [getConwayMinFeeTxUtxo](https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138) and releated functions
 
 ## Inputs
- - Serialized Transaction Bytes
- - Transaction Redeemers
+ - Transaction bytes, CBOR-encoded
+ - Resolved inputs (= unspent outputs), CBOR-encoded
  - Protocol Parameters
    - `minFeeConstant`
    - `minFeeCoefficient`
@@ -13,11 +24,17 @@
    - `prices.memory`
    - `prices.steps`
 
+> [!WARNING]
+> TODO: Include / reference a transaction structure CDDL to reference individual parts (e.g. referenced TxOut)
+
 ## Algorithm
 
 At a high level, the fee is composed of a minimum constant, plus a cost per transaction byte, plus a cost per reference script byte, plus an execution cost per budgeted script redeemer.
 
 Calculate the base fee by adding the `minFeeConstant` to (minFeeCoefficient * serialized transaction length in bytes). These numbers are all integers, so you shouldn't end up with a fractional amount of lovelace.
+
+> [!WARNING]
+> TODO: Explain resolving input and reference inputs
 
 Next, calculate the untagged size of each `scriptRef` on each of the input and reference input UTxOs. Specifically, each `scriptRef` field is serialized as a cbor tag, an integer plutus version, and then the raw script bytes. We're interested in the size of the raw script bytes only.
 
