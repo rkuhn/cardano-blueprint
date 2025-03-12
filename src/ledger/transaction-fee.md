@@ -1,7 +1,7 @@
-# Transaction Fees
+# Transaction fees
 
-Here is a quick writeup of how transaction fees are calculated:
-
+> [!WARNING]
+> This is only a quick write-up of how transaction fees are calculated. Ideally this would not exist in a vacuum and instead benefit from a general explanation on Cardano transactions.
 
 Inputs:
  - Serialized Transaction Bytes
