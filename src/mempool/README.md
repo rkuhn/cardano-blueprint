@@ -60,9 +60,9 @@ following requirements:
 
 Notice that _what_ a transaction actually is defined by the Ledger layer and it
 depends on the current era at the tip of the chain. The Ledger layer provides
-mechanisms to translate transactions from older eras to more recent ones. Once a
-transaction is translated to a more recent era, it is such translation the one
-that is distributed to the network afterwards.
+mechanisms to translate transactions from older eras to more recent ones. The
+original transaction is the one that will be forwarded to other peers, i.e. the
+"translated" version of the transaction _is not sent_ over the network.
 
 > [!NOTE]
 >
