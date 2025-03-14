@@ -20,6 +20,7 @@
   - [Mempool](mempool/README.md)
     - [TxSubmission2](mempool/txsubmission2.md)
   - [Ledger](ledger/README.md)
+    - [Transaction fee](ledger/transaction-fee.md)
     - [Block Validation](ledger/block-validation.md)
 
 ---
