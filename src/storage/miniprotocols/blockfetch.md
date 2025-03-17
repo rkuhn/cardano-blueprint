@@ -13,8 +13,8 @@ explicit request from the client.
 > avoid duplicated requests.
 
 Received blocks are then given to the [chain
-selection](../consensus/chainsel.md) logic to determine their
-[validity](../consensus/chainvalid.md) and, depending on the chain selection
+selection](../../consensus/chainsel.md) logic to determine their
+[validity](../../consensus/chainvalid.md) and, depending on the chain selection
 outcome, may be incorporated into the currently selected chain.
 
 If the peer misbehaves, the connection will be abruptly

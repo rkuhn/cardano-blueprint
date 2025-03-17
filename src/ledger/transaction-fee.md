@@ -14,7 +14,7 @@ This document describes the situation as of
 
 See also:
 
-- Formal ledger specification: [Alonzo, Figure 4, minfee](file:///home/ch1bo/Downloads/alonzo-ledger-2.pdf) and [Conway, chapter 4](https://intersectmbo.github.io/formal-ledger-specifications/pdfs/conway-ledger.pdf#section.4)
+- Formal ledger specification: [Alonzo, Figure 4, minfee](https://github.com/intersectmbo/cardano-ledger/releases/latest/download/alonzo-ledger.pdf) and [Conway, chapter 4](https://intersectmbo.github.io/formal-ledger-specifications/pdfs/conway-ledger.pdf#section.4)
 - Haskell implementation: [getConwayMinFeeTxUtxo](https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138) and releated functions
 
 ## Inputs

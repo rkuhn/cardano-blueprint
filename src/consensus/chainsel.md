@@ -16,8 +16,8 @@ network as a whole.
 Because each node performs chain selection, the Cardano network acts as a
 forward-filtering diffusion network.
 
-The block headers come from [`ChainSync`](./miniprotocols/chainsync.md) and
-the block bodies come from [`BlockFetch`](./miniprotocols/blockfetch.md).
+The block headers come from [`ChainSync`](../storage/miniprotocols/chainsync.md) and
+the block bodies come from [`BlockFetch`](../storage/miniprotocols/blockfetch.md).
 
 > [!NOTE]
 >
@@ -259,8 +259,11 @@ Once the node finishes syncing with the network, this rule gracefully converges
 into the usual length-based comparison used in Praos, so the node can safely
 switch to running only Ouroboros Praos.
 
+<!-- iohk.io links return 403 "if you are not a human" -->
+<!-- markdown-link-check-disable -->
 [classic]: https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/
 [BFT]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/
 [Praos]: https://iohk.io/en/research/library/papers/ouroboros-praos-an-adaptively-secure-semi-synchronous-proof-of-stake-protocol/
 [Genesis]: https://iohk.io/en/research/library/papers/ouroboros-genesis-composable-proof-of-stake-blockchains-with-dynamic-availability/
 [genesis-blogpost]: https://iohk.io/en/blog/posts/2024/05/08/ouroboros-genesis-design-update/
+<!-- markdown-link-check-enable -->

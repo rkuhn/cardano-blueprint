@@ -29,10 +29,9 @@ cases the initiator and responder take turns to have agency (send messages),
 but in some cases where one party must wait for a response, the other will
 keep agency and send a follow-up message later.
 
-We can draw this state machine in the standard way, with circles and
-arrows, but with the addition of an indicator of which side has
-agency.  This one is for the minimal example mini-protocol, [Ping
-Pong](ping-pong.md):
+We can draw this state machine in the standard way, with circles and arrows, but
+with the addition of an indicator of which side has agency. This one is for the
+minimal example mini-protocol, [Ping Pong]():
 
 ```mermaid
 stateDiagram

@@ -8,7 +8,7 @@ diffusion](./diffusion.md).
 Some of this data is volatile and relates to the candidate chains and other data
 is immutable and relates to the historical chain, following the principle
 described in [the `k` security parameter
-section](../consensus/chainsel.html#the-k-security-parameter).
+section](../consensus/chainsel.md#the-k-security-parameter).
 
 ```mermaid
 flowchart TD
@@ -35,7 +35,7 @@ miniprotocols and the Consensus layer to function properly:
 - Fast switch to an alternative chain in the volatile part of the chain,
 - Fast identification of chains of blocks in the volatile part of the chain:
   even if blocks arrive in arbitrary order, the Consensus [Chain
-  Selection](../consensus/chainsel.html) should be invoked to select a better
+  Selection](../consensus/chainsel.md) should be invoked to select a better
   candidate chain once assembled in the volatile part of the chain,
 - Fast node restart after shutdown without full chain replay, while supporting
   `k`-deep forks.
