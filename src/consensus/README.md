@@ -150,10 +150,10 @@ resource draining attacks.
 So the design at this stage involves transmitting chains of headers rather than
 whole blocks, and using a secondary mechanism to download block bodies of
 interest. This gives the reason why
-[`ChainSync`](./miniprotocols/chainsync.md) and
-[`BlockFetch`](./miniprotocols/blockfetch.md) are separate protocols. The
-Consensus chain selection can look only at chains of block headers, whereas the
-validity check of the block body can be performed by the Ledger rules,
+[`ChainSync`](../storage/miniprotocols/chainsync.md) and
+[`BlockFetch`](../storage/miniprotocols/blockfetch.md) are separate protocols.
+The Consensus chain selection can look only at chains of block headers, whereas
+the validity check of the block body can be performed by the Ledger rules,
 effectively separating concerns.
 
 ## Mini-protocols

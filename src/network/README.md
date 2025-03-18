@@ -42,36 +42,36 @@ graph TB
 These protocols are used in both N2N and N2C modes:
 
 * [Handshake](handshake.md) - for connection and version negotiation
-* [Chain Synchronization](chain-sync.md) - for synchronization of changes to the
+* [Chain Synchronization]() - for synchronization of changes to the
   Cardano chain[^chainsync]
 
 ### Node-to-node mini-protocols
 
 These protocols are only used for node-to-node communication:
 
-* [Block Fetch](block-fetch.md) - for transferring chain blocks between nodes
-* [Transaction Submission](tx-submission.md) - for propagating
+* [Block Fetch]() - for transferring chain blocks between nodes
+* [Transaction Submission]() - for propagating
   transactions between nodes
-* [Keep Alive](keep-alive.md) - for maintaining and measuring timing of
+* [Keep Alive]() - for maintaining and measuring timing of
   the connection
-* [Peer Sharing](peer-sharing.md) - for exchanging peer information to
+* [Peer Sharing]() - for exchanging peer information to
   create the peer-to-peer (P2P) network
 
 ### Node-to-client mini-protocols
 
 These protocols are only used for node-to-client communication:
 
-* [Local State Query](local-state.md) - for querying ledger state
-* [Local Tx Submission](local-tx-submission.md) - for submitting
+* [Local State Query]() - for querying ledger state
+* [Local Tx Submission]() - for submitting
   transactions locally
-* [Local Tx Monitor](local-tx-monitor.md) - for monitoring transactions
+* [Local Tx Monitor]() - for monitoring transactions
 
 ### Dummy mini-protocols
 
 These protocols are only used for testing and experimentation:
 
-* [Ping-Pong](ping-pong.md) - a simple presence test
-* [Request-Response](request-response.md) - a generic mechanism for
+* [Ping-Pong]() - a simple presence test
+* [Request-Response]() - a generic mechanism for
   exchanging data
 
 [^chainsync]: ChainSync is shared between N2N and N2C, but shares full
