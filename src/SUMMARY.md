@@ -28,3 +28,5 @@
 - [Styleguide](styleguide.md)
 - [Contributing](CONTRIBUTING.md)
 - [Logbook](logbook.md)
+- [Logo](logo/README.md)
+- [License](LICENSE.md)
