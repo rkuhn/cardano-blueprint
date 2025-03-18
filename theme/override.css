@@ -1,0 +1,19 @@
+/* Theme overrides  */
+
+.light {
+  --links: hsl(198.8, 61.5%, 46.9%);
+  --sidebar-active: hsl(198.8, 61.5%, 46.9%);
+}
+
+/* Sidebar logo override  */
+
+.sidebar #sidebar-logo {
+  display: block;
+  height: var(--menu-bar-height);
+  width: 100%;
+  margin: 5px;
+}
+
+.sidebar .sidebar-scrollbox {
+  top: calc(var(--menu-bar-height) + 10px) !important;
+}
