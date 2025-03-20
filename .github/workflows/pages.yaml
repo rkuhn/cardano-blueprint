@@ -43,10 +43,12 @@ jobs:
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
-        # if: github.ref_name == 'main'
+        if: github.ref_name == 'main'
         with:
           folder: ./result
+          clean-exclude: pr-preview/
           single-commit: true
+          force: false
 
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
