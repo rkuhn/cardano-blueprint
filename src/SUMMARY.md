@@ -27,3 +27,4 @@
 
 - [Styleguide](styleguide.md)
 - [Contributing](CONTRIBUTING.md)
+- [Logbook](logbook.md)
