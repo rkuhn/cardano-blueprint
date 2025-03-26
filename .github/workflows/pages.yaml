@@ -50,7 +50,7 @@ jobs:
           folder: ./dist
           clean-exclude: pr-preview/
           single-commit: true
-          force: true
+          force: false
 
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
