@@ -1,5 +1,38 @@
 Logbook about `cardano-blueprint` that contains thinking, discussions, pains, joys, events, and experiences that happen on a daily basis. It is supposed to be a kind of [Stream of consciousness](https://en.wikipedia.org/wiki/Stream_of_consciousness) that can later be searched, linked to or reviewed. It may also be used as a very informal decision log.
 
+## 2025-03-25
+
+By @ch1bo
+
+- Met with Pi, Matthias and Josh to discuss ledger test approaches and how they relate to cardano blueprint
+- Ethan, someone from SundaeLabs, would be free soon and could spend some time putting together a conformance test suite
+- Most relevant issue: https://github.com/IntersectMBO/cardano-ledger/issues/4892
+- On ledger state
+  - While we wait for Ethan I briefly mentioned that the ledger state snapshots might get a CDDL definition soon, at least the consensus team is asking it from the ledger team here: https://github.com/IntersectMBO/cardano-ledger/issues/4948
+  - We briefly discussed what format of ledger state would be suitable for the test suite (JSON or CBOR), but it should not matter too much.
+  - Transactions / blocks should quite naturally be CBOR encoded.
+- The Haskell implementation of ledger (`cardano-ledger`) is conformance tested against the Agda model
+  - According to Andre not exactly THE agda model that is also checked for correctness (is it?), but an equivalence checked derivation of the agda model that aligns better with the implementation state-wise
+  - These conformance tests can be found [here](https://github.com/IntersectMBO/cardano-ledger/blob/master/libs/cardano-ledger-conformance/test/Test/Cardano/Ledger/Conformance/Spec/Conway.hs#L35)
+- Matthias mentions that the test coverage was not particularly good for Conway (used to be better?)
+- There are also hand-crafted test cases in the `cardano-ledger` implementation
+  - For example for [these](https://github.com/IntersectMBO/cardano-ledger/blob/master/eras/conway/impl/testlib/Test/Cardano/Ledger/Conway/Imp.hs#L93)
+  - Especially tests for the top-level `BBODY` or `LEDGERS` (also `UTXOS` or `UTXOW`) rules are interesting as they operate on a block or transaction level (the so-called "signal" to the rule is a block or transaction)
+- Where to start?
+  - Test vectors have proven to be useful in the past: for [plutus](https://github.com/IntersectMBO/plutus/tree/master/plutus-conformance) and [aiken](https://github.com/aiken-lang/aiken/tree/main/examples/acceptance_tests/script_context/v3)
+  - Needs to be usable by multiple implementations / languages - not require to integrate with Haskell to _use_
+  - Instead of creating a tool right away, try to assemble a few good test vectors that can directly be used by `amaru` and other implementations
+  - We suspect the hand-written test scenarios ([example](https://github.com/IntersectMBO/cardano-ledger/blob/master/eras/alonzo/impl/testlib/Test/Cardano/Ledger/Alonzo/Imp/UtxowSpec/Valid.hs#L131)) provide a "better signal to noise ratio" than the [conformance test suite generators](https://github.com/IntersectMBO/cardano-ledger/blob/master/libs/cardano-ledger-conformance/src/Test/Cardano/Ledger/Conformance/ExecSpecRule/Core.hs#L424-L443)
+  - We should piggy-back on the `cardano-ledger` test scenarios and dump test vectors when running them (e.g. in a patched version on a fork)
+  - Test vectors should consist of
+    - starting ledger state
+    - one or more transactions (or blocks?)
+    - expected resulting ledger state **or** expected validation error
+  - Can we use one ledger state multiple times (to have less test data)?
+- We also discussed whether we should depend on how validation failed
+  - Exact match is likely out of scope, but maybe a common "slug" or "code" across implementations?
+  - Some disagreement that there is a need to identify "failing for the right reason"
+
 ## 2025-03-20
 
 By @ch1bo
