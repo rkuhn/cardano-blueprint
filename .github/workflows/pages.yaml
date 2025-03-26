@@ -49,7 +49,6 @@ jobs:
         with:
           folder: ./dist
           clean-exclude: pr-preview/
-          single-commit: true
           force: false
 
       - name: Deploy preview
