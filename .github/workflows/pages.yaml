@@ -40,18 +40,22 @@ jobs:
       - name: Build
         run: |
           nix build
+          # Copy files from nix store to ensure writable permissions on gh-pages
+          cp -dRv result/ dist/
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         if: github.ref_name == 'main'
         with:
-          folder: ./result
+          folder: ./dist
           clean-exclude: pr-preview/
           single-commit: true
-          force: false
+          force: true
 
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
         if: github.event.pull_request
         with:
-          source-dir: ./result
+          source-dir: ./dist
+          umbrella-dir: pr-preview
+          action: auto
