@@ -14,7 +14,8 @@ By @ch1bo
 - The Haskell implementation of ledger (`cardano-ledger`) is conformance tested against the Agda model
   - According to Andre not exactly THE agda model that is also checked for correctness (is it?), but an equivalence checked derivation of the agda model that aligns better with the implementation state-wise
   - These conformance tests can be found [here](https://github.com/IntersectMBO/cardano-ledger/blob/master/libs/cardano-ledger-conformance/test/Test/Cardano/Ledger/Conformance/Spec/Conway.hs#L35)
-- Matthias mentions that the test coverage was not particularly good for Conway (used to be better?)
+- Matthias mentions that there were quite a few uncaught bugs for Conway (used to be better?)
+  - While its nice to have generated test scenarios and that conformance test suite, we should not rely _only_ on it
 - There are also hand-crafted test cases in the `cardano-ledger` implementation
   - For example for [these](https://github.com/IntersectMBO/cardano-ledger/blob/master/eras/conway/impl/testlib/Test/Cardano/Ledger/Conway/Imp.hs#L93)
   - Especially tests for the top-level `BBODY` or `LEDGERS` (also `UTXOS` or `UTXOW`) rules are interesting as they operate on a block or transaction level (the so-called "signal" to the rule is a block or transaction)
