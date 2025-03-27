@@ -11,11 +11,11 @@ This document serves as concrete API reference for the various N2C protocols and
 
 > Protocol version: V19
 
-Full mini-protocol state diagram:
-
 > [!WARNING]
-> TODO: move to network section and explain how to use in simpler terms here?
+> TODO: Explain how to use and relate state diagram to full protocol in [network](../network) chapter?
 
+<details>
+  <summary> Full mini-protocol state diagram</summary>
 
 ```mermaid
 stateDiagram
@@ -33,6 +33,7 @@ stateDiagram
 
 See also definition in [network spec](https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf#section.3.13).
 
+</details>
 
 Client-side view on the protocol[^1]:
 
@@ -78,23 +79,23 @@ To use the ledger state query API, a client needs to first specify at which poin
 > [!WARNING]
 > TODO: show how to acquire a point with an example CBOR message
 
-### Queries
+## Queries
 
 > [!WARNING]
 > TODO: Explain distinction between consensus and block queries here
 
-#### getSystemStart
+### getSystemStart
 
 _Since: v9_
 
-Query the chain's start time. The result is a `UTCTime` encoded as follows
+Query the chain's start time as a `UTCTime`.
 
 ```cddl
-msgQuery = [3, query]
-msgResult = [4, result]
+{{#include cddl/local-state-query.cddl:api}}
+```
 
-query = [1]
-result = time
+```cddl
+{{#include cddl/getSystemStart.cddl}}
 ```
 
 Example query:
@@ -118,7 +119,7 @@ Example response:
 > timeOfDayPico = bigint
 > ```
 
-#### getCurrentPParams
+### getCurrentPParams
 
 > [!WARNING]
 > TODO: Era-specific query with an involved answer

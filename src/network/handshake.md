@@ -120,3 +120,4 @@ And the node-to-client version:
 
 ```cddl
 {{#include specs/handshake-node-to-client.cddl}}
+```
