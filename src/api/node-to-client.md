@@ -9,7 +9,7 @@ This document serves as concrete API reference for the various N2C protocols and
 
 ## LocalStateQuery
 
-> Protocol version: 19
+> Protocol version: V19
 
 Full mini-protocol state diagram:
 
@@ -75,5 +75,51 @@ stateDiagram
 
 To use the ledger state query API, a client needs to first specify at which point on the chain the query should be executed. Depending on the server implementation, this point may only be within the "volatile" recent part of the chain. A typical practice is to acquire the tip of the chain, perform one or more queries and close the connection again.
 
+> [!WARNING]
+> TODO: show how to acquire a point with an example CBOR message
 
 ### Queries
+
+> [!WARNING]
+> TODO: Explain distinction between consensus and block queries here
+
+#### getSystemStart
+
+_Since: v9_
+
+Query the chain's start time. The result is a `UTCTime` encoded as follows
+
+```cddl
+msgQuery = [3, query]
+msgResult = [4, result]
+
+query = [1]
+result = time
+```
+
+Example query:
+
+```cbor
+82038101
+```
+
+Example response:
+
+```cbor
+8204c11b539f18ccc70a034a
+```
+
+> [!CAUTION]
+> FIXME: While I experimented in using the network / consensus cddl parts above, `time` would be defined in the CDDL prelude (a number, assuming seconds since epoch), but is actually incorrect and the result is serialized using `ToCBOR UTCTime` following this cddl:
+> ```cddl
+> time = [year, dayOfYear, timeOfDayPico]
+> year = bigint
+> dayOfYear = int
+> timeOfDayPico = bigint
+> ```
+
+#### getCurrentPParams
+
+> [!WARNING]
+> TODO: Era-specific query with an involved answer
+
