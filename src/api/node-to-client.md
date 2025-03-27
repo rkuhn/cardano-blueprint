@@ -101,13 +101,13 @@ Query the chain's start time as a `UTCTime`.
 Example query:
 
 ```cbor
-82038101
+{{#include examples/getSystemStart/query.cbor}}
 ```
 
 Example response:
 
 ```cbor
-8204c11b539f18ccc70a034a
+{{#include examples/getSystemStart/result.cbor}}
 ```
 
 > [!CAUTION]
