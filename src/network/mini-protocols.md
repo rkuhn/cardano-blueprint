@@ -1,4 +1,4 @@
-# Network: Mini-protocols
+# Mini-protocols
 
 The Cardano mini-protocols are a set of protocols that each provides a
 particular aspect of the communication between nodes (node-to-node or N2N) or

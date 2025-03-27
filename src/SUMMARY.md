@@ -10,7 +10,6 @@
     - [Chain validity](consensus/chainvalid.md)
     - [Chain selection](consensus/chainsel.md)
     - [Forging new blocks](consensus/forging.md)
-    - [Ledger queries](consensus/miniprotocols/ntc.md)
     - [Multi-era considerations](consensus/multiera.md)
   - [Storage](storage/README.md)
     - [Semantics of storage mini-protocols](storage/diffusion.md)
@@ -22,6 +21,8 @@
   - [Ledger](ledger/README.md)
     - [Transaction fee](ledger/transaction-fee.md)
     - [Block Validation](ledger/block-validation.md)
+  - [API reference]()
+    - [Node-To-Client (NTC)](api/node-to-client.md)
 
 ---
 

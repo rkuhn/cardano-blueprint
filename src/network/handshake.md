@@ -1,4 +1,4 @@
-# Network: Handshake mini-protocol
+# Handshake mini-protocol
 
 **Mini-protocol number: 0**
 
