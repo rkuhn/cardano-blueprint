@@ -1,4 +1,7 @@
-# <p align="center">Cardano Blueprint :blue_book: :triangular_ruler:</p>
+<div align="center">
+  <img src="logo/logo.svg"></img>
+  <h1>Cardano Blueprint</h1>
+</div>
 
 Welcome to the Cardano Blueprint, a project that aims to serve as a knowledge
 foundation about how the Cardano protocol works. Blueprints are implementation
@@ -65,3 +68,17 @@ more information on what is available for editing.
 [mdbook]: https://rust-lang.github.io/mdBook/index.html
 [gfm]: https://github.github.com/gfm/
 [nix]: https://nixos.org/download.html
+
+## License
+
+Cardano Blueprint created by [the Cardano Blueprint contributors](https://github.com/cardano-scaling/cardano-blueprint/graphs/contributors) is licensed under the [Apache 2.0 License](./LICENSE).
+
+## Logo
+
+The [logo and wordmark](./logo/README.md) for the Cardano Blueprint was created by Roberto Nicolo, Sebastian Nagel and Input Output Global Ltd. Obviously, the design is derived from the official Cardano logo and we hereby accept and intend to follow the [official trademark policy](https://www.cardanofoundation.org/policy/trademark-policy). Cardano Blueprint is NOT registered as a trademark, nor shall it represent a commercial product, but any artifacts produced are covered under an open source [license](./LICENSE).
+
+---
+
+<p align="center">
+Thanks for visiting and hopefully the cardano blueprint is useful to you 💙!
+</p>
