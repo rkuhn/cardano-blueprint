@@ -1,5 +1,5 @@
 query = 1
 result = [year, dayOfYear, timeOfDayPico]
-year = integer
+year = bigint
 dayOfYear = int
-timeOfDayPico = integer
+timeOfDayPico = bigint
