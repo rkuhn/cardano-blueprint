@@ -1,2 +1,5 @@
 query = 1
-result = time
+result = [year, dayOfYear, timeOfDayPico]
+year = integer
+dayOfYear = int
+timeOfDayPico = integer
