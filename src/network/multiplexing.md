@@ -1,4 +1,4 @@
-# Network: Multiplexing
+# Multiplexing
 
 The multiplexing layer is a simple binary protocol which runs on top of the
 raw connection (TCP or local socket) and provides:

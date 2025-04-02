@@ -1,4 +1,4 @@
-# Network: Handshake mini-protocol
+# Handshake mini-protocol
 
 **Mini-protocol number: 0**
 
@@ -120,3 +120,4 @@ And the node-to-client version:
 
 ```cddl
 {{#include specs/handshake-node-to-client.cddl}}
+```
