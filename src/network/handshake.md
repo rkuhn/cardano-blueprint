@@ -36,7 +36,7 @@ stateDiagram
 
 ### State transitions
 
-| From state | Message            | Parameters                     | to state  |
+| From state | Message            | Parameters                     | To state  |
 |:-----------|:-------------------|--------------------------------|:----------|
 | StPropose  | MsgProposeVersions | `versionTable`                 | StConfirm |
 | StConfirm  | MsgReplyVersion    | `versionTable`                 | End       |

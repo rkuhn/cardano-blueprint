@@ -28,7 +28,7 @@ block.
 > in another peer which has selected a different chain. Even in the case both
 > peers have the same selection, the existence in the mempool (or lack thereof)
 > of some other specific transaction that creates (or consumes) the inputs for
-> this one could lead to different veredicts on each peer.
+> this one could lead to different verdicts on each peer.
 
 While only nodes that forge new blocks will use these transactions to create
 blocks, non-block-producing nodes are still expected to diffuse transactions to

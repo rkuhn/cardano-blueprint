@@ -36,7 +36,7 @@ Creating or updating blueprints is the bread & butter of this project and anyone
 
 The bandwidth of possible contributions is very broad and can range from fixing typos via the `Suggest an edit` <i class="fa fa-edit"></i> button on the [rendered website](https://cardano-scaling.github.io/cardano-blueprint), over contributing a whole set of documents about how consensus works in Cardano, to including a conformance test suite.
 
-In fact, it's not even set in stone [what a blueprint is](https://cardano-scaling.github.io/cardano-blueprint/#what-is-a-blueprint) and we are gladly exploring any asset that you think covers our values and contributes to reaching the goal of the Cardano Blueprint initiative.
+In fact, it's not even set in stone [what a blueprint is](https://cardano-scaling.github.io/cardano-blueprint/#what-is-a-blueprint), and we are gladly exploring any asset that you think covers our values and contributes to reaching the goal of the Cardano Blueprint initiative.
 
 ### Creating a pull request
 

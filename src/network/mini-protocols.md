@@ -29,7 +29,7 @@ cases the initiator and responder take turns to have agency (send messages),
 but in some cases where one party must wait for a response, the other will
 keep agency and send a follow-up message later.
 
-We can draw this state machine in the standard way, with circles and arrows, but
+We can draw this state machine in the standard way using circles and arrows, but
 with the addition of an indicator of which side has agency. This one is for the
 minimal example mini-protocol, [Ping Pong]():
 
@@ -67,7 +67,7 @@ We can also show the transitions of the state machine as a table, and
 indicate what data is passed with each message, although Ping Pong
 doesn't carry any:
 
-| From state | Message | Parameters | to state |
+| From state | Message | Parameters | To state |
 |:-----------|:--------|------------|:---------|
 | StIdle     | MsgPing | -          | StBusy   |
 | StBusy     | MsgPong | -          | StIdle   |
