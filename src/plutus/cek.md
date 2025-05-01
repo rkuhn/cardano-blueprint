@@ -107,7 +107,7 @@ Explanation of the transition rules:
 9.  To evaluate a `case` expression, the machine pushes a frame onto the stack with a hole in place of the scrutinee.
     The frame also stores the branches, `𝑀⁎`, along with the current environment.
     It then proceeds to evaluate the scrutinee `𝑁`.
-10. A builtin function evalutaes to itself as it is already a value.
+10. A builtin function evaluates to itself as it is already a value.
 11. Evaluating `(error)` results in the machine terminating with a failure.
 12. When a value `𝑉` is returned to an empty stack, the machine terminates with success, yielding `𝑉` as final result.
 13. When a value `𝑉` is returned to a stack whose top frame represents an application with the hole in the function position, the frame is replaced with one where the function is `𝑉` and the hole is in the argument position.
