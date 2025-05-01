@@ -58,3 +58,4 @@ jobs:
           source-dir: ./dist
           umbrella-dir: pr-preview
           action: auto
+          token: ${{ secrets.PR_PREVIEW_TOKEN }}
