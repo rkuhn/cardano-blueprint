@@ -12,16 +12,16 @@ The following listing defines some key concepts of the CEK machine.
             | ⬥        // Throwing an error
             | ◻ 𝑉      // Final state with result 𝑉
 
-𝑠 ∈ Stack ::= 𝑓⁎  // A stack has zero or more stack frames
+𝑠 ∈ Stack ::= 𝑓*  // A stack has zero or more stack frames
 
 𝑉 ∈ CEK value ::= 〈con T 𝑐〉         // A constant 𝑐 with type T
                 | 〈delay 𝑀 𝜌〉      // A delayed computation, with an
                                    // associated environment
                 | 〈lam 𝑥 𝑀 𝜌〉      // A lambda abstraction, with an
                                    // associated environment
-                | 〈constr 𝑖 𝑉* 〉   // A constructor application, where
+                | 〈constr 𝑖 𝑉*〉   // A constructor application, where
                                    // all arguments are values
-                | 〈builtin 𝑏 𝑉⁎ 𝜂〉 // A builtin application with all supplied
+                | 〈builtin 𝑏 𝑉* 𝜂〉 // A builtin application with all supplied
                                    // arguments as values, and expecting
                                    // at least one more argument
 
@@ -38,11 +38,11 @@ The following listing defines some key concepts of the CEK machine.
                           // argument is a value
             | [𝑉 _]       // An application awaiting the argument, where the
                           // function is a value
-            | (constr 𝑖 𝑉⁎ _ (𝑀⁎, 𝜌))  // A constructor application awaiting
+            | (constr 𝑖 𝑉* _ (𝑀*, 𝜌))  // A constructor application awaiting
                                        // an argument. The arguments before
                                        // are values, and the arguments after
                                        // are terms to be evaluated.
-            | (case _ (𝑀⁎, 𝜌))        // A case expression awaiting the scrutinee
+            | (case _ (𝑀*, 𝜌))        // A case expression awaiting the scrutinee
 ```
 
 The CEK machine has two main kinds of states:
@@ -65,27 +65,27 @@ To evaluate a Plutus program containing a term `𝑀`, the machine starts from s
 | 4  | `𝑠; 𝜌 ⊳ (delay 𝑀)`   | `𝑠 ⊲ 〈delay 𝑀 𝜌〉` |  |
 | 5  | `𝑠; 𝜌 ⊳ (force 𝑀)`   | `(force _)⋅𝑠; 𝜌 ⊳ 𝑀` |  |
 | 6  | `𝑠; 𝜌 ⊳ [𝑀 𝑁]`   | `[_ (𝑁, 𝜌)]⋅𝑠; 𝜌 ⊳ 𝑀` |  |
-| 7  | `𝑠; 𝜌 ⊳ (constr 𝑖 𝑀⋅𝑀⁎)`   | `(constr 𝑖 _ (𝑀‾, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀` |  |
+| 7  | `𝑠; 𝜌 ⊳ (constr 𝑖 𝑀⋅𝑀*)`   | `(constr 𝑖 _ (𝑀‾, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀` |  |
 | 8  | `𝑠; 𝜌 ⊳ (constr 𝑖 [])`   | `𝑠 ⊲ 〈constr 𝑖 []〉` |  |
-| 9  | `𝑠; 𝜌 ⊳ (case 𝑁 𝑀⁎)` | `(case _ (𝑀⁎, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑁` | |
+| 9  | `𝑠; 𝜌 ⊳ (case 𝑁 𝑀*)` | `(case _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑁` | |
 | 10 | `𝑠; 𝜌 ⊳ (builtin 𝑏)` | `𝑠 ⊲ 〈builtin 𝑏 [] 𝛼(𝑏)〉` | |
 | 11 | `𝑠; 𝜌 ⊳ (error)` | `⬥` | |
 | 12 | `[] ⊲ 𝑉` | `◻𝑉` | |
 | 13 | `[_ (𝑀, 𝜌)]⋅𝑠 ⊲ 𝑉` | `[𝑉 _]⋅𝑠; 𝜌 ⊳ 𝑀` | |
 | 14 | `[〈lam 𝑥 𝑀 𝜌〉 _]⋅𝑠 ⊲ 𝑉` | `𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀` | |
 | 15 | `[_ 𝑉]⋅𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉` | `𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀` | |
-| 16 | `[〈builtin 𝑏 𝑉⁎ (𝜄⋅𝜂)〉 _]⋅𝑠 ⊲ 𝑉` | `𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉⁎) 𝜂〉` | `𝜄` is a term argument |
-| 17 | `[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉⁎ (𝜄⋅𝜂)〉` | `𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉⁎) 𝜂〉` | `𝜄` is a term argument |
-| 18 | `[〈builtin 𝑏 𝑉⁎ [𝜄]〉 _]⋅𝑠 ⊲ 𝑉` | `𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉⁎⋅𝑉)` | `𝜄` is a term argument |
-| 19 | `[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉⁎ [𝜄]〉` | `𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉⁎⋅𝑉)` | `𝜄` is a term argument |
+| 16 | `[〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉 _]⋅𝑠 ⊲ 𝑉` | `𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉` | `𝜄` is a term argument |
+| 17 | `[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉` | `𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉` | `𝜄` is a term argument |
+| 18 | `[〈builtin 𝑏 𝑉* [𝜄]〉 _]⋅𝑠 ⊲ 𝑉` | `𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)` | `𝜄` is a term argument |
+| 19 | `[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉` | `𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)` | `𝜄` is a term argument |
 | 20 | `(force _)⋅𝑠 ⊲ 〈delay 𝑀 𝜌〉` | `𝑠; 𝜌 ⊳ 𝑀` | |
-| 21 | `(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉⁎ (𝜄⋅𝜂)〉` | `𝑠 ⊲ 〈builtin 𝑏 𝑉⁎ 𝜂〉` | `𝜄` is a type argument |
-| 22 | `(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉⁎ [𝜄]〉` | `𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉⁎)` | `𝜄` is a type argument |
-| 23 | `(constr 𝑖 𝑉⁎ _ (𝑀⋅𝑀⁎, 𝜌))⋅𝑠 ⊲ 𝑉` | `(constr 𝑖 𝑉⁎⋅𝑉 _ (𝑀⁎, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀` | |
-| 24 | `(constr 𝑖 𝑉 _ ([], 𝜌))⋅𝑠 ⊲ 𝑉` | `𝑠 ⊲ 〈constr 𝑖 𝑉⁎⋅𝑉 〉` | |
+| 21 | `(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉` | `𝑠 ⊲ 〈builtin 𝑏 𝑉* 𝜂〉` | `𝜄` is a type argument |
+| 22 | `(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉` | `𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*)` | `𝜄` is a type argument |
+| 23 | `(constr 𝑖 𝑉* _ (𝑀⋅𝑀*, 𝜌))⋅𝑠 ⊲ 𝑉` | `(constr 𝑖 𝑉*⋅𝑉 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀` | |
+| 24 | `(constr 𝑖 𝑉 _ ([], 𝜌))⋅𝑠 ⊲ 𝑉` | `𝑠 ⊲ 〈constr 𝑖 𝑉*⋅𝑉 〉` | |
 | 25 | `(case _ (𝑀0 … 𝑀𝑛 , 𝜌))⋅𝑠 ⊲ 〈constr 𝑖 𝑉1 … 𝑉𝑚〉` | `[_ 𝑉𝑚]⋅⋯⋅[_ 𝑉1]⋅𝑠; 𝜌 ⊳ 𝑀𝑖` | `0 ≤ 𝑖 ≤ 𝑛` |
 
-In this table, `X⁎` denotes a list of `X`s.
+In this table, `X*` denotes a list of `X`s.
 The symbol `⋅` denotes either the cons or snoc operator on lists.
 
 Explanation of the transition rules:
@@ -105,9 +105,9 @@ Explanation of the transition rules:
    It then proceeds to evaluate the first argument `𝑀`.
 8. A nullary constructor evaluates to itself, as it is already a value.
 9.  To evaluate a `case` expression, the machine pushes a frame onto the stack with a hole in place of the scrutinee.
-    The frame also stores the branches, `𝑀⁎`, along with the current environment.
+    The frame also stores the branches, `𝑀*`, along with the current environment.
     It then proceeds to evaluate the scrutinee `𝑁`.
-10. A builtin function evalutaes to itself as it is already a value.
+10. A builtin function evaluates to itself as it is already a value.
 11. Evaluating `(error)` results in the machine terminating with a failure.
 12. When a value `𝑉` is returned to an empty stack, the machine terminates with success, yielding `𝑉` as final result.
 13. When a value `𝑉` is returned to a stack whose top frame represents an application with the hole in the function position, the frame is replaced with one where the function is `𝑉` and the hole is in the argument position.
