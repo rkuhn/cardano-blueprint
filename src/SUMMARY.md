@@ -21,6 +21,8 @@
   - [Ledger](ledger/README.md)
     - [Transaction fee](ledger/transaction-fee.md)
     - [Block Validation](ledger/block-validation.md)
+  - [Plutus](plutus/README.md)
+    - [The CEK Machine](plutus/cek.md)
   - [API reference]()
     - [Node-To-Client (NTC)](api/node-to-client.md)
 
