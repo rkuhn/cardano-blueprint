@@ -7,54 +7,56 @@ The production Haskell evaluator is based on the CEK machine, and it also provid
 The following listing defines some key concepts of the CEK machine.
 
 ```text
-Σ ∈ State ::= 𝑠; 𝜌 ⊳ 𝑀  // Computing M under environment 𝜌 with stack 𝑠
-            | 𝑠 ⊲ 𝑉     // Returning a value 𝑉 to stack 𝑠
-            | ⬥        // Throwing an error
-            | ◻ 𝑉      // Final state with result 𝑉
+Σ ∈ State ::= 𝑠; 𝜌 ⊳ 𝑀   Computing M under environment 𝜌 with stack 𝑠
+            | 𝑠 ⊲ 𝑉       Returning a value 𝑉 to stack 𝑠
+            | ⬥          Throwing an error
+            | ◻𝑉        Final state with result 𝑉
 
 𝑠 ∈ Stack ::= 𝑓*  // A stack has zero or more stack frames
 
-𝑉 ∈ CEK value ::= 〈con T 𝑐〉         // A constant 𝑐 with type T
-                | 〈delay 𝑀 𝜌〉      // A delayed computation, with an
-                                   // associated environment
-                | 〈lam 𝑥 𝑀 𝜌〉      // A lambda abstraction, with an
-                                   // associated environment
-                | 〈constr 𝑖 𝑉*〉   // A constructor application, where
-                                   // all arguments are values
-                | 〈builtin 𝑏 𝑉* 𝜂〉 // A builtin application with all supplied
-                                   // arguments as values, and expecting
-                                   // at least one more argument
+𝑉 ∈ CEK value ::= 〈con T 𝑐〉         A constant 𝑐 with type T
+                | 〈delay 𝑀 𝜌〉       A delayed computation, with an
+                                    associated environment
+                | 〈lam 𝑥 𝑀 𝜌〉       A lambda abstraction, with an
+                                    associated environment
+                | 〈constr 𝑖 𝑉*〉      A constructor application, where
+                                    all arguments are values
+                | 〈builtin 𝑏 𝑉* 𝜂〉  A builtin application with all supplied
+                                    arguments as values, and expecting
+                                    at least one more argument
 
-𝜌 ∈ Environment ::= []        // An empty environment
-                  | 𝜌[𝑥 ↦ 𝑉]  // Associate 𝑥 with 𝑉 in the environment
+𝜌 ∈ Environment ::= []        An empty environment
+                  | 𝜌[𝑥 ↦ 𝑉]  Associate 𝑥 with 𝑉 in the environment
 
 𝜂 ∈ Expected builtin arguments ::= [𝜄]  // One argument
                                  | 𝜄⋅𝜂  // Two or more arguments
 
-𝑓 ∈ Frame ::= (force _)    // Awaiting a delayed computation to be forced
-            | [_ (𝑀, 𝜌)]  // An application awaiting the function, where the
-                          // argument is a term associated with an environment
-            | [_ 𝑉]       // An application awaiting the function, where the
-                          // argument is a value
-            | [𝑉 _]       // An application awaiting the argument, where the
-                          // function is a value
-            | (constr 𝑖 𝑉* _ (𝑀*, 𝜌))  // A constructor application awaiting
-                                       // an argument. The arguments before
-                                       // are values, and the arguments after
-                                       // are terms to be evaluated.
-            | (case _ (𝑀*, 𝜌))        // A case expression awaiting the scrutinee
+𝑓 ∈ Frame ::= (force _)    Awaiting a delayed computation to be forced
+            | [_ (𝑀, 𝜌)]  An application awaiting the function, where the
+                           argument is a term associated with an environment
+            | [_ 𝑉]        An application awaiting the function, where the
+                           argument is a value
+            | [𝑉 _]        An application awaiting the argument, where the
+                           function is a value
+            | (constr 𝑖 𝑉* _ (𝑀*, 𝜌))  A constructor application awaiting
+                                       an argument. The arguments before the hole
+                                       are values, and the arguments after
+                                       are terms to be evaluated.
+            | (case _ (𝑀*, 𝜌))         A case expression awaiting the scrutinee
 ```
 
 The CEK machine has two main kinds of states:
 - `𝑠; 𝜌 ⊳ 𝑀` denotes evaluating term `𝑀` with environment `𝜌` and stack `𝑠`.
 - `𝑠 ⊲ 𝑉` denotes returning a value `𝑉` to stack `𝑠`.
 
-A value is a fully evaluated term, and an environment is a map binding variables to values.
+A value is a fully evaluated term, plus environments necessary for further computation.
+An environment is a map binding variables to values.
 A stack frame contains a hole to represent a pending value, and the context needed to continue evaluation once the value is received.
+A builtin argument `𝜄` is either a term or a type argument.
 
 To evaluate a Plutus program containing a term `𝑀`, the machine starts from state `[]; [] ⊳ 𝑀`, and based on the following transition table, proceeds as follows:
 - If the current CEK machine state matches the From State, and the associated condition (if exists) is met, then the CEK machine transitions into the To State.
-- If the machine arrives at state `◻𝑉`, the machine terminates with success, yielding `𝑉` as final result.
+- If the machine arrives at state `◻𝑉`, the machine terminates with success, yielding the Plutus term corresponding to `𝑉` (which is essentially `𝑉` but with the environments removed) as final result.
 - If the machine gets stuck (i.e., no rule applies) or arrives at state `⬥`, the evaluation terminates with a failure.
 
 |Rule|From State        |  To State        | Condition |
@@ -83,7 +85,7 @@ To evaluate a Plutus program containing a term `𝑀`, the machine starts from s
 | 22 | `(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉` | `𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*)` | `𝜄` is a type argument |
 | 23 | `(constr 𝑖 𝑉* _ (𝑀⋅𝑀*, 𝜌))⋅𝑠 ⊲ 𝑉` | `(constr 𝑖 𝑉*⋅𝑉 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀` | |
 | 24 | `(constr 𝑖 𝑉 _ ([], 𝜌))⋅𝑠 ⊲ 𝑉` | `𝑠 ⊲ 〈constr 𝑖 𝑉*⋅𝑉 〉` | |
-| 25 | `(case _ (𝑀0 … 𝑀𝑛 , 𝜌))⋅𝑠 ⊲ 〈constr 𝑖 𝑉1 … 𝑉𝑚〉` | `[_ 𝑉𝑚]⋅⋯⋅[_ 𝑉1]⋅𝑠; 𝜌 ⊳ 𝑀𝑖` | `0 ≤ 𝑖 ≤ 𝑛` |
+| 25 | `(case _ (𝑀₀ … 𝑀ₙ , 𝜌))⋅𝑠 ⊲ 〈constr 𝑖 𝑉₁ … 𝑉ₘ〉` | `[_ 𝑉ₘ]⋅⋯⋅[_ 𝑉₁]⋅𝑠; 𝜌 ⊳ 𝑀𝑖` | `0 ≤ 𝑖 ≤ 𝑛` |
 
 In this table, `X*` denotes a list of `X`s.
 The symbol `⋅` denotes either the cons or snoc operator on lists.
@@ -132,5 +134,5 @@ Explanation of the transition rules:
 23. When a value `𝑉` is returned to a stack whose top frame is a constructor application, with the hole in any argument position except the last (in other words, there is at least one more argument to be evaluated), the machine replaces the frame with one where the hole is moved to the next argument, and proceeds to evaluate the next argument `𝑀` in the captured environment.
 24. Like Rule 23, except that the hole is in the position of the last argument.
     In this case, all arguments have been evaluated, so the machine pops the frame and returns a `constr` value.
-25. If the returned value is a constructor application with index `𝑖`, and the top stack frame is a `case` frame, the machine will evaluate the `𝑖`th branch - `𝑀𝑖` - applied to arguments `𝑉𝑚 … 𝑉1` (it is important to note that arguments under `constr` are reversed when passing to a `case` branch - this is done for performance reasons).
-    To do so, it pops the frame, and pushes `𝑚` frames, each representing an application, with the top frame corresponding to `𝑉𝑚` (the first argument).
+25. If the returned value is a constructor application with index `𝑖`, and the top stack frame is a `case` frame, the machine will evaluate the `𝑖`th branch - `𝑀𝑖` - applied to arguments `𝑉ₘ … 𝑉₁` (it is important to note that arguments under `constr` are reversed when passing to a `case` branch - this is done for performance reasons).
+    To do so, it pops the frame, and pushes `m` frames, each representing an application, with the top frame corresponding to `𝑉ₘ` (the first argument).
