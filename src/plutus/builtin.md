@@ -1,1 +1,1 @@
-# Builtin Types and Functions
+# Built-in Types and Functions
