@@ -50,9 +50,4 @@ De Bruijn indices are used in serialized scripts.
 It therefore makes the most sense for a CEK machine implementation to use de Bruijn indices.
 
 When using de Bruijn indices, the binder `𝑥` in `(lam 𝑥 𝑀)` is irrelevant, and any number can be used.
-
-## The `data` Type
-
-We provide a built-in type, `data`, which permits the encoding of simple data structures
-for use as arguments to Plutus Core scripts.
-The Haskell definition of `data` can be found in [PlutusCore.Data](https://plutus.cardano.intersectmbo.org/haddock/latest/plutus-core/PlutusCore-Data.html#t:Data).
+0 is a good choice since it is not a valid de Bruijn index.
