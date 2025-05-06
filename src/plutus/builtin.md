@@ -5,31 +5,36 @@
 The listing below defines the built-in types in UPLC.
 
 ```text
-at ∈ Atomic type ::= integer
-                   | bytestring
-                   | string
-                   | bool
-                   | unit
-                   | data
-                   | 𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟷_𝚎𝚕𝚎𝚖𝚎𝚗𝚝
-                   | 𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟸_𝚎𝚕𝚎𝚖𝚎𝚗𝚝
-                   | 𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝚖𝚕𝚛𝚎𝚜𝚞𝚕𝚝
+a ∈ Atomic type ::= integer
+                  | bytestring
+                  | string
+                  | bool
+                  | unit
+                  | data
+                  | 𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟷_𝚎𝚕𝚎𝚖𝚎𝚗𝚝
+                  | 𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟸_𝚎𝚕𝚎𝚖𝚎𝚗𝚝
+                  | 𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝚖𝚕𝚛𝚎𝚜𝚞𝚕𝚝
 
-T ∈ Built-in type ::= at
+T ∈ Built-in type ::= a
                     | list(T)
                     | pair(T, T)
 ```
 
-The following table shows the denotations and concrete syntaxes of the types and type operators:
+The following table shows the values and concrete syntaxes of the types and type operators:
 
-|Type 𝑇|Denotation       |Concrete Syntax 𝐂(𝑇)  |
+|Type 𝑇|Value       |Concrete Syntax 𝐂(𝑇)  |
 |:--|:-----------------|:-----------------|
 |integer   | `ℤ` | `-?[0-9]+` |
-|bytestring| `𝔹*`, the set of sequences of bytes or 8-bit characters | `#([0-9A-Fa-f][0-9A-Fa-f])*` |
-|string    | `𝕌*`, the set of sequences of Unicode characters | see below |
+|bytestring| the set of sequences of bytes or 8-bit characters | `#([0-9A-Fa-f][0-9A-Fa-f])*` |
+|string    | the set of sequences of Unicode characters | see below |
 |bool      | `{true, false}` | `True \| False` |
 |unit      | `{()}` | `()` |
 |data      | see below | see below |
+|𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟷_𝚎𝚕𝚎𝚖𝚎𝚗𝚝| `𝐺₁` | `0x[0-9A-Fa-f]{96}` (see below) |
+|𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟸_𝚎𝚕𝚎𝚖𝚎𝚗𝚝| `𝐺₂` | `0x[0-9A-Fa-f]{192}` (see below) |
+|𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝚖𝚕𝚛𝚎𝚜𝚞𝚕𝚝| `𝐻` | see below |
+
+For the definitions of `𝐺₁`, `𝐺₂` and `𝐻`, refer to the Plutus Core Spec
 
 In the following, we use `𝑐(𝑇) ∈ 𝐂(𝑇)` to denote a valid representation of a constant of type 𝑇.
 
@@ -74,5 +79,15 @@ Some valid data constants are:
 - `(con data (List [(I 0), (I 1), (B #7FFF), (List []])))`
 - `(con data (I -22))`
 - `(con data (B #001A))`
+
+### Concrete syntax for BLS12-381 Types
+
+The concrete syntaxes for `𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟷_𝚎𝚕𝚎𝚖𝚎𝚗𝚝` and `𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟸_𝚎𝚕𝚎𝚖𝚎𝚗𝚝` are provided only for use in textual Plutus Core programs, for example for experimentation and testing.
+We do not support constants of any of the BLS12-381 types in serialised programs.
+
+If you need to put `𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟷_𝚎𝚕𝚎𝚖𝚎𝚗𝚝` and `𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝙶𝟸_𝚎𝚕𝚎𝚖𝚎𝚗𝚝` in your script, you can instead use the appropriate uncompression function on a bytestring constant.
+
+No concrete syntax is provided for values of type `𝚋𝚕𝚜𝟷𝟸_𝟹𝟾𝟷_𝚖𝚕𝚛𝚎𝚜𝚞𝚕𝚝`.
+It is not possible to parse such values, and they will appear as `(con bls12_381_mlresult <opaque>)` if output by a program.
 
 ## Built-in Functions

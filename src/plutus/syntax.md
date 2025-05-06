@@ -50,3 +50,4 @@ De Bruijn indices are used in serialized scripts.
 It therefore makes the most sense for a CEK machine implementation to use de Bruijn indices.
 
 When using de Bruijn indices, the binder `𝑥` in `(lam 𝑥 𝑀)` is irrelevant, and any number can be used.
+0 is a good choice since it is not a valid de Bruijn index.
