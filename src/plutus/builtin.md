@@ -43,7 +43,7 @@ Surrogate characters in the range `U+D800` - `U+DFFF` are replaced with the Unic
 
 A list of type `list(𝑡)` is written as a syntactic list `[𝑐₁, … ,𝑐ₙ]`, where each `𝑐ᵢ ∈ 𝐂(𝑡)`.
 
-A pair of type `pair(𝑡₁, 𝑡₂)` is written as a syntactic pair `(𝑐₁, 𝑐₂)` where `𝑐₁ ∈ 𝐂(𝑡₁)` and `𝑐2 ∈ 𝐂(𝑡₂)`.
+A pair of type `pair(𝑡₁, 𝑡₂)` is written as a syntactic pair `(𝑐₁, 𝑐₂)` where `𝑐₁ ∈ 𝐂(𝑡₁)` and `𝑐₂ ∈ 𝐂(𝑡₂)`.
 
 Some valid constant expressions are:
 - `(con (list integer) [11, 22, 33])`
