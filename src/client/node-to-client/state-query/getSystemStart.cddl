@@ -1,4 +1,4 @@
-$query /= 1
+$query /= [1]
 $result /= [year, dayOfYear, timeOfDayPico]
 
 year = bigint

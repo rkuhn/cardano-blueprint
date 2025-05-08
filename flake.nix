@@ -23,7 +23,6 @@
       rec {
         inherit inputs;
         legacyPackages = pkgs;
-
         defaultPackage = packages.mdbook;
         packages.mdbook = pkgs.stdenv.mkDerivation {
           name = "cardano-blueprint-book";
@@ -43,7 +42,10 @@
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [ packages.mdbook ];
-          buildInputs = formattingPkgs;
+          buildInputs = formattingPkgs ++ [
+            pkgs.cddl
+            pkgs.xxd
+          ];
         };
       }
     );

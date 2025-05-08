@@ -18,9 +18,6 @@ acquireFailurePointNotOnChain = 1
 failure      = acquireFailurePointTooOld
              / acquireFailurePointNotOnChain
 
-$query        = any
-$result       = any
-
 msgAcquire   = [0, point]
              / [8]
              / [10]
