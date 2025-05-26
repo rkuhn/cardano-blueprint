@@ -1,18 +1,9 @@
-# Node-To-Client (N2C)
-
-A cardano node may offer a client-facing API using the [network protocols](../network). This interface is slightly different than the Node-to-Node (N2N) style of communication as there is trust between peers and consequently behaves more like traditional client/server APIs.
-
-This document serves as concrete API reference for the various N2C protocols and currently only covers the local state query API.
-
-> [!NOTE]
-> The way to establish connections to an N2C server may differ from one implementation to another. The following sections assume that you have an established connection and negotiated a protocol version possibly through the [handshake protocol](../network/handshake.md).
-
-## LocalStateQuery
+# LocalStateQuery
 
 > Protocol version: V19
 
 > [!WARNING]
-> TODO: Explain how to use and relate state diagram to full protocol in [network](../network) chapter?
+> TODO: Explain how to use and relate state diagram to full protocol in [network](../../../../network) chapter?
 
 <details>
   <summary> Full mini-protocol state diagram</summary>
@@ -44,7 +35,7 @@ Client-side view on the protocol[^1]:
               ┌───────────────┐ MsgDone
        ╭─────▶│     Idle      ├────────▶ ○
        │      └───────┬───────┘
-       │   MsgAcquire │ 
+       │   MsgAcquire │
        │              ▼  ╭────────╮
        │      ┌──────────┴────┐   │ MsgReAcquire
        ╰──────┤   Acquired    │◀──╯
@@ -91,23 +82,23 @@ _Since: v9_
 Query the chain's start time as a `UTCTime`.
 
 ```cddl
-{{#include cddl/local-state-query.cddl:api}}
+{{#include ../../../cddl/node-to-client/state-query/messages.cddl:api}}
 ```
 
 ```cddl
-{{#include cddl/getSystemStart.cddl}}
+{{#include ../../../cddl/node-to-client/state-query/getSystemStart.cddl}}
 ```
 
 Example query:
 
 ```cbor
-{{#include examples/getSystemStart/query.cbor}}
+{{#include ../../../examples/getSystemStart/query.cbor}}
 ```
 
 Example response:
 
 ```cbor
-{{#include examples/getSystemStart/result.cbor}}
+{{#include ../../../examples/getSystemStart/result.cbor}}
 ```
 
 > [!CAUTION]
@@ -123,4 +114,3 @@ Example response:
 
 > [!WARNING]
 > TODO: Era-specific query with an involved answer
-
