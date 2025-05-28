@@ -1,28 +1,11 @@
 # Network
 
-The network layer of the Cardano protocol handles two aspects of communication:
+The network layer is responsible of implementing the Node-To-Node interface of a
+node, for transmitting data between nodes.
 
-* **Node-to-node** (N2N) - transmission of data between network nodes
-* **Node-to-client** (N2C) - integration of application clients to a single node
-
-```mermaid
-graph LR
-    A(Node)
-    B(Node)
-    C(Node)
-    X[Client]
-    Y[Client]
-    A <-->|N2N| C
-    A <-->|N2N| B
-    B <-->|N2N| C
-    X <-->|N2C| A
-    C <-->|N2C| Y
-```
-
-The network protocols consist of a [multiplexing
-layer](multiplexing.md) which carries one or more
-[mini-protocols](mini-protocols.md), according to the type of
-connection - for example:
+The network protocols consist of a [multiplexing layer](multiplexing.md) which
+carries one or more [mini-protocols](mini-protocols.md), according to the type
+of connection - for example:
 
 ```mermaid
 graph TB
@@ -37,42 +20,27 @@ graph TB
     BF <--> Mux
     Mux <--> Con
 ```
-### Shared mini-protocols
 
-These protocols are used in both N2N and N2C modes:
+> [!TIP]
 
-* [Handshake](handshake.md) - for connection and version negotiation
-* [Chain Synchronization]() - for synchronization of changes to the
-  Cardano chain[^chainsync]
+> Nodes usually have a server-client interface to provide information to local
+> clients. Such interface is up to the node implementation to decide which
+> protocols to use. It often times is convenient to group this interface under the
+> networking layer of a node but it is not mandatory. For more information see
+> [Server/Client interfaces](../server-client/README.md).
 
 ### Node-to-node mini-protocols
 
-These protocols are only used for node-to-node communication:
+> Current node-to-node protocol version: v14
 
-* [Block Fetch]() - for transferring chain blocks between nodes
-* [Transaction Submission]() - for propagating
-  transactions between nodes
-* [Keep Alive]() - for maintaining and measuring timing of
-  the connection
-* [Peer Sharing]() - for exchanging peer information to
-  create the peer-to-peer (P2P) network
+The set of Node-To-Node mini-protocols needed for participating in the Cardano
+network (combined by the multiplexing wrapper) is:
 
-### Node-to-client mini-protocols
-
-These protocols are only used for node-to-client communication:
-
-* [Local State Query]() - for querying ledger state
-* [Local Tx Submission]() - for submitting
-  transactions locally
-* [Local Tx Monitor]() - for monitoring transactions
-
-### Dummy mini-protocols
-
-These protocols are only used for testing and experimentation:
-
-* [Ping-Pong]() - a simple presence test
-* [Request-Response]() - a generic mechanism for
-  exchanging data
-
-[^chainsync]: ChainSync is shared between N2N and N2C, but shares full
-blocks in N2C as opposed to just headers in N2N
+* [Handshake](node-to-node/handshake) - for connection and version negotiation
+* [Chain Sync](node-to-node/chainsync) - for synchronization of changes to the
+  Cardano chain
+* [Block Fetch](node-to-node/blockfetch) - for transferring blocks between nodes
+* [TxSubmission2](node-to-node/txsubmission2) - for propagating transactions between nodes
+* [Keep Alive](node-to-node/keep-alive) - for maintaining and measuring timing of the connection
+* [Peer Sharing]() - for exchanging peer information to create the peer-to-peer
+  (P2P) network

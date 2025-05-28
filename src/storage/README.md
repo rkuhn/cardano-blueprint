@@ -69,13 +69,12 @@ Selection](../consensus/chainsel.md).
 > layers.
 
 Diffusion of chains is achieved by means of
-[`ChainSync`](../network/chainsync.md) and
-[`BlockFetch`](./network/blockfetch.md) mini-protocols.
+[`ChainSync`](../network/node-to-node/chainsync) and
+[`BlockFetch`](./network/node-to-node/blockfetch) mini-protocols.
 
 In a sense, the Storage layer has the data to provide the meaning of the
 messages in the mini-protocol whereas the networking layer describes the kinds
 of messages a protocol is composed by. It is possible to run an interaction of
 the protocol exchanging data that does not follow the intended semantics (for
 example an evil node sending all the chains it knows about instead of only the
-best selection). That's why we describe here when each message should be emitted
-and what information it should carry.
+best selection).

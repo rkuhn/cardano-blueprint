@@ -1,10 +1,9 @@
 # Mini-protocols
 
 The Cardano mini-protocols are a set of protocols that each provides a
-particular aspect of the communication between nodes (node-to-node or N2N) or
-between a node and an application client (node-to-client or N2C).  They
-run over a [multiplexer](multiplexing.md) which allows multiple mini-protocols
-to share the same underlying TCP or local socket connection.
+particular aspect of the communication between nodes (node-to-node or NTN).
+They run over a [multiplexer](multiplexing.md) which allows multiple
+mini-protocols to share the same underlying TCP or local socket connection.
 
 Each mini-protocol is represented by a state machine and a set of messages
 that can be passed between the parties.
@@ -75,13 +74,4 @@ doesn't carry any:
 
 ## Message formats
 
-The messages of the mini-protocols are encoded in
-[CBOR](https://cbor.io), a compact binary encoding of JSON.  The
-syntax of valid messages is expressed in CDDL ([Concise Data
-Definition Language](https://datatracker.ietf.org/doc/rfc8610/)).
-
-Here's the CDDL for the node-to-node handshake protocol:
-
-```cddl
-{{#include specs/handshake-node-to-node.cddl}}
-```
+The format of exchanged data is described in the [Codec basics](../codecs) section.

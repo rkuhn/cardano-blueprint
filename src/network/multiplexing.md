@@ -64,6 +64,8 @@ packet-beta
 
 All fields are network/big-endian byte order.
 
+The mini-protocol ID is fixed for each one of the NTN protocols. The section that describes each mini-protocol starts specifying the mini-protocol number.
+
 > [!WARNING]
 > How are multi-segment messages delimited? - there is no 'start of message'
 > flag or 'N of M' counter

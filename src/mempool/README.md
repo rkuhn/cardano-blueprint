@@ -42,7 +42,7 @@ distribute transactions.
 > However, it is conceivable for a node to store on disk the pending
 > transactions from its mempool.
 
-The [`TxSubmission2`](../network/txsubmission2.md) miniprotocol is the
+The [`TxSubmission2`](../network/node-to-node/txsubmission2) miniprotocol is the
 one used to diffuse the pending transactions through the network.
 
 To be able to diffuse transactions through `TxSubmission2` and to fulfill the
