@@ -4,7 +4,15 @@ implementations. Each vector consists of one transaction and a pair of "before"
 and "after" ledger states. Vectors are grouped into directories based on the
 unit test that generated the vector, and numbered sequentially.
 
-Test vectors were obtained by running [this](https://github.com/SundaeSwap-finance/cardano-ledger-conformance-tests/commit/34365e427e6507442fd8079ddece9f4a565bf1b9) fork of cardano-ledger.
+Test vectors were obtained by running [this](https://github.com/SundaeSwap-finance/cardano-ledger-conformance-tests/commit/34365e427e6507442fd8079ddece9f4a565bf1b9) fork of cardano-ledger:
+
+```
+git clone git@github.com:SundaeSwap-finance/cardano-ledger-conformance-tests.git
+cd cardano-ledger-conformance-tests
+git checkout 34365e427e6507442fd8079ddece9f4a565bf1b9
+cabal test cardano-ledger-conway
+tar czf vectors.tar.gz eras/conway/impl/dump/*
+```
 
 Ledger V9 tests were removed, as well as two tests (BodyRefScriptsSizeTooBig,
 TxRefScriptsSizeTooBig) that produced very large sequences of transactions
