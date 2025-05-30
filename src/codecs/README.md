@@ -1,5 +1,7 @@
 # Codec basics
 
+Common encoding format and binary interface description used across blueprints.
+
 ## CBOR
 
 TODO: justify the use of CBOR and briefly describe it. Mention `cbor2diag.rb`
