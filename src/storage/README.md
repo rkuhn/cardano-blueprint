@@ -2,8 +2,7 @@
 
 The Storage layer is responsible of storing the blocks on behalf of the
 Consensus layer. It is also involved in serving the data for [Chain
-diffusion](./diffusion.md).
-
+diffusion](#chain-diffusion).
 
 Some of this data is volatile and relates to the candidate chains and other data
 is immutable and relates to the historical chain, following the principle
@@ -44,7 +43,7 @@ It is interesting to note that the storage layer does not need to provide the
 Durability in the ACID acronym: upstream peers will always be available to
 replace any blocks a node loses.
 
-## Semantics of storage mini-protocols
+## Chain diffusion
 
 The mathematical model of the Ouroboros Consensus Protocols assumes
 instantaneous transmission (and validation) of chains, becoming instantly
@@ -70,7 +69,7 @@ Selection](../consensus/chainsel.md).
 
 Diffusion of chains is achieved by means of
 [`ChainSync`](../network/node-to-node/chainsync) and
-[`BlockFetch`](./network/node-to-node/blockfetch) mini-protocols.
+[`BlockFetch`](../network/node-to-node/blockfetch) mini-protocols.
 
 In a sense, the Storage layer has the data to provide the meaning of the
 messages in the mini-protocol whereas the networking layer describes the kinds

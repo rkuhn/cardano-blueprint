@@ -32,7 +32,7 @@ different tag for each one of the eras in the Cardano blockchain:
 ```
 
 These definitions are made available in the
-[`base.cddl`](https://github.com/cardano-scaling/cardano-blueprint/tree/main/src/codecs/base.cddl)
+[`base.cddl`](base.cddl)
 file which we will import qualified with `;# import base as base`.
 
 On the other side, Ledger CDDL specs are fully self-contained for each

@@ -8,7 +8,7 @@ upon explicit request from the client.
 
 The goal of `TxSubmission2` is to let other peers know about the transactions
 that the local node considers valid (with respects to the chain that the local
-node has selected in [Chain Selection](../consensus/chainsel.md) in the
+node has selected in [Chain Selection](../../../consensus/chainsel.md) in the
 consensus layer), and transmit such transactions if requested.
 
 An important piece of information is that transactions flow in the

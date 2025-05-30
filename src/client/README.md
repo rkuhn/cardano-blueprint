@@ -28,7 +28,7 @@ Below we present a table with clients and servers that implement each protocol:
 
 > [!NOTE]
 >
-> Please help us keep this list up-to-date by [suggesting an edit](https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/server-client/README.md).
+> Please help us keep this list up-to-date by [suggesting an edit](https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/client/README.md).
 
 [cardano-node]: https://github.com/IntersectMBO/cardano-node
 [cardano-cli]: https://github.com/IntersectMBO/cardano-cli

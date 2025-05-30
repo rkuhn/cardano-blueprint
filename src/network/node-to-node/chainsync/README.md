@@ -150,7 +150,7 @@ for the particular era:
 
 [network-design]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf
 [network-spec]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf
-[k-secparam]: ../../consensus/chainsel.md#the-k-security-parameter
+[k-secparam]: ../../../consensus/chainsel.md#the-k-security-parameter
 <!-- iohk.io links return 403 "if you are not a human" -->
 <!-- markdown-link-check-disable-next-line -->
 [pipelining]: https://iohk.io/en/blog/posts/2022/02/01/introducing-pipelining-cardanos-consensus-layer-scaling-solution/

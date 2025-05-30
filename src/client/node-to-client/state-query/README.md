@@ -3,7 +3,7 @@
 > Protocol version: V19
 
 > [!WARNING]
-> TODO: Explain how to use and relate state diagram to full protocol in [network](../../../../network) chapter?
+> TODO: Explain how to use and relate state diagram to full protocol in [network](../../../network) chapter?
 
 <details>
   <summary> Full mini-protocol state diagram</summary>
