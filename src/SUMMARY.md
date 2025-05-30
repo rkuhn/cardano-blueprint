@@ -9,7 +9,7 @@
     - [BlockFetch](network/node-to-node/blockfetch/README.md)
     - [TxSubmission2](network/node-to-node/txsubmission2/README.md)
     - [KeepAlive](network/node-to-node/keep-alive/README.md)
-    - [PeerSharing](network/node-to-node/peer-sharing/README.md)
+    - [PeerSharing]()
 - [Consensus](consensus/README.md)
   - [Chain validity](consensus/chainvalid.md)
   - [Chain selection](consensus/chainsel.md)
