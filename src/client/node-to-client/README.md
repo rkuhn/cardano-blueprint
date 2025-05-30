@@ -11,8 +11,8 @@ In particular, these mini-protocols will also be wrapped by a
 
 These mini-protocols are:
 
-- [Handshake](handshake): to negotiate the versions used in the connection,
-- [LocalTxSubmission](txsubmission2): to submit transactions to the network,
-- [LocalStateQuery](state-query/README.md): to query for information about the ledger state,
-- [TxMonitor](txmonitor): to monitor the status of transactions,
-- [LocalChainSync](chainsync): to retrieve chains of blocks from the node.
+- [Handshake](): to negotiate the versions used in the connection,
+- [LocalTxSubmission](): to submit transactions to the network,
+- [LocalStateQuery](state-query): to query for information about the ledger state,
+- [TxMonitor](): to monitor the status of transactions,
+- [LocalChainSync](): to retrieve chains of blocks from the node.

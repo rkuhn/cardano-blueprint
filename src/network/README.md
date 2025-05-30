@@ -23,11 +23,11 @@ graph TB
 
 > [!TIP]
 
-> Nodes usually have a server-client interface to provide information to local
+> Nodes usually have a separate interface to provide information to local
 > clients. Such interface is up to the node implementation to decide which
-> protocols to use. It often times is convenient to group this interface under the
-> networking layer of a node but it is not mandatory. For more information see
-> [Server/Client interfaces](../server-client/README.md).
+> protocols to use. It often times is convenient to group this interface under
+> the networking layer of a node but it is not mandatory. For more information
+> see [Client interfaces](../client).
 
 ### Node-to-node mini-protocols
 
