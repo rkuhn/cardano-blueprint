@@ -16,8 +16,8 @@ network as a whole.
 Because each node performs chain selection, the Cardano network acts as a
 forward-filtering diffusion network.
 
-The block headers come from [`ChainSync`](../storage/miniprotocols/chainsync.md) and
-the block bodies come from [`BlockFetch`](../storage/miniprotocols/blockfetch.md).
+The block headers come from [`ChainSync`](../network/node-to-node/chainsync) and
+the block bodies come from [`BlockFetch`](../network/node-to-node/blockfetch).
 
 > [!NOTE]
 >

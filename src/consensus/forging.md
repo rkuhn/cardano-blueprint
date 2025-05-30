@@ -38,7 +38,7 @@ valid block.
 >
 > To ensure the new block is actually valid, it could be fed into the [Chain
 > Selection](./chainsel.md) logic, which is expected to select it and then
-> [diffuse](../storage/diffusion.md) it via the usual mechanisms. This sanity
+> [diffuse](../storage/#chain-diffusion) it via the usual mechanisms. This sanity
 > check is not a hard requirement but it is advised to be implemented. If not
 > even the node that created the block can adopt it, sending such block to the
 > network would be useless.

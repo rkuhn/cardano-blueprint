@@ -1,5 +1,7 @@
 # ChainSync
 
+**Mini-protocol number: 2**
+
 `ChainSync` is the miniprotocol used to transmit chains of headers. It is a
 pull-based miniprotocol: data is transmitted only upon explicit request from the
 client.
@@ -25,8 +27,56 @@ actions considered as misbehaviour are (not exclusively):
 >
 > TODO: Make this list exhaustive
 
-The specification of the state machine of `ChainSync` is described in the
-Network documentation ([design][network-design] and [spec][network-spec]).
+## State machine
+
+The state machine for ChainSync is as follows:
+
+```mermaid
+stateDiagram
+    direction LR
+    [*] --> StIdle
+    StIdle --> [*]: MsgDone
+    StIdle --> StIntersect: MsgFindIntersect
+    StIdle --> StCanAwait: MsgRequestNext
+    StIntersect --> StIdle: MsgIntersectNotFound
+    StIntersect --> StIdle: MsgIntersectFound
+    StCanAwait --> StIdle: MsgRollForward
+    StCanAwait --> StIdle: MsgRollBackward
+    StCanAwait --> StMustReply: MsgAwaitReply
+    StMustReply --> StIdle: MsgRollForward
+    StMustReply --> StIdle: MsgRollBackward
+
+    classDef initiator color:#080
+    classDef responder color:#008, text-decoration: underline
+    class StIdle initiator
+    class StCanAwait responder
+    class StIntersect responder
+    class StMustReply responder
+```
+
+### State agencies
+
+| State       | Agency                                                              |
+|:------------|:--------------------------------------------------------------------|
+| StIdle      | <span style="color:#080">Initiator</span>                           |
+| StIntersect | <span style="color:#008;text-decoration:underline">Responder</span> |
+| StCanAwait  | <span style="color:#008;text-decoration:underline">Responder</span> |
+| StMustReply | <span style="color:#008;text-decoration:underline">Responder</span> |
+
+### State transitions
+
+| From state  | Message              | Parameters               | To state    |
+|:------------|:---------------------|--------------------------|:------------|
+| StIdle      | MsgRequestNext       |                          | StCanAwait  |
+| StIdle      | MsgFindIntersect     | `[point]`                | StIntersect |
+| StIdle      | MsgDone              |                          | End         |
+| StCanAwait  | MsgAwaitReply        |                          | StMustReply |
+| StCanAwait  | MsgRollForward       | `header`, `tip`          | StIdle      |
+| StCanAwait  | MsgRollBackward      | `point_old`, `tip`       | StIdle      |
+| StMustReply | MsgRollForward       | `header`, `tip`          | StIdle      |
+| StMustReply | MsgRollBackward      | `point_old`, `tip`       | StIdle      |
+| StIntersect | MsgIntersectFound    | `point_intersect`, `tip` | StIdle      |
+| StIntersect | MsgIntersectNotFound | `tip`                    | StIdle      |
 
 ## ChainSync pipelining or pipelined diffusion
 
@@ -83,17 +133,24 @@ for announcing such rollbacks to clients and following rollbacks of servers.
 
 ## Codecs
 
-The headers sent through `ChainSync` on the Cardano network are tagged with the
-index of the era they belong to. The serialization of the header proper is its
-CBOR-in-CBOR representation.
+The messages depicted in the state machine follow this CDDL specification:
 
+```cddl
+;; messages.cddl
+{{#include messages.cddl}}
 ```
-serialise header = <era tag><cbor-in-cbor of header>
+
+The header is a tag-encoded value that contains CBOR-in-CBOR headers
+for the particular era:
+
+```cddl
+;; header.cddl
+{{#include header.cddl}}
 ```
 
 [network-design]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf
 [network-spec]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf
-[k-secparam]: ../../consensus/chainsel.md#the-k-security-parameter
+[k-secparam]: ../../../consensus/chainsel.md#the-k-security-parameter
 <!-- iohk.io links return 403 "if you are not a human" -->
 <!-- markdown-link-check-disable-next-line -->
 [pipelining]: https://iohk.io/en/blog/posts/2022/02/01/introducing-pipelining-cardanos-consensus-layer-scaling-solution/

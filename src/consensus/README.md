@@ -27,8 +27,6 @@ flowchart TD
     NTN2 --> N4("Node")
     NTN2 --> N5("Node")
 
-    NTC <--> CL("Client (e.g. wallet)")
-
     subgraph "Node";
       subgraph NTN1 ["Network NTN (upstream)"];
           M1("ChainSync")
@@ -51,12 +49,6 @@ flowchart TD
       A("Consensus") <--> |apply blocks| C("Ledger")
       A("Consensus") <-->|transactions snapshot| G("Mempool")
       G --> |transactions| N3
-      G <--> |transactions| O2
-      A("Consensus") <-->|state queries| O1
-      subgraph NTC [Network NTC];
-          O1("LocalStateQuery")
-          O2("TxSubmission2")
-      end
 
     end
 ```
@@ -150,15 +142,15 @@ resource draining attacks.
 So the design at this stage involves transmitting chains of headers rather than
 whole blocks, and using a secondary mechanism to download block bodies of
 interest. This gives the reason why
-[`ChainSync`](../storage/miniprotocols/chainsync.md) and
-[`BlockFetch`](../storage/miniprotocols/blockfetch.md) are separate protocols.
+[`ChainSync`](../network/node-to-node/chainsync) and
+[`BlockFetch`](../network/node-to-node/blockfetch) are separate protocols.
 The Consensus chain selection can look only at chains of block headers, whereas
 the validity check of the block body can be performed by the Ledger rules,
 effectively separating concerns.
 
 ## Mini-protocols
 
-The mini-protocols mentioned in this chapter of the book are one of the possible
+The mini-protocols mentioned in the neworking chapter are one of the possible
 mechanisms used for data difussion. The [Networking design
 document][network-design] has many more insights on why these protocols were
 implemented, and how they differ from other off-the-shelf mechanisms.

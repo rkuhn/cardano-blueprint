@@ -1,4 +1,4 @@
-# The ChainDB format
+# `cardano-node`'s ChainDB
 
 In the Haskell reference implementation, the Storage layer manages a `ChainDB`,
 whose storage components are the Immutable Database, Volatile Database and
@@ -83,10 +83,11 @@ TODO explain NestedCtxt, Header, Block, the Hard Fork Block, chunks, primary and
 
 ## `volatile`
 
-Contains blocks that form the current selection of the node (i.e. the best chain
-it knows about) and other blocks (both connected or disconnected from the
-selected chain) but whose slot number is greater than the `k`-th block in the
-current selection (so they might belong to a fork less than `k` blocks deep).
+Contains blocks that form the current selection of the node (i.e. the
+best chain it knows about) and other blocks (both connected or
+disconnected from the selected chain) but whose slot number is greater
+than the `k`-th block in the current selection (so they only can
+belong to the selection or a fork less than `k` blocks deep).
 
 TODO describe the format in which the blocks are stored
 
@@ -97,8 +98,20 @@ recent immutable block, but since snapshots are taken periodically (due to their
 cost), it may be an older block. Snapshots are named after the slot number of
 the block when they were taken.
 
-The snapshot is a file containing a CBOR-encoded Extended Ledger State. The
-_Extended Ledger State_ is a combination of the Chain State (used by the
-protocol used in such era) and the Ledger State.
+The ledger state snapshots are composed of two parts: the UTxO set and
+the rest of the LedgerState. The latter is stored as a CBOR-encoded
+blob in the file `<slotno>/state`. The former however, depends on
+which backend was being used by the node taking the snapshot:
 
-Coming soon: UTxO-HD
+| Backend    | <slotno>/tables                                               |
+|:-----------|---------------------------------------------------------------|
+| V2InMemory | a file `tvar` containing the CBOR-encoded UTxO set            |
+| V1LMDB     | a file `data.mdb` of an LMDB database contianing the UTxO set |
+
+There is also a file `<slotno>/meta` that contains a string
+identifying the backend used, and a checksum of the stored files for
+checking consistency and detect hardware corruptions.
+
+Conversion among backends is also provided by [the
+`snapshot-converter`
+tool](https://github.com/IntersectMBO/ouroboros-consensus/tree/main/ouroboros-consensus-cardano/app/snapshot-converter.hs).
