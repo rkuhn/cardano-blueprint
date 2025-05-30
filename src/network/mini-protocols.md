@@ -74,4 +74,8 @@ doesn't carry any:
 
 ## Message formats
 
-The format of exchanged data is described in the [Codec basics](../codecs) section.
+The messages of the mini-protocols are encoded in [CBOR](https://cbor.io), a
+compact binary encoding of JSON, while the schema of valid messages is expressed
+in CDDL ([Concise Data Definition
+Language](https://datatracker.ietf.org/doc/rfc8610/)). See [Codec
+basics](../codecs) for more details.
