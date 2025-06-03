@@ -26,6 +26,7 @@
   - [Syntax](plutus/syntax.md)
   - [Builtin Types and Functions](plutus/builtin.md)
   - [The CEK Machine](plutus/cek.md)
+  - [Serialization](plutus/serialization.md)
 - [Client interfaces](client/README.md)
   - [NTC](client/node-to-client/README.md)
     - [Handshake]()
