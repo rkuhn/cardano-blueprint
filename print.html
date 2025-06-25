@@ -3729,6 +3729,7 @@ EUC[EraRule UTXOW Conway]
                 utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
                 utxoTransition --&gt; validateMaxTxSizeUTxO(Shelley.vallidateMaxTxSizeUTxO)
                 utxoTransition --&gt; validateExUnitsTooBigUTxO(Alonzo.validateExUnitsTooBigUTxO)
+                utxoTransition --&gt; validateTooManyCollateralInputs(Alonzo.validateTooManyCollateralInputs)
                 utxoTransition --&gt; EUTXOSC[EraRule UTXOS Conway]
                     EUTXOSC --&gt; utxosTransition
                 utxosTransition --&gt; isValidTxL{isValidTxL}
@@ -3881,6 +3882,7 @@ EUC[EraRule UTXOW Conway]
                                         utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
                                         utxoTransition --&gt; validateMaxTxSizeUTxO(Shelley.vallidateMaxTxSizeUTxO)
                                         utxoTransition --&gt; validateExUnitsTooBigUTxO(Alonzo.validateExUnitsTooBigUTxO)
+                                        utxoTransition --&gt; validateTooManyCollateralInputs(Alonzo.validateTooManyCollateralInputs)
                                         utxoTransition --&gt; EUTXOSC[EraRule UTXOS Conway]
                                             EUTXOSC --&gt; utxosTransition
                                                 utxosTransition --&gt; isValidTxL{isValidTxL}
