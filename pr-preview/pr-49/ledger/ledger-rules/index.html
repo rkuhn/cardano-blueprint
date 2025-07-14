@@ -241,8 +241,10 @@
 
 </style>
 <h1 id="ledger-rules"><a class="header" href="#ledger-rules">Ledger Rules</a></h1>
-<p>This section details the ledger rules used in Cardano and, especially, some of the potential “foot guns” one could run into when implementing these rules. Those “foot guns” could be discrepencies between the specification and the ledger, some undefined behavior, or a bug that was fixed at some point, but is still relevant for syncing historical data.</p>
-<p>It is an ongoing work in progress, being updated periodically in paralel with the work happening to build Amaru.</p>
+<p>This section details the ledger rules used in Cardano and, especially, some of the potential “land mines” one could run into when implementing these rules.</p>
+<p>The ledger rules will be organized in a potentially unique way. Instead of grouping them based on inference rules defined in the <a href="https://intersectmbo.github.io/formal-ledger-specifications/cardano-ledger.pdf">Cardano Ledger Specification</a> or some arbitrary implementation of said specification, they are grouped based on their responsibility throughout the validation process. For example, “Witness Validation” contains several rules related to validating the transaction witness set.</p>
+<h2 id="what-is-a-land-mine"><a class="header" href="#what-is-a-land-mine">What is a “Land Mine”?</a></h2>
+<p>In this context, a “Land Mine” is a part of the ledger rules that could cause confusion or are easy to get wrong. This could be a discrepency between the Haskell implementation and the formal specification (A bug or otherwise), some unintended behavior that resulted from an edge case that was not considered during initial implementation, or simply something that caused an issue for some alternative node implementors, and therefore should be documented for the future implementors.</p>
 
                     </main>
 

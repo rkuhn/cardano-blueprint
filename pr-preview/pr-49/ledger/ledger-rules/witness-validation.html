@@ -241,9 +241,25 @@
 
 </style>
 <h1 id="witness-validation"><a class="header" href="#witness-validation">Witness Validation</a></h1>
-<p>TODO: provide a description of the ledger rules relevant to this domain specific concept.</p>
-<h2 id="footgun-1-bootstrap-witnesses"><a class="header" href="#footgun-1-bootstrap-witnesses">Footgun #1: Bootstrap Witnesses</a></h2>
-<p>Alonzo introduced a <a href="https://github.com/IntersectMBO/cardano-ledger/blob/d71d7923a79cfcde8cac0b5db399a5427524d06a/eras/allegra/impl/cddl-files/allegra.cddl#L314-L319"><code>bootstrap_witness</code></a>, which is a different structure for witnesses from a bootstrap address. One would, perhaps reasonably, assume that all witnesses from bootstrap addresses would be provided in this list. However, that is not an assumption that can be made.</p>
+<h3 id="key-definitions"><a class="header" href="#key-definitions">Key Definitions</a></h3>
+<p><strong><code>Witness</code></strong>: A witness is a piece of data that allows you to verify the authenticity of the transaction. There are many different witness types, depending on what the transaction requires, such as vkey witnesses, bootstrap witnesses, and script witnesses.</p>
+<p><strong><code>Vkey Witness</code></strong>: A vkey witness is a specific witness type. It is used to verify that the transaction has the authority to consume a UTxO(s) locked at the assosciated <code>pkh</code> address. It includes the signature and the vkey (instead of the key hash, which is encoded in the address).</p>
+<p><strong><code>Bootstrap Witness</code></strong>: A bootstrap witness is a specific witness type. It is used to verify that the transaction has the authority to consume a UTxO(s) locked at the associated Byron-era address. It includes the assosciated public key, the signature, the 32 byte chain code, and a set of attributes encoded in the address.</p>
+<p><em>TODO: script witnesses</em></p>
+<h3 id="process"><a class="header" href="#process">Process</a></h3>
+<p>Witness validation is the process of validating that all witnesses are:</p>
+<ol>
+<li>Valid signatures given the tranasaction hash and the provided public key.</li>
+<li>Present if required by the transaction. There cannot be any missing witnesses.</li>
+<li><em>TODO: script witness validation</em></li>
+</ol>
+<p>The process of witness validation is described in section 12.2 of the <a href="https://intersectmbo.github.io/formal-ledger-specifications/cardano-ledger.pdf">Cardano Ledger Specification</a>, in the UTXOW inference rules.</p>
+<p><em>TODO: provide links to the relevent sections of code in Amaru and Haskell node</em></p>
+<h2 id="land-mine-1-bootstrap-witnesses"><a class="header" href="#land-mine-1-bootstrap-witnesses">“Land Mine” #1: Bootstrap Witnesses</a></h2>
+<h3 id="context"><a class="header" href="#context">Context</a></h3>
+<p>After Shelley introduced the <a href="https://github.com/IntersectMBO/cardano-ledger/blob/d71d7923a79cfcde8cac0b5db399a5427524d06a/eras/shelley/impl/cddl-files/shelley.cddl#L296-L301"><code>bootstrap_witness</code></a> field to the <code>transaction_witness_set</code>. One may reasonably assume that if a Byron-era address is present, the assosciated witness would be found in the <code>bootstrap_witness</code> field. However, it is possible to construct a valid transaction such that it includes a Byron-era address, but the <code>bootstrap_witness</code> field is an empty list.</p>
+<h3 id="solution"><a class="header" href="#solution">Solution</a></h3>
+<p>A node must consider the set of bootstrap root hashes and vkey hashes together when validating that there are no missing required witnesses, instead of isolating the handling of bootstrap addresses and <code>BootstrapWitness</code>es from shelley-era addresses and <code>VkeyWitness</code>es.</p>
 <h3 id="example-0c22edee0ffd7c8f32d2fe4da1f144e9ef78dfb51e1678d5198493a83d6cf8ec"><a class="header" href="#example-0c22edee0ffd7c8f32d2fe4da1f144e9ef78dfb51e1678d5198493a83d6cf8ec">Example: <code>0c22edee0ffd7c8f32d2fe4da1f144e9ef78dfb51e1678d5198493a83d6cf8ec</code></a></h3>
 <p>Consider the following <a href="https://preprod.cexplorer.io/tx/0c22edee0ffd7c8f32d2fe4da1f144e9ef78dfb51e1678d5198493a83d6cf8ec">transaction</a> on Preprod. In JSON, it looks like this:</p>
 <pre><code class="language-json">{
@@ -297,7 +313,7 @@
   "cbor": "84a300828258204a0f0fd2ea2e91b34065e3085448b211afdcf72f9db0b2d74d1f99246e16c860018258209157ee358b91c319a2e9dd087fe612d1c3d72d34fa4104bec13c8d37fd40b85401018282582e82d818582483581c533bcb8dad5fc8049f5d43974bdc21d637f5b73d6120237303ca6843a1024101001a63bbc5a61a0049bbfb82581d60533bcb8dad5fc8049f5d43974bdc21d637f5b73d6120237303ca68431a004c4b40021a00028f45a10081825820b1ef2a278ebe7cfd563c30f1bb642fb6b5616e040792527e6cd58f119895d65758404110259fb4433f462512d6fa69958070f9e365831962744e7e2e7a2f6a721a707ec4f213ff736fcc195490254dc9d22e0fe0552ae1781b965fc4d05bd5ebb304f5f6"
 }
 </code></pre>
-<p>Notably, there is only one signature, and it is not in the form of a bootstrap witness. If we look at the logic that collects vkey hashes that must be present in the witness set (<a href="https://github.com/IntersectMBO/cardano-ledger/blob/d71d7923a79cfcde8cac0b5db399a5427524d06a/eras/shelley/impl/src/Cardano/Ledger/Shelley/UTxO.hs#L226-L249"><code>getShelleyWitsVkeyNeededNoGov</code></a>), we can understand why.</p>
+<p>Notably, there is only one signature, and it is a <code>VkeyWitness</code>. Examining the logic that collects required key hashes (<a href="https://github.com/IntersectMBO/cardano-ledger/blob/d71d7923a79cfcde8cac0b5db399a5427524d06a/eras/shelley/impl/src/Cardano/Ledger/Shelley/UTxO.hs#L226-L249"><code>getShelleyWitsVkeyNeededNoGov</code></a>), the reason becomes apparent:</p>
 <pre><code class="language-hs">inputAuthors :: Set (KeyHash 'Witness)
 inputAuthors = foldr' accum Set.empty (txBody ^. spendableInputsTxBodyF)
   where
@@ -311,8 +327,15 @@ inputAuthors = foldr' accum Set.empty (txBody ^. spendableInputsTxBodyF)
             _ -&gt; ans
         Nothing -&gt; ans
 </code></pre>
-<p>Bootstrap witnesses and vkey witnesses are combined in the same set, since they are both just hash digests of the same size. That means, if one were to construct a bootstrap address with a payload containing only the keyhash, the validation would pass with a regular vkey witness, instead of a bootstrap witness.</p>
-<p>The witnesses themselves are valdiated in isolation–just that they are valid signatures on the required data–so the presence of a boostrap address does not necessarily require the presence of a bootstrap witness.</p>
+<p>The Haskell node is inserting hashes from both <code>AddrBootstrap</code> and <code>Addr</code> into the same set, since they are both just hash digests of the same size. The hash digest inserted in the case of an <code>AddrBootstrap</code> is the bytes that are found at the first field of the <code>BYRON_ADDRESS_PAYLOAD</code>. In theory, this is the digest of the <code>blake2b_224(sha3_256(BYRON_ADDRESS_ROOT))</code> and that should never be the same digest as a <code>Addr</code> vkey hash digest, so there would be no complexity introduced here. However one could, and clearly did, manually construct a Byron-era address where the bytes that are suppose to be the digest of the <code>BYRON_ADDRESS_ROOT</code> are instead the digest of a vkey. In that case, a vkey witness present with the assosciated public key would satifsy the required witness, even though that requirement came from an Byron-era bootstrap address.</p>
+<div class="mdbook-alerts mdbook-alerts-tip">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  tip
+</p>
+<p>The provided solution already handles this case, but it’s worth noting that this could, theoretically, also apply the other direction. If one were to construct a shelley era address where the payment part is the digest of some <code>BYRON_ADDRESS_ROOT</code> instead of a verification key, they could have a <code>BootstrapWitness</code> present instead of a <code>VkeyWitness</code>.
+Author’s note: I only just thought of this case while writing up this information and haven’t verified that it’s true. But, off the top of my head, there is no reason this wouldn’t be the case.</p>
+</div>
 
                     </main>
 
