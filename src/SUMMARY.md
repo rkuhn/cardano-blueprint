@@ -21,7 +21,6 @@
 - [Ledger](ledger/README.md)
   - [Transaction fee](ledger/transaction-fee.md)
   - [Block Validation](ledger/block-validation.md)
-  - [CDDL Specs](ledger/cddls.md)
 - [Plutus](plutus/README.md)
   - [Syntax](plutus/syntax.md)
   - [Builtin Types and Functions](plutus/builtin.md)
