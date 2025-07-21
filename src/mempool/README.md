@@ -1,5 +1,10 @@
 # Mempool
 
+> [!WARNING]
+>
+> This blueprint is a work in progress.
+> See also [Resources](#resources)
+
 In Cardano, for blocks to have useful data, they have to contain transactions,
 which are codifications of operations on the Ledger state that only some
 authorized actors can enact. Notice that such transactions are what makes up the
@@ -82,3 +87,7 @@ original transaction is the one that will be forwarded to other peers, i.e. the
 > [!WARNING]
 >
 > TODO: describe fairness and what should mempools do in this regard.
+
+## Resources
+
+- [Technical report: Cardano Consensus and Storage Layer](https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf): Documentation of the Haskell implementation of consensus components

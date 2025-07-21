@@ -1,14 +1,15 @@
-# The Consensus Layer
+# Consensus
+
+> [!WARNING]
+>
+> This blueprint is a work in progress.
+> See also [Resources](#resources)
 
 This document describes the components of the Consensus layer of a Cardano node,
 serving as a reference for Cardano developers who want to implement a node or
 interact with the Consensus layer of an existing implementation. We strive to
 provide implementation-agnostic requirements and responsibilities for the
 Consensus layer.
-
-> [!WARNING]
->
-> This document is a work in progress.
 
 The Consensus Layer runs the Consensus Protocol and invokes the [Ledger
 layer](../ledger) to validate chains produced according to the
@@ -214,6 +215,13 @@ that the ledger keeps track of. This information is referred to as _ledger
 view_. We require not just that the ledger can provide a view of the current
 ledger state but also that it can predict what view will be for slots in the
 near future.
+
+
+## Resources
+
+- [Technical report: Data Diffusion and Network][network-design]: Original design document of the peer-to-peer network protocols and diffusion semantics
+- [Technical report: Cardano Consensus and Storage Layer](https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf): Documentation of the Haskell implementation of consensus components
+- [Website: ouroboros-consensus > For Developers](https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers): Collection of developer articles on the Haskell implementation of consensus components
 
 [feature-table]: https://github.com/cardano-foundation/CIPs/blob/master/CIP-0059/feature-table.md
 [network-design]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf

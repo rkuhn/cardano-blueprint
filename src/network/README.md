@@ -1,5 +1,10 @@
 # Network
 
+> [!WARNING]
+>
+> This blueprint is a work in progress.
+> See also [Resources](#resources)
+
 The network layer is responsible of implementing the Node-To-Node interface of a
 node, for transmitting data between nodes.
 
@@ -29,7 +34,7 @@ graph TB
 > the networking layer of a node but it is not mandatory. For more information
 > see [Client interfaces](../client).
 
-### Node-to-node mini-protocols
+## Node-to-node mini-protocols
 
 > Current node-to-node protocol version: v14
 
@@ -44,3 +49,10 @@ network (combined by the multiplexing wrapper) is:
 * [Keep Alive](node-to-node/keep-alive) - for maintaining and measuring timing of the connection
 * [Peer Sharing]() - for exchanging peer information to create the peer-to-peer
   (P2P) network
+
+
+## Resources
+
+- [Technical report: Data Diffusion and Network](https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf): Original design document of the peer-to-peer network protocols and diffusion semantics
+- [Ouroboros Network Specification](https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf): Document generated from the Haskell implementation of the Cardano network stack. Contains definitions of all mini-protocols and some documentation the connection management. 
+
