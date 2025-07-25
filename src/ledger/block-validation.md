@@ -1,7 +1,7 @@
 # Ledger: Block Validation
 
 Block validation is the process of applying a set of ledger rules to a candidate block before adding it to the blockchain and updating the state of the ledger.
-Each [era](../consensus/README.md#multi-era-considerations) has it's own set of rules for block validation.
+Each [era](../consensus/multiera.md) has it's own set of rules for block validation.
 
 > [!NOTE]
 > TODO: Write a full introduction here with relevant terminology and concepts defined.

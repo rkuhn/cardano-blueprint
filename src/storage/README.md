@@ -1,4 +1,9 @@
-# The Storage Layer
+# Storage
+
+> [!WARNING]
+>
+> This blueprint is a work in progress.
+> See also [Resources](#resources)
 
 The Storage layer is responsible of storing the blocks on behalf of the
 Consensus layer. It is also involved in serving the data for [Chain
@@ -77,3 +82,8 @@ of messages a protocol is composed by. It is possible to run an interaction of
 the protocol exchanging data that does not follow the intended semantics (for
 example an evil node sending all the chains it knows about instead of only the
 best selection).
+
+## Resources
+
+- [Technical report: Cardano Consensus and Storage Layer](https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf): Documentation of the Haskell implementation of consensus components
+- [Website: ouroboros-consensus > For Developers](https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers): Collection of developer articles on the Haskell implementation of consensus components
