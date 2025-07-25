@@ -37,6 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
@@ -93,10 +94,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -150,7 +154,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -361,6 +370,14 @@
 
 </style>
 <h1 id="network"><a class="header" href="#network">Network</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.
+See also <a href="network/index.html#resources">Resources</a></p>
+</div>
 <p>The network layer is responsible of implementing the Node-To-Node interface of a
 node, for transmitting data between nodes.</p>
 <p>The network protocols consist of a <a href="network/multiplexing.html">multiplexing layer</a> which
@@ -389,7 +406,7 @@ protocols to use. It often times is convenient to group this interface under
 the networking layer of a node but it is not mandatory. For more information
 see <a href="network/../client">Client interfaces</a>.</p>
 </div>
-<h3 id="node-to-node-mini-protocols"><a class="header" href="#node-to-node-mini-protocols">Node-to-node mini-protocols</a></h3>
+<h2 id="node-to-node-mini-protocols"><a class="header" href="#node-to-node-mini-protocols">Node-to-node mini-protocols</a></h2>
 <blockquote>
 <p>Current node-to-node protocol version: v14</p>
 </blockquote>
@@ -404,6 +421,11 @@ Cardano chain</li>
 <li><a href="network/node-to-node/keep-alive">Keep Alive</a> - for maintaining and measuring timing of the connection</li>
 <li><a href="network/">Peer Sharing</a> - for exchanging peer information to create the peer-to-peer
 (P2P) network</li>
+</ul>
+<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Technical report: Data Diffusion and Network</a>: Original design document of the peer-to-peer network protocols and diffusion semantics</li>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf">Ouroboros Network Specification</a>: Document generated from the Haskell implementation of the Cardano network stack. Contains definitions of all mini-protocols and some documentation the connection management.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
@@ -1744,19 +1766,20 @@ msgDone = [ 2 ]
 }
 
 </style>
-<h1 id="the-consensus-layer"><a class="header" href="#the-consensus-layer">The Consensus Layer</a></h1>
-<p>This document describes the components of the Consensus layer of a Cardano node,
-serving as a reference for Cardano developers who want to implement a node or
-interact with the Consensus layer of an existing implementation. We strive to
-provide implementation-agnostic requirements and responsibilities for the
-Consensus layer.</p>
+<h1 id="consensus"><a class="header" href="#consensus">Consensus</a></h1>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
   warning
 </p>
-<p>This document is a work in progress.</p>
+<p>This blueprint is a work in progress.
+See also <a href="consensus/index.html#resources">Resources</a></p>
 </div>
+<p>This document describes the components of the Consensus layer of a Cardano node,
+serving as a reference for Cardano developers who want to implement a node or
+interact with the Consensus layer of an existing implementation. We strive to
+provide implementation-agnostic requirements and responsibilities for the
+Consensus layer.</p>
 <p>The Consensus Layer runs the Consensus Protocol and invokes the <a href="consensus/../ledger">Ledger
 layer</a> to validate chains produced according to the
 protocol. The chain is then persisted in the <a href="consensus/../storage">Storage
@@ -1804,6 +1827,7 @@ layer</a>. The contents of new blocks are provided by the
 <li><a href="consensus/index.html#resilience-of-the-consensus-layer">Resilience of the Consensus layer</a></li>
 <li><a href="consensus/index.html#requirements-imposed-onto-the-networkingdiffusion-layer">Requirements imposed onto the Networking/Diffusion layer</a></li>
 <li><a href="consensus/index.html#requirements-imposed-onto-the-ledger-layer">Requirements imposed onto the Ledger layer</a></li>
+<li><a href="consensus/index.html#resources">Resources</a></li>
 </ul>
 <h2 id="the-consensus-protocol-in-cardano"><a class="header" href="#the-consensus-protocol-in-cardano">The Consensus Protocol in Cardano</a></h2>
 <p>The consensus protocol has three main responsibilities:</p>
@@ -1965,6 +1989,12 @@ view</em>. We require not just that the ledger can provide a view of the current
 ledger state but also that it can predict what view will be for slots in the
 near future.</p>
 </li>
+</ul>
+<h2 id="resources-1"><a class="header" href="#resources-1">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Technical report: Data Diffusion and Network</a>: Original design document of the peer-to-peer network protocols and diffusion semantics</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf">Technical report: Cardano Consensus and Storage Layer</a>: Documentation of the Haskell implementation of consensus components</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers">Website: ouroboros-consensus &gt; For Developers</a>: Collection of developer articles on the Haskell implementation of consensus components</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
@@ -2846,7 +2876,15 @@ implementors need to take into account:</p>
 }
 
 </style>
-<h1 id="the-storage-layer"><a class="header" href="#the-storage-layer">The Storage Layer</a></h1>
+<h1 id="storage"><a class="header" href="#storage">Storage</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.
+See also <a href="storage/index.html#resources">Resources</a></p>
+</div>
 <p>The Storage layer is responsible of storing the blocks on behalf of the
 Consensus layer. It is also involved in serving the data for <a href="storage/index.html#chain-diffusion">Chain
 diffusion</a>.</p>
@@ -2916,6 +2954,11 @@ of messages a protocol is composed by. It is possible to run an interaction of
 the protocol exchanging data that does not follow the intended semantics (for
 example an evil node sending all the chains it knows about instead of only the
 best selection).</p>
+<h2 id="resources-2"><a class="header" href="#resources-2">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf">Technical report: Cardano Consensus and Storage Layer</a>: Documentation of the Haskell implementation of consensus components</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers">Website: ouroboros-consensus &gt; For Developers</a>: Collection of developer articles on the Haskell implementation of consensus components</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -3151,6 +3194,14 @@ tool</a>.</p>
 
 </style>
 <h1 id="mempool"><a class="header" href="#mempool">Mempool</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.
+See also <a href="mempool/index.html#resources">Resources</a></p>
+</div>
 <p>In Cardano, for blocks to have useful data, they have to contain transactions,
 which are codifications of operations on the Ledger state that only some
 authorized actors can enact. Notice that such transactions are what makes up the
@@ -3239,6 +3290,10 @@ and Memory units.</p>
 </p>
 <p>TODO: describe fairness and what should mempools do in this regard.</p>
 </div>
+<h2 id="resources-3"><a class="header" href="#resources-3">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf">Technical report: Cardano Consensus and Storage Layer</a>: Documentation of the Haskell implementation of consensus components</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -3308,9 +3363,32 @@ and Memory units.</p>
 
 </style>
 <h1 id="ledger-1"><a class="header" href="#ledger-1">Ledger</a></h1>
-<p>Cardano uses the Extended Unspent Transaction Output (EUTxO) ledger model…</p>
-<pre><code class="language-agda">data S
-</code></pre>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.</p>
+</div>
+<p>The Ledger is responsible for validating Blocks and represents the actual semantics of Cardano transactions. The format of blocks and transactions is defined in so-called <strong>eras</strong>: <code>Byron</code>, <code>Shelley</code>, <code>Allegra</code>, <code>Mary</code>, <code>Alonzo</code>, <code>Babbage</code> and <code>Conway</code>.</p>
+<p>This blueprint is currently more of an entrypoint to already existing implementation-independent descriptions of Cardano transactions and the ledger rules. While existing work covers a lot already, the <code>cardano-blueprint</code> may serve as an incubation or staging area for material to cover gaps.</p>
+<p>For starters, the <a href="https://aiken-lang.org/fundamentals/eutxo">EUTxO Crash Course</a> from Aiken is a very good introduction about Cardano transactions.</p>
+<p>See <a href="ledger/./transaction-fee.html">Transaction fee</a> for an informal write-up on how transaction fees are currently calculated.</p>
+<h2 id="ledger-rules"><a class="header" href="#ledger-rules">Ledger rules</a></h2>
+<p>The <a href="https://intersectmbo.github.io/formal-ledger-specifications/site/index.html">Formal Specification</a> is the source of truth for ledger semantics. While it is currently being made more accessible by interleaving explanations with Agda definitions, its very dense on the Agda and actively worked on to close the gap latest era descriptions and the old era definitions. The Haskell implementation of the ledger holds a list of <a href="https://github.com/IntersectMBO/cardano-ledger?tab=readme-ov-file#cardano-ledger">design documents and ledger specifications</a> for all eras.</p>
+<p>See <a href="ledger/./block-validation.html">Block Validation</a> for a description of the <code>Conway</code> era block validation rules.</p>
+<h2 id="block-and-transaction-format"><a class="header" href="#block-and-transaction-format">Block and transaction format</a></h2>
+<p>The <a href="https://github.com/search?q=repo%3AIntersectMBO%2Fcardano-ledger+path%3A.cddl&amp;type=code">.cddl files in cardano-ledger</a> define the wire-format of blocks and transactions for each era. These are self-contained for each
+era and are referenced in <a href="ledger/../codecs#cddl">other blueprint CDDL schemas</a>.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: make ledger cddls available through blueprint directly</p>
+</div>
+<h2 id="conformance-tests"><a class="header" href="#conformance-tests">Conformance tests</a></h2>
+<p>Despite the formal specification provides a precise definition for semantics, testing the behavior of ledger implementations against the specification and also the ledger implementations against each other is crucial. For this purpose, a conformance test suite with <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main/src/ledger/conformance-test-vectors">implementation-independent test vectors</a> can be used.</p>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -3558,7 +3636,7 @@ TODO: Explain protocol parameters somewhere</p>
 </style>
 <h1 id="ledger-block-validation"><a class="header" href="#ledger-block-validation">Ledger: Block Validation</a></h1>
 <p>Block validation is the process of applying a set of ledger rules to a candidate block before adding it to the blockchain and updating the state of the ledger.
-Each <a href="ledger/../consensus/README.html#multi-era-considerations">era</a> has it’s own set of rules for block validation.</p>
+Each <a href="ledger/../consensus/multiera.html">era</a> has it’s own set of rules for block validation.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -3964,78 +4042,6 @@ EUC[EraRule UTXOW Conway]
 }
 
 </style>
-<h1 id="ledger-cddl-specs"><a class="header" href="#ledger-cddl-specs">Ledger CDDL specs</a></h1>
-<p><code>cardano-ledger</code> provides CDDLs in their haskell packages, in the
-<code>eras/&lt;era&gt;/impl/cddl-files/&lt;era&gt;.cddl</code>. These are self-contained for each
-era. In our CDDL specs in the blueprint we will import them qualified via <code>cddlc</code>.</p>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
 <h1 id="plutus"><a class="header" href="#plutus">Plutus</a></h1>
 <p>Plutus is Cardano’s on-chain smart contract platform.
 Smart contracts can be written in a variety of languages, and compiled down to Untyped Plutus Core (UPLC), which is executed by validating nodes.
@@ -4047,7 +4053,7 @@ A production implementation should be carefully engineered to maximize performan
 There are two kinds of cost: each step the CEK machine takes (e.g., looking up a variable or processing a lambda abstraction) incurs a fixed charge; each call to a built- in function incurs a cost calculated by a costing function - a Haskell function that estimates resource usage based on the sizes of the arguments.
 These are derived empirically by benchmarking the implementation with representative inputs, then using the R statistical system to fit models (e.g., 𝛼 + 𝛽𝑥𝑦 for integer multiplication, where 𝑥 and 𝑦 are the numbers of machine words required to store the arguments).
 These functions are used for deterministic and efficient costing for script execution.</p>
-<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<h2 id="resources-4"><a class="header" href="#resources-4">Resources</a></h2>
 <ul>
 <li>
 <p><a href="https://plutus.cardano.intersectmbo.org/docs/">Plinth User Guide</a>: This up-to-date guide not only covers Plinth (a Haskell-based surface language) and its compilation to UPLC, but also explains many core concepts.
@@ -6074,6 +6080,7 @@ limitations under the License.</p>
             window.setTimeout(window.print, 100);
         });
         </script>
+
 
     </div>
     </body>
