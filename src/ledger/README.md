@@ -2,7 +2,8 @@
 
 > [!WARNING]
 >
-> This blueprint is a work in progress.
+> This blueprint is a work in progress. See [./plan.md] for the intended
+> restructuring.
 
 The Ledger is responsible for validating Blocks and represents the actual
 semantics of Cardano transactions. The format of blocks and transactions is
