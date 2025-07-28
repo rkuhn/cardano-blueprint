@@ -20,10 +20,14 @@ details needed by all potential implementations.
   - Transactions
   - Eras
   - The structure of an epoch
+  - Determinism
 - The ledger state transition
   - How to read the specs
     - Old-style semi-formal specs
     - New-style Agda specifications
+  - Validity
+    - Multi-phase validity
+    - Static vs dynamic checks
 - Ledger interfaces
   - To the consensus layer
     - Applying a block
@@ -45,6 +49,7 @@ details needed by all potential implementations.
   - Transaction and block formats
   - The ledger state
     - Decomposition - large and small parts
+  - Non-canonical serialisation
 - Constraints on the ledger
   - Computational concerns
     - Avoiding spikes
