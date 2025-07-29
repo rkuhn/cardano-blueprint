@@ -40,6 +40,8 @@ The full details and implications of this split are covered in
 For now, we can assume that the contents of the header are not important for
 the ledger processing.
 
+## The block body
+
 The block body itself is split into four parts. This division is not conceptually
 necessary but is helpful for efficient processing:
 
