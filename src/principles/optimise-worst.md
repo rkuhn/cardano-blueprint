@@ -63,7 +63,7 @@ various considerations that effect how much we want to follow it:
    but can predict it, or less serious still, observe it. Either way a
    prepared attacker could take advantage of the degraded performance to launch
    an attack on the chain.
-3. Either of these cases are exascerbated if the same behaviour is coordinated
+3. Either of these cases are exacerbated if the same behaviour is coordinated
    across all nodes, since this allows an attacker to exploit a performance
    drop across the entire network.
 
