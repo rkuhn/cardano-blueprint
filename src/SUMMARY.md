@@ -1,7 +1,7 @@
 # Summary
 
 - [Introduction](introduction/README.md)
-- Principles
+- [Principles](principles/README.md)
   - [Optimise for the worst case](principles/optimise-worst.md)
 - [Network](network/README.md)
   - [Multiplexing](network/multiplexing.md)
