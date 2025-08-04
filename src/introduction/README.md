@@ -46,11 +46,11 @@ We did consider whether these blueprints could be CIPs themselves, but were conc
 
 That being said, this project will of course tightly integrate with the CIP process:
 
-* CIPs will of course remain the place for new features and discussion
+- CIPs will of course remain the place for new features and discussion
 
-* The Cardano blueprint itself may be presented and ratified as a CIP, given the Cardano community final say over its status
+- The Cardano blueprint itself may be presented and ratified as a CIP, given the Cardano community final say over its status
 
-* CIPs could include changes to the `cardano-blueprint` in their "Path to Active"
+- CIPs could include changes to the `cardano-blueprint` in their "Path to Active"
 
 ```mermaid
 graph TB

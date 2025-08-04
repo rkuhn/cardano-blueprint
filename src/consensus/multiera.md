@@ -4,16 +4,19 @@ With the blockchain network evolving, the block format and ledger
 rules are bound to change. In Cardano, every significant change starts
 a new "era". There are several ways to deal with multiple eras in the
 node software, associated here with some of [the DnD
-alignments](https://en.wikipedia.org/wiki/Alignment_(role-playing_games)#Dungeons_&_Dragons):
+alignments](<https://en.wikipedia.org/wiki/Alignment_(role-playing_games)#Dungeons_&_Dragons>):
 
 - Chaotic Evil: the node software only ever implements one era. When
-the protocol needs to be updated, all participants must update the
-software or risk being ejected from the network. Most importantly, the
-decision to transition to the new era needs to happen off-chain.
+  the protocol needs to be updated, all participants must update the
+  software or risk being ejected from the network. Most importantly, the
+  decision to transition to the new era needs to happen off-chain.
+
   - Pros:
+
     - the simplest possible node software.
 
   - Cons:
+
     - on-chain governance of the hard-fork is impossible, as the
       software has no way of knowing where the era boundary is and
       does not even have such a concept.
@@ -25,6 +28,7 @@ decision to transition to the new era needs to happen off-chain.
   next era. Once the next era is adopted, a grace period is allowed
   for the participants to upgrade. The decision to upgrade may happen
   on chain.
+
   - Pros:
     - allows for on-chain governance of the hard fork.
   - Cons:
@@ -35,7 +39,8 @@ decision to transition to the new era needs to happen off-chain.
       historic blocks.
 
 - True Neutral: software is structured in such a way that is supports
-all eras.
+  all eras.
+
   - Pros:
     - enables massive code reuse and forces the code to be structured
       in the way that allows for abstract manipulation of blocks of

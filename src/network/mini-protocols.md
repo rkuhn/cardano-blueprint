@@ -11,8 +11,8 @@ that can be passed between the parties.
 ## State machines
 
 The progress of the communication is defined by a state machine, which
-is replicated at each end.  The transitions of the state machine
-are messages being sent/received.  As well as defining which messages
+is replicated at each end. The transitions of the state machine
+are messages being sent/received. As well as defining which messages
 are valid to send and receive in each state, the state machine also
 defines which side has *agency* - that is, should be the one to send
 the next message.
@@ -23,14 +23,14 @@ connection be opened - the client in a simple client/server model.
 The *responder* or is the one that responds to the connection request - the
 server, in other words.
 
-In every case it is the initiator (client) which has agency first.  In many
+In every case it is the initiator (client) which has agency first. In many
 cases the initiator and responder take turns to have agency (send messages),
 but in some cases where one party must wait for a response, the other will
 keep agency and send a follow-up message later.
 
 We can draw this state machine in the standard way using circles and arrows, but
 with the addition of an indicator of which side has agency. This one is for the
-minimal example mini-protocol, [Ping Pong]():
+minimal example mini-protocol, [Ping Pong](<>):
 
 ```mermaid
 stateDiagram
@@ -55,7 +55,7 @@ responder agency in case colours aren't clear.
 As a double check, we can show the agency for each state as a table as well:
 
 | State  | Agency                                                              |
-|:-------|:--------------------------------------------------------------------|
+| :----- | :------------------------------------------------------------------ |
 | StIdle | <span style="color:#080">Initiator</span>                           |
 | StBusy | <span style="color:#008;text-decoration:underline">Responder</span> |
 
@@ -67,7 +67,7 @@ indicate what data is passed with each message, although Ping Pong
 doesn't carry any:
 
 | From state | Message | Parameters | To state |
-|:-----------|:--------|------------|:---------|
+| :--------- | :------ | ---------- | :------- |
 | StIdle     | MsgPing | -          | StBusy   |
 | StBusy     | MsgPong | -          | StIdle   |
 | StIdle     | MsgDone | -          | End      |

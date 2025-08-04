@@ -61,8 +61,6 @@ stateDiagram
 
 </details>
 
-[^1]: Derived from [ogmios](https://ogmios.dev/mini-protocols/local-state-query/)' great ascii art description.
-
 ## Acquire a state
 
 To use the ledger state query API, a client needs to first specify at which point on the chain the query should be executed. Depending on the server implementation, this point may only be within the "volatile" recent part of the chain. A typical practice is to acquire the tip of the chain, perform one or more queries and close the connection again.
@@ -103,6 +101,7 @@ Example response:
 
 > [!CAUTION]
 > FIXME: While I experimented in using the network / consensus cddl parts above, `time` would be defined in the CDDL prelude (a number, assuming seconds since epoch), but is actually incorrect and the result is serialized using `ToCBOR UTCTime` following this cddl:
+>
 > ```cddl
 > time = [year, dayOfYear, timeOfDayPico]
 > year = bigint
@@ -114,3 +113,5 @@ Example response:
 
 > [!WARNING]
 > TODO: Era-specific query with an involved answer
+
+[^1]: Derived from [ogmios](https://ogmios.dev/mini-protocols/local-state-query/)' great ascii art description.

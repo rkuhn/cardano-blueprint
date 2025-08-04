@@ -17,9 +17,9 @@ the reader in mind, thinking what is the best way to pass on the
 knowledge you have given the current state of knowledge they have.
 This is a hard thing to do, but it is worth aiming for!
 
-People take in information in different ways.  Some like literate
+People take in information in different ways. Some like literate
 prose, many like visual diagrams and pseudo-code, and a few like
-mathematical formulae.  If you can do all of these, so much the
+mathematical formulae. If you can do all of these, so much the
 better, but good diagrams are often the place to start.
 
 As a general rule, approach it with the same level of care and thoughtfulness as you would when writing a peer-reviewed paper for a top-tier conference or journal that you are eager to publish.
@@ -45,6 +45,7 @@ Using consistent terminology is important for clarity. In some cases, using mult
 Many documents focus on describing how things are done in a particular system, but they often leave the readers wondering why certain design decisions were made over other design choices.
 
 Just like a research paper, related work and alternative approaches should be discussed, especially in the following cases:
+
 - there is a comparable system that does things differently
 - a reasonable alternative approach exists, but it wasn't chosen due to certain disadvantages
 - we previously adopted an alternative approach but later switched to the current one for specific reasons
@@ -100,17 +101,17 @@ This can save readers time and lets them decide whether to dive into the details
 
 ### Other tips
 
-* Create one file per major topic
-* Divide text up into logical, hierarchical sections
-* Break up long paragraphs into bulleted lists
-* Use code blocks to give short examples
-* Use `backquote` to set off identifiers - e.g. message or state names
+- Create one file per major topic
+- Divide text up into logical, hierarchical sections
+- Break up long paragraphs into bulleted lists
+- Use code blocks to give short examples
+- Use `backquote` to set off identifiers - e.g. message or state names
 
 ## Language
 
 Text should be written in American English, at the reading level of a
 competent software developer - which is often very high, but bear in mind
-that English may not be their first language.  Use technical language by all
+that English may not be their first language. Use technical language by all
 means, but there is no need to be egregiously erudite in your elucidation.
 
 It may not be necessary to talk about humans in much of this documentation,
@@ -125,8 +126,8 @@ If you find this difficult, cast it into the plural:
 ### Normative vs declarative style
 
 Some standards documentation is very SHOUTY about MUST, SHALL and so on.
-Even if it doesn't SHOUT it can still be rather clumsy to read.  Instead,
-we want to use a *declarative* style.  We can express what an implementation
+Even if it doesn't SHOUT it can still be rather clumsy to read. Instead,
+we want to use a *declarative* style. We can express what an implementation
 has to do conform to the specification as a simple descriptive fact - e.g.
 
 > The tester discards widgets with broken flibbits.
@@ -135,7 +136,7 @@ rather than the 'normative'
 
 > The tester SHALL discard widgets with broken flibbits.
 
-So in this style there is an implicit 'must'.  If something is optional, this
+So in this style there is an implicit 'must'. If something is optional, this
 can be said explicitly:
 
 > The package may use extra sproggles if required.
@@ -167,6 +168,7 @@ $$
 > [!NOTE]
 > A friendly note in github.
 > How about code blocks?
+>
 > ```
 > cargo install mdbook-alerts
 > ```
@@ -175,8 +177,8 @@ $$
 
 Additional information that would complicate the read-flow can be put into footnotes [^example].
 
-[^example]: Example footnote
-
 ## Other stuff
 
 The footnote should appear below. If not, we need to contribute this to `mdbook`.
+
+[^example]: Example footnote

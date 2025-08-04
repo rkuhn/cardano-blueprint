@@ -62,7 +62,7 @@ The consensus protocol has three main responsibilities:
 
 - [Chain validity check](./chainvalid.md): the validity of a chain of blocks
   is defined by the Consensus protocol, whether the values in the block match
-  are as expected. This involves things like singature checking, checking the
+  are as expected. This involves things like signature checking, checking the
   previous hash, ensuring the header is consistent, etc.
 
 - [Chain selection](./chainsel.md): Competing chains arise when two or more
@@ -96,15 +96,15 @@ Depending on the Ledger era in effect, the Consensus protocol (which governs
 both chain selection and block production) is different:
 
 | Era                                        | Protocol                              | Link                                     |
-|:-------------------------------------------|:--------------------------------------|:-----------------------------------------|
-| Byron                                      | Ouroboros Classic                     | [Paper][Classic]                         |
-| Byron (reimplementation, block forging)    | Ouroboros BFT                         | [Paper][BFT]                             |
-| Byron (reimplementation, block processing) | Ouroboros Permissive BFT              | Section 4 of the [Byron spec][PBFT]      |
-| Shelley                                    | Ouroboros Transitional Praos (TPraos) | Section 12 of the [Shelley spec][TPraos] |
+| :----------------------------------------- | :------------------------------------ | :--------------------------------------- |
+| Byron                                      | Ouroboros Classic                     | [Paper][classic]                         |
+| Byron (reimplementation, block forging)    | Ouroboros BFT                         | [Paper][bft]                             |
+| Byron (reimplementation, block processing) | Ouroboros Permissive BFT              | Section 4 of the [Byron spec][pbft]      |
+| Shelley                                    | Ouroboros Transitional Praos (TPraos) | Section 12 of the [Shelley spec][tpraos] |
 | Allegra                                    | Ouroboros TPraos                      |                                          |
 | Mary                                       | Ouroboros TPraos                      |                                          |
 | Alonzo                                     | Ouroboros TPraos                      |                                          |
-| Babbage                                    | Ouroboros Praos                       | [Paper][Praos]                           |
+| Babbage                                    | Ouroboros Praos                       | [Paper][praos]                           |
 | Conway                                     | Ouroboros Praos                       |                                          |
 
 Each of these protocols defines how to fulfill the responsibilities
@@ -120,18 +120,17 @@ based on the particular era in effect.
 > protocols used in the Network _will_ use this distinction of headers and
 > bodies, so implementations can as well consider leveraging it.
 
-
 An essential and uncontroversial design refinement in any blockchain
 implementation is to separate block headers and block bodies:
 
 - If blocks can be almost fully validated in constant time based on looking at
-only a small fixed size block header, then honest nodes can validate candidate
-chains with a small bounded amount of work.
+  only a small fixed size block header, then honest nodes can validate candidate
+  chains with a small bounded amount of work.
 
 - It also enables a design where a node can see blocks available from many
-immediate peers but can choose to download each block body of interest just once
-(from a peer of its choosing from which it is available). This saves network
-bandwidth.
+  immediate peers but can choose to download each block body of interest just once
+  (from a peer of its choosing from which it is available). This saves network
+  bandwidth.
 
 In the case of Ouroboros, all the cryptographic consensus evidence is packed
 into the block header, leaving the block body containing only the ledger data,
@@ -152,7 +151,7 @@ effectively separating concerns.
 ## Mini-protocols
 
 The mini-protocols mentioned in the neworking chapter are one of the possible
-mechanisms used for data difussion. The [Networking design
+mechanisms used for data diffusion. The [Networking design
 document][network-design] has many more insights on why these protocols were
 implemented, and how they differ from other off-the-shelf mechanisms.
 
@@ -196,26 +195,25 @@ blocks or transactions. From the perspective of the consensus layer, the ledger
 layer has four primary responsibilities:
 
 - Applying blocks: The most obvious and most important responsibility of the
-ledger is to define how the ledger state changes in response to new blocks,
-validating blocks at it goes and rejecting invalid blocks.
+  ledger is to define how the ledger state changes in response to new blocks,
+  validating blocks at it goes and rejecting invalid blocks.
 
 - Applying transactions: Similar to applying blocks, the ledger layer must also
-provide an interface for applying a single transaction to the ledger state. This
-is important, because the consensus layer does not just deal with previously
-constructed blocks, but also constructs new blocks.
+  provide an interface for applying a single transaction to the ledger state. This
+  is important, because the consensus layer does not just deal with previously
+  constructed blocks, but also constructs new blocks.
 
 - Ticking time: Some parts of the ledger state change only due to the passage of
-time. For example, blocks might schedule some changes to be applied at a given
-slot, without the need for a block to be processed at that slot.
+  time. For example, blocks might schedule some changes to be applied at a given
+  slot, without the need for a block to be processed at that slot.
 
 - Forecasting: Some consensus protocols require limited information from the
-ledger. For instance, in Praos, a node’s probability of being elected a slot
-leader is proportional to its stake, but the stake distribution is something
-that the ledger keeps track of. This information is referred to as _ledger
-view_. We require not just that the ledger can provide a view of the current
-ledger state but also that it can predict what view will be for slots in the
-near future.
-
+  ledger. For instance, in Praos, a node’s probability of being elected a slot
+  leader is proportional to its stake, but the stake distribution is something
+  that the ledger keeps track of. This information is referred to as _ledger
+  view_. We require not just that the ledger can provide a view of the current
+  ledger state but also that it can predict what view will be for slots in the
+  near future.
 
 ## Resources
 
@@ -223,10 +221,10 @@ near future.
 - [Technical report: Cardano Consensus and Storage Layer](https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf): Documentation of the Haskell implementation of consensus components
 - [Website: ouroboros-consensus > For Developers](https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers): Collection of developer articles on the Haskell implementation of consensus components
 
+[bft]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/
+[classic]: https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/
 [feature-table]: https://github.com/cardano-foundation/CIPs/blob/master/CIP-0059/feature-table.md
 [network-design]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf
-[Classic]: https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/
-[BFT]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/
-[PBFT]: https://github.com/intersectmbo/cardano-ledger/releases/latest/download/byron-blockchain.pdf
-[TPraos]: https://github.com/intersectmbo/cardano-ledger/releases/latest/download/shelley-ledger.pdf
-[Praos]: https://iohk.io/en/research/library/papers/ouroboros-praos-an-adaptively-secure-semi-synchronous-proof-of-stake-protocol/
+[pbft]: https://github.com/intersectmbo/cardano-ledger/releases/latest/download/byron-blockchain.pdf
+[praos]: https://iohk.io/en/research/library/papers/ouroboros-praos-an-adaptively-secure-semi-synchronous-proof-of-stake-protocol/
+[tpraos]: https://github.com/intersectmbo/cardano-ledger/releases/latest/download/shelley-ledger.pdf

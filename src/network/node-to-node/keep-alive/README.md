@@ -13,7 +13,6 @@ stateDiagram
   StClient --> StDone: MsgDone
 ```
 
-
 The CDDL for the messages in `KeepAlive` is as follows:
 
 ```cddl

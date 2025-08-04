@@ -4,6 +4,7 @@ A chain of blocks has to be valid in order to be considered for adoption. In
 particular the mainnet chain _is_ valid.
 
 Validity is defined by induction on the length of the chain as:
+
 - The first block on the chain fragment is valid,
 - The tail of the chain fragment is valid.
 
@@ -89,7 +90,7 @@ A block is said to be _valid_ if:
   block. Notice the validity of these transactions is defined in the Ledger
   layer.
 
-See Figure 1 in the [paper][BFT].
+See Figure 1 in the [paper][bft].
 
 ## Ouroboros PBFT
 
@@ -118,4 +119,4 @@ This can be leveraged to skip such checks when replaying a chain that has
 already been validated, for example when restarting a node and having to replay
 the chain from scratch.
 
-[BFT]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/
+[bft]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/

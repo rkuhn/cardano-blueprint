@@ -9,23 +9,25 @@
 This is a write-up of how transaction fees are calculated. In fact, the minimum transaction fee for transaction to be deemed valid by the Cardano ledger.
 
 This document describes the situation as of
+
 - Protocol version: `10`
 - Era: `Conway`
 
 See also:
 
 - Formal ledger specification: [Alonzo, Figure 4, minfee](https://github.com/intersectmbo/cardano-ledger/releases/latest/download/alonzo-ledger.pdf) and [Conway, chapter 4](https://intersectmbo.github.io/formal-ledger-specifications/conway-ledger.pdf#section.4)
-- Haskell implementation: [getConwayMinFeeTxUtxo](https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138) and releated functions
+- Haskell implementation: [getConwayMinFeeTxUtxo](https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138) and related functions
 
 ## Inputs
- - Transaction bytes, CBOR-encoded
- - Resolved inputs (= unspent outputs), CBOR-encoded
- - Protocol Parameters
-   - `minFeeConstant`
-   - `minFeeCoefficient`
-   - `minFeeReferenceScripts`
-   - `prices.memory`
-   - `prices.steps`
+
+- Transaction bytes, CBOR-encoded
+- Resolved inputs (= unspent outputs), CBOR-encoded
+- Protocol Parameters
+  - `minFeeConstant`
+  - `minFeeCoefficient`
+  - `minFeeReferenceScripts`
+  - `prices.memory`
+  - `prices.steps`
 
 > [!WARNING]
 > TODO: Include transaction CDDL to reference individual parts (e.g. transaction_output)
@@ -34,6 +36,7 @@ See also:
 ## Algorithm
 
 At a high level, the fee is composed of
+
 - a minimum constant,
 - plus a cost per transaction byte,
 - plus a cost per reference script byte,
@@ -50,7 +53,7 @@ Next, calculate the reference script fee. First, sum up the length in bytes of e
 
 To calculate the fee, starting from a `baseFee` of `minFeeReferenceScripts.base` and remaining bytes of `sum(scriptRefLengths)`, until remaining bytes is zero, add `baseFee * min(remainingBytes, minFeeReferenceScripts.range)`, scale `baseFee` by `minFeeReferenceScripts.multiplier`, and decrease `remainingBytes` by `min(remainingBytes, minFeeReferenceScripts.range)`. This calculation can result in rational values (as the multiplier can be rational), and so you should take the ceiling as a *last step*.
 
-Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol paramters (`prices.memory` and `prices.steps`), and add them up. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.
+Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol parameters (`prices.memory` and `prices.steps`), and add them up. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.
 
 The final minimum fee is the base fee, plus the reference script fee, plus the evaluation fee.
 
@@ -61,6 +64,7 @@ Lets do a decently complex worked example, from mainnet transaction with id (bod
 `f06e17af7b0085b44bcc13f76008202c69865795841c692875810bc92948d609`
 
 The transaction bytes are:
+
 ```hex
 84ac00838258209ea0d817dc67ce8046f6c2abc27267905c74374530c4684bb3c252ed6b97cc8702825820e3195e7888a83f3d1ef218e50675bfa10d9817a4a756b8ba26305f604c0f96e500825820285c77a9e62c0f87fedfcc91a630251ce2b7fcb9dd8d2fd8591c0d0aba46d4bc000183a300583911e0302560ced2fdcbfcb2602697df970cd0d6a38f94b32703f51c312bbc10fe312acd69e2e12cbc2cca05aa0e432e3dee65d5a9498344e4aa01821b00000082deef6e00a2581c5d16cc1a177b5d9ba9cfa9793b07e60f1fb70fea1f8aef064415d114a1434941471b0000016f8a787b24581ce0302560ced2fdcbfcb2602697df970cd0d6a38f94b32703f51c312ba15820000de1406f79e3e55eef82b9d03cf62cc3d4a6d0d03b00bf7b1b43330f82977901028201d8185862d8799f581c6f79e3e55eef82b9d03cf62cc3d4a6d0d03b00bf7b1b43330f8297799f9f4040ff9f581c5d16cc1a177b5d9ba9cfa9793b07e60f1fb70fea1f8aef064415d11443494147ffff1b000000c823a3f15c18641864d87a80001a73c3be00ff8258390123a9f67af7e7e6d1aa0b495f68787649bb6f097d6648c2fa59c185e400168e1b0b38fe76f31427ee638adba1b7ad61ab8274ff4ecaa4109e821a001e8480a1581c5d16cc1a177b5d9ba9cfa9793b07e60f1fb70fea1f8aef064415d114a1434941471afad8cc9182581d618ca0e08cdbc30fa0dd21833d7370d666493ecc28b136df179f97fb5d1a6079b955021a00092e4d031a08e498d705a1581df199e5aacf401fed0eb0e2993d72d423947f42342e8f848353d03efe6100081a08e491070b5820b159feadc14235013a7ac8e993b410e5cdbd69c5829cd06b463603f15a39e6660d818258209ea0d817dc67ce8046f6c2abc27267905c74374530c4684bb3c252ed6b97cc87020e81581c8ca0e08cdbc30fa0dd21833d7370d666493ecc28b136df179f97fb5d1082581d618ca0e08cdbc30fa0dd21833d7370d666493ecc28b136df179f97fb5d1a60369c62111a004c4b401283825820fa46a1d162c59cece3308c5a9d4db9ff2ea17f9c0146ff821c9b445588b017c900825820f5f1bdfad3eb4d67d2fc36f36f47fc2938cf6f001689184ab320735a28642cf2008258200258ec397cbd4a86951126bd2c423d62f71ec844430964cd0e14df2f951906a400a3008182582043be65bfb94286317d1274ff4c1d4890ddc524d04d1182c4c714e97e1985954858401a5d1672aed8d170f343c2d517d8475f3569df6e1db0741091a2fcc3aae92a520b9496e91a005544b8d1ae938525666ba732f8a88945fb8ba859f91b2636ee0706815901455901420100003323232323232322322253330053253330063370e900218039baa300130083754004264a66600e66e1d2000300837540022646600200264a66601266e1d2002300a3754002297adef6c6013756601c60166ea8004c8cc004004dd5980218059baa300e300b375400644a66601a0022980103d87a80001323232533300d3371e0166eb8c03800c4cdd2a4000660226e980052f5c026600a00a0046eacc038008c044008c03c004894ccc030004528099299980519b873371c6eb8c02cc03c00920024806852889980180180098078008b1929998050008a6103d87a800013374a9000198059806000a5eb80dd618059806180618041baa300b3008375400429408c02cc03000452613656375c002ae6955ceaab9e5573eae815d0aba24c011e581ce0302560ced2fdcbfcb2602697df970cd0d6a38f94b32703f51c312b00010583840000d87a9fd8799f000d9f9f02d87a8000ffffffff821a001024a21a13fcfa0f840002d8798082196ec71a007e3127840300d8798082199f5f1a00bc09d0f5f6
 ```

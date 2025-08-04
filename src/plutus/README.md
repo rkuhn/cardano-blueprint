@@ -16,13 +16,13 @@ These functions are used for deterministic and efficient costing for script exec
 ## Resources
 
 - [Plinth User Guide](https://plutus.cardano.intersectmbo.org/docs/): This up-to-date guide not only covers Plinth (a Haskell-based surface language) and its compilation to UPLC, but also explains many core concepts.
-If you are relatively new to this space, start with this guide, and follow the "Essential concepts" and "Glossary" sections.
+  If you are relatively new to this space, start with this guide, and follow the "Essential concepts" and "Glossary" sections.
 
 - [Plutus Core Specification](https://plutus.cardano.intersectmbo.org/resources/plutus-core-spec.pdf): Studying the spec ensures your own implementation adheres to the exact language rules.
-The specification is periodically updated as new primitives and features are added to the language.
-This blueprint covers the portion of the specification relevant to CEK machine implementation, presented in a more approachable and readable format.
+  The specification is periodically updated as new primitives and features are added to the language.
+  This blueprint covers the portion of the specification relevant to CEK machine implementation, presented in a more approachable and readable format.
 
 - Haskell implementation: The plutus repository contains a highly optimized Haskell implementation of the CEK machine, used in the Haskell node.
-You can find the Haddock [here](https://plutus.cardano.intersectmbo.org/haddock/latest/plutus-core/UntypedPlutusCore-Evaluation-Machine-Cek.html).
+  You can find the Haddock [here](https://plutus.cardano.intersectmbo.org/haddock/latest/plutus-core/UntypedPlutusCore-Evaluation-Machine-Cek.html).
 
 - [CEK machine Wikipedia page](https://en.wikipedia.org/wiki/CEK_Machine).

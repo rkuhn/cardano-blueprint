@@ -23,11 +23,11 @@ actions:
    this slot. Below we describe what this means in Ouroboros Praos. We
    omit the details for other protocols as they do not produce blocks
    anymore on Cardano mainnet.
-2. Acquire a data to constitute the body of a block. Consensus is theoretically
+1. Acquire a data to constitute the body of a block. Consensus is theoretically
    unaware of what data makes up the block body, and it will be the
    [Mempool](../mempool) the one that specifies which data is valid and provides
    such data.
-3. Pack the data into a block body, produce a block header and emit a signature.
+1. Pack the data into a block body, produce a block header and emit a signature.
 
 Note that it is in the interest of the stake pool (so that its block is included
 in the chain) and of the network as a whole (so that the chain grows) that the
@@ -71,7 +71,7 @@ $$p_i = \phi{}_f(\alpha_i) = 1 - (1 - f)^{\alpha_i}$$
 Some important properties are ensured by Praos:
 
 - There can be multiple slot leaders as the events "$U_i$ is a leader for slot
-  `sl`" are independant,
+  `sl`" are independent,
 - There can be slots with no leader,
 - Only a slot leader is aware that it is indeed a leader for a given slot,
 - The probability of being a slot leader is independent of whether the stake

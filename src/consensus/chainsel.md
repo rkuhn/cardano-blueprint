@@ -151,7 +151,7 @@ chain $B_{0}B_{1}\ldots{}B_{l}$ with a different chain
 $B_{0}{B'}_{1}\ldots{B'}_{s}$ if $s > l$, therefore if the candidate is longer
 than the current selection.
 
-See Figure 1 in the [paper][BFT].
+See Figure 1 in the [paper][bft].
 
 Ouroboros PBFT does not change the chain selection rules of BFT, just focuses on
 validity of blocks, making parts of the block superfluous. It therefore also
@@ -161,11 +161,11 @@ uses length to choose among candidates.
 
 Ouroboros Praos circles back to defining the ${\tt maxvalid}_S(\mathcal{C},
 \mathbb{C})$ function, with identical behaviour to that in Ouroboros
-Classic. This means that longer candidates are preferrable to shorter ones, and
+Classic. This means that longer candidates are preferable to shorter ones, and
 that ties are broken in favour of the already selected candidate.
 
 See Figure 4 and the definition of ${\tt maxvalid}$ above it in the
-[paper][Praos].
+[paper][praos].
 
 Ouroboros TPraos refines how blocks are produced, but doesn't modify the ${\tt
 maxvalid}$ function in any way.
@@ -221,14 +221,14 @@ era).
 However, in Praos, the rule for selecting the best chain between two competing
 chains is fundamentally based on chain length. The protocol assumes
 instantaneous transmission of entire chains, meaning that the perceived length
-of a candidate would be its actual length.  Due to fundamental real-world
+of a candidate would be its actual length. Due to fundamental real-world
 limitations, sending such a large amount of data instantaneously is impossible;
 instead, data is streamed to the syncing node. Consequently, nodes only know the
 length of the received prefix of the candidate chain. This creates the risk of
 adversaries tricking nodes into committing to an adversarial chain during
 synchronization.
 
-[Ouroboros Genesis][Genesis] is a refinement of Praos used by nodes only during
+[Ouroboros Genesis][genesis] is a refinement of Praos used by nodes only during
 network synchronization. The key point of Genesis is precisely a refinement of
 the Praos chain selection rule: instead of choosing based (primarily) on length
 of the candidate chains, it chooses based on the density of blocks at the
@@ -260,10 +260,13 @@ into the usual length-based comparison used in Praos, so the node can safely
 switch to running only Ouroboros Praos.
 
 <!-- iohk.io links return 403 "if you are not a human" -->
+
 <!-- markdown-link-check-disable -->
-[classic]: https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/
-[BFT]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/
-[Praos]: https://iohk.io/en/research/library/papers/ouroboros-praos-an-adaptively-secure-semi-synchronous-proof-of-stake-protocol/
-[Genesis]: https://iohk.io/en/research/library/papers/ouroboros-genesis-composable-proof-of-stake-blockchains-with-dynamic-availability/
-[genesis-blogpost]: https://iohk.io/en/blog/posts/2024/05/08/ouroboros-genesis-design-update/
+
 <!-- markdown-link-check-enable -->
+
+[bft]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/
+[classic]: https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/
+[genesis]: https://iohk.io/en/research/library/papers/ouroboros-genesis-composable-proof-of-stake-blockchains-with-dynamic-availability/
+[genesis-blogpost]: https://iohk.io/en/blog/posts/2024/05/08/ouroboros-genesis-design-update/
+[praos]: https://iohk.io/en/research/library/papers/ouroboros-praos-an-adaptively-secure-semi-synchronous-proof-of-stake-protocol/

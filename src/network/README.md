@@ -41,18 +41,16 @@ graph TB
 The set of Node-To-Node mini-protocols needed for participating in the Cardano
 network (combined by the multiplexing wrapper) is:
 
-* [Handshake](node-to-node/handshake) - for connection and version negotiation
-* [Chain Sync](node-to-node/chainsync) - for synchronization of changes to the
+- [Handshake](node-to-node/handshake) - for connection and version negotiation
+- [Chain Sync](node-to-node/chainsync) - for synchronization of changes to the
   Cardano chain
-* [Block Fetch](node-to-node/blockfetch) - for transferring blocks between nodes
-* [TxSubmission2](node-to-node/txsubmission2) - for propagating transactions between nodes
-* [Keep Alive](node-to-node/keep-alive) - for maintaining and measuring timing of the connection
-* [Peer Sharing]() - for exchanging peer information to create the peer-to-peer
+- [Block Fetch](node-to-node/blockfetch) - for transferring blocks between nodes
+- [TxSubmission2](node-to-node/txsubmission2) - for propagating transactions between nodes
+- [Keep Alive](node-to-node/keep-alive) - for maintaining and measuring timing of the connection
+- [Peer Sharing](<>) - for exchanging peer information to create the peer-to-peer
   (P2P) network
-
 
 ## Resources
 
 - [Technical report: Data Diffusion and Network](https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf): Original design document of the peer-to-peer network protocols and diffusion semantics
-- [Ouroboros Network Specification](https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf): Document generated from the Haskell implementation of the Cardano network stack. Contains definitions of all mini-protocols and some documentation the connection management. 
-
+- [Ouroboros Network Specification](https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf): Document generated from the Haskell implementation of the Cardano network stack. Contains definitions of all mini-protocols and some documentation the connection management.
