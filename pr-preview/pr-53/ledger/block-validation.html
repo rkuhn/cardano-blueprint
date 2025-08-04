@@ -315,7 +315,7 @@ We will break up the validation process into smaller sections to make it easier 
                 certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                     EDC --&gt; conwayDelegTransition
                         conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                            crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDespoitAgainstPParams)
+                            crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                             crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                         conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                             cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -471,7 +471,7 @@ EUC[EraRule UTXOW Conway]
                                             certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                                                 EDC --&gt; conwayDelegTransition
                                                     conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                                                        crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDespoitAgainstPParams)
+                                                        crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                                                         crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                                                     conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                                                         cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
