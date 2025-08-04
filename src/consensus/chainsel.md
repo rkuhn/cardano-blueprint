@@ -259,12 +259,6 @@ Once the node finishes syncing with the network, this rule gracefully converges
 into the usual length-based comparison used in Praos, so the node can safely
 switch to running only Ouroboros Praos.
 
-<!-- iohk.io links return 403 "if you are not a human" -->
-
-<!-- markdown-link-check-disable -->
-
-<!-- markdown-link-check-enable -->
-
 [bft]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/
 [classic]: https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/
 [genesis]: https://iohk.io/en/research/library/papers/ouroboros-genesis-composable-proof-of-stake-blockchains-with-dynamic-availability/

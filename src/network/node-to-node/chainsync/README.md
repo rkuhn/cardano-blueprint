@@ -148,9 +148,5 @@ for the particular era:
 {{#include header.cddl}}
 ```
 
-<!-- iohk.io links return 403 "if you are not a human" -->
-
-<!-- markdown-link-check-disable-next-line -->
-
 [k-secparam]: ../../../consensus/chainsel.md#the-k-security-parameter
 [pipelining]: https://iohk.io/en/blog/posts/2022/02/01/introducing-pipelining-cardanos-consensus-layer-scaling-solution/
