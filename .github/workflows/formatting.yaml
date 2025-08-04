@@ -1,4 +1,4 @@
-name: Formating and spell-checking
+name: Formatting and spell-checking
 
 on:
   pull_request:
