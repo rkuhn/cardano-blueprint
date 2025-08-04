@@ -4472,82 +4472,79 @@ A builtin argument <code>𝜄</code> is either a term or a type argument.</p>
 <li>If the machine gets stuck (i.e., no rule applies) or arrives at state <code>⬥</code>, the evaluation terminates with a failure.</li>
 </ul>
 <div class="table-wrapper"><table><thead><tr><th style="text-align: center">Rule</th><th style="text-align: left">From State</th><th style="text-align: left">To State</th><th style="text-align: left">Condition</th></tr></thead><tbody>
-<tr><td style="text-align: center">1</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ 𝑥</code></td><td style="text-align: left"><code>𝑠 ⊲ 𝜌[𝑥]</code></td><td style="text-align: left">𝑥 is bound in 𝜌</td></tr>
-<tr><td style="text-align: center">2</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (con T 𝑐)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈con T 𝑐〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">3</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (lam 𝑥 𝑀)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">4</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (delay 𝑀)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈delay 𝑀 𝜌〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">5</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (force 𝑀)</code></td><td style="text-align: left"><code>(force _)⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">6</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ [𝑀 𝑁]</code></td><td style="text-align: left"><code>[_ (𝑁, 𝜌)]⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">7</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (constr 𝑖 𝑀⋅𝑀*)</code></td><td style="text-align: left"><code>(constr 𝑖 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">8</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (constr 𝑖 [])</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈constr 𝑖 []〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">9</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (case 𝑁 𝑀*)</code></td><td style="text-align: left"><code>(case _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑁</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">10</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (builtin 𝑏)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 [] 𝛼(𝑏)〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">11</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (error)</code></td><td style="text-align: left"><code>⬥</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">12</td><td style="text-align: left"><code>[] ⊲ 𝑉</code></td><td style="text-align: left"><code>◻𝑉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">13</td><td style="text-align: left"><code>[_ (𝑀, 𝜌)]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>[𝑉 _]⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">14</td><td style="text-align: left"><code>[〈lam 𝑥 𝑀 𝜌〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">15</td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉</code></td><td style="text-align: left"><code>𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">16</td><td style="text-align: left"><code>[〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
-<tr><td style="text-align: center">17</td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
-<tr><td style="text-align: center">18</td><td style="text-align: left"><code>[〈builtin 𝑏 𝑉* [𝜄]〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
-<tr><td style="text-align: center">19</td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
-<tr><td style="text-align: center">20</td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈delay 𝑀 𝜌〉</code></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">21</td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 𝑉* 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a type argument</td></tr>
-<tr><td style="text-align: center">22</td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*)</code></td><td style="text-align: left"><code>𝜄</code> is a type argument</td></tr>
-<tr><td style="text-align: center">23</td><td style="text-align: left"><code>(constr 𝑖 𝑉* _ (𝑀⋅𝑀*, 𝜌))⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>(constr 𝑖 𝑉*⋅𝑉 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">24</td><td style="text-align: left"><code>(constr 𝑖 𝑉 _ ([], 𝜌))⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈constr 𝑖 𝑉*⋅𝑉 〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">25</td><td style="text-align: left"><code>(case _ (𝑀₀ … 𝑀ₙ , 𝜌))⋅𝑠 ⊲ 〈constr 𝑖 𝑉₁ … 𝑉ₘ〉</code></td><td style="text-align: left"><code>[_ 𝑉ₘ]⋅⋯⋅[_ 𝑉₁]⋅𝑠; 𝜌 ⊳ 𝑀𝑖</code></td><td style="text-align: left"><code>0 ≤ 𝑖 ≤ 𝑛</code></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#1">1</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ 𝑥</code></td><td style="text-align: left"><code>𝑠 ⊲ 𝜌[𝑥]</code></td><td style="text-align: left">𝑥 is bound in 𝜌</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#2">2</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (con T 𝑐)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈con T 𝑐〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#3">3</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (lam 𝑥 𝑀)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#4">4</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (delay 𝑀)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈delay 𝑀 𝜌〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#5">5</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (force 𝑀)</code></td><td style="text-align: left"><code>(force _)⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#6">6</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ [𝑀 𝑁]</code></td><td style="text-align: left"><code>[_ (𝑁, 𝜌)]⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#7">7</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (constr 𝑖 𝑀⋅𝑀*)</code></td><td style="text-align: left"><code>(constr 𝑖 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#8">8</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (constr 𝑖 [])</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈constr 𝑖 []〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#9">9</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (case 𝑁 𝑀*)</code></td><td style="text-align: left"><code>(case _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑁</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#10">10</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (builtin 𝑏)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 [] 𝛼(𝑏)〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#11">11</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (error)</code></td><td style="text-align: left"><code>⬥</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#12">12</a></td><td style="text-align: left"><code>[] ⊲ 𝑉</code></td><td style="text-align: left"><code>◻𝑉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#13">13</a></td><td style="text-align: left"><code>[_ (𝑀, 𝜌)]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>[𝑉 _]⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#14">14</a></td><td style="text-align: left"><code>[〈lam 𝑥 𝑀 𝜌〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#15">15</a></td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉</code></td><td style="text-align: left"><code>𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#16">16</a></td><td style="text-align: left"><code>[〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#17">17</a></td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#18">18</a></td><td style="text-align: left"><code>[〈builtin 𝑏 𝑉* [𝜄]〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#19">19</a></td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#20">20</a></td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈delay 𝑀 𝜌〉</code></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#21">21</a></td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 𝑉* 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a type argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#22">22</a></td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*)</code></td><td style="text-align: left"><code>𝜄</code> is a type argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#23">23</a></td><td style="text-align: left"><code>(constr 𝑖 𝑉* _ (𝑀⋅𝑀*, 𝜌))⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>(constr 𝑖 𝑉*⋅𝑉 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#24">24</a></td><td style="text-align: left"><code>(constr 𝑖 𝑉 _ ([], 𝜌))⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈constr 𝑖 𝑉*⋅𝑉 〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#25">25</a></td><td style="text-align: left"><code>(case _ (𝑀₀ … 𝑀ₙ , 𝜌))⋅𝑠 ⊲ 〈constr 𝑖 𝑉₁ … 𝑉ₘ〉</code></td><td style="text-align: left"><code>[_ 𝑉ₘ]⋅⋯⋅[_ 𝑉₁]⋅𝑠; 𝜌 ⊳ 𝑀𝑖</code></td><td style="text-align: left"><code>0 ≤ 𝑖 ≤ 𝑛</code></td></tr>
 </tbody></table>
 </div>
 <p>In this table, <code>X*</code> denotes a list of <code>X</code>s.
 The symbol <code>⋅</code> denotes either the cons or snoc operator on lists.</p>
 <p>Explanation of the transition rules:</p>
-<ol>
-<li>To evaluate a single variable <code>𝑥</code>, it looks up its value in the environment <code>𝜌</code>, and returns the value if exists.</li>
-<li>A constant evaluates to itself, as it is already a value.</li>
-<li>A lambda abstraction evaluates to itself, as it is already a value.
-The environment is captured in the returned value, for later use in computing <code>𝑀</code>.</li>
-<li>A delayed computation evaluates to itself, as it is already a value.
-The environment is captured in the returned value, for later use in computing <code>𝑀</code>.</li>
-<li>To evaluate <code>(force 𝑀)</code>, it pushes a frame <code>(force _)</code> onto the stack, and evaluates <code>𝑀</code>.
-After <code>𝑀</code> is evaluated to a value, the forcing will continue (rules 20, 21 and 22) depending on what the value is.</li>
-<li>To evaluate an application <code>[𝑀 𝑁]</code>, the machine first evaluates the function <code>𝑀</code>, after pushing frame <code>[_ (𝑁, 𝜌)]</code> onto the stack.
-This ensures that once <code>𝑀</code> is evaluated, it will proceed to evaluate the argument <code>𝑁</code> using the same environment.</li>
-<li>To evaluate a constructor application, the machine pushes a frame onto the stack with a hole in place of the first argument.
+<p><a id="1" href="plutus/cek.html#1"><strong>1.</strong></a> To evaluate a single variable <code>𝑥</code>, it looks up its value in the environment <code>𝜌</code>, and returns the value if exists.</p>
+<p><a id="2" href="plutus/cek.html#2"><strong>2.</strong></a> A constant evaluates to itself, as it is already a value.</p>
+<p><a id="3" href="plutus/cek.html#3"><strong>3.</strong></a> A lambda abstraction evaluates to itself, as it is already a value. The
+environment is captured in the returned value, for later use in computing
+<code>𝑀</code>.</p>
+<p><a id="4" href="plutus/cek.html#4"><strong>4.</strong></a> A delayed computation evaluates to itself, as it is already a value. The environment is captured in the returned value, for later use in computing <code>𝑀</code>.</p>
+<p><a id="5" href="plutus/cek.html#5"><strong>5.</strong></a> To evaluate <code>(force 𝑀)</code>, it pushes a frame <code>(force _)</code> onto the stack, and evaluates <code>𝑀</code>.
+After <code>𝑀</code> is evaluated to a value, the forcing will continue (rules 20, 21 and 22) depending on what the value is.</p>
+<p><a id="6" href="plutus/cek.html#6"><strong>6.</strong></a> To evaluate an application <code>[𝑀 𝑁]</code>, the machine first evaluates the function <code>𝑀</code>, after pushing frame <code>[_ (𝑁, 𝜌)]</code> onto the stack. This ensures that once <code>𝑀</code> is evaluated, it will proceed to evaluate the argument <code>𝑁</code> using the same environment.</p>
+<p><a id="7" href="plutus/cek.html#7"><strong>7.</strong></a> To evaluate a constructor application, the machine pushes a frame onto the stack with a hole in place of the first argument.
 The frame also stores the remaining arguments along with the current environment.
-It then proceeds to evaluate the first argument <code>𝑀</code>.</li>
-<li>A nullary constructor evaluates to itself, as it is already a value.</li>
-<li>To evaluate a <code>case</code> expression, the machine pushes a frame onto the stack with a hole in place of the scrutinee.
+It then proceeds to evaluate the first argument <code>𝑀</code>.</p>
+<p><a id="8" href="plutus/cek.html#8"><strong>8.</strong></a> A nullary constructor evaluates to itself, as it is already a value.</p>
+<p><a id="9" href="plutus/cek.html#9"><strong>9.</strong></a>  To evaluate a <code>case</code> expression, the machine pushes a frame onto the stack with a hole in place of the scrutinee.
 The frame also stores the branches, <code>𝑀*</code>, along with the current environment.
-It then proceeds to evaluate the scrutinee <code>𝑁</code>.</li>
-<li>A builtin function evaluates to itself as it is already a value.</li>
-<li>Evaluating <code>(error)</code> results in the machine terminating with a failure.</li>
-<li>When a value <code>𝑉</code> is returned to an empty stack, the machine terminates with success, yielding <code>𝑉</code> as final result.</li>
-<li>When a value <code>𝑉</code> is returned to a stack whose top frame represents an application with the hole in the function position, the frame is replaced with one where the function is <code>𝑉</code> and the hole is in the argument position.
-The machine then continues by evaluating the argument <code>𝑀</code> in the captured environment.</li>
-<li>When a value <code>𝑉</code> is returned to a stack whose top frame represents an application, where the hole is in the argument position and the function is a lambda abstraction, the machine pops the frame, extends the environment to bind <code>𝑥</code> to <code>𝑉</code>, and continues by evaluating <code>𝑀</code>.
-This corresponds to beta reduction.</li>
-<li>If the returned value is a lambda abstraction, and the top stack frame represents an application, where the hole is in the function position and the argument is a value, the machine proceeds in the same way as the previous rule.</li>
-<li>When a value <code>𝑉</code> is returned to a stack whose top frame represents an application where the hole is in the argument position, and the function is a builtin expecting at least two more arguments (since <code>𝜂</code> is a non-empty list, <code>𝜄⋅𝜂</code> contains at least two elements) and the first is a term argument, the machine pops the frame, and returns an updated <code>builtin</code> value.
-Because the builtin still requires at least one more argument, the builtin application cannot yet be evaluated and is therefore considered a value.</li>
-<li>If the returned value is a builtin application expecting at least two arguments, where the first is a term argument, and the top stack frame represents an application, where the hole is in the function position and the argument is a value, the machine proceeds in the same way as the previous rule.</li>
-<li>Like Rule 16, except that the builtin expects exactly one more argument, and it is term argument.
+It then proceeds to evaluate the scrutinee <code>𝑁</code>.</p>
+<p><a id="10" href="plutus/cek.html#10"><strong>10.</strong></a> A builtin function evaluates to itself as it is already a value.</p>
+<p><a id="11" href="plutus/cek.html#11"><strong>11.</strong></a> Evaluating <code>(error)</code> results in the machine terminating with a failure.</p>
+<p><a id="12" href="plutus/cek.html#12"><strong>12.</strong></a> When a value <code>𝑉</code> is returned to an empty stack, the machine terminates with success, yielding <code>𝑉</code> as final result.</p>
+<p><a id="13" href="plutus/cek.html#13"><strong>13.</strong></a> When a value <code>𝑉</code> is returned to a stack whose top frame represents an application with the hole in the function position, the frame is replaced with one where the function is <code>𝑉</code> and the hole is in the argument position.
+The machine then continues by evaluating the argument <code>𝑀</code> in the captured environment.</p>
+<p><a id="14" href="plutus/cek.html#14"><strong>14.</strong></a> When a value <code>𝑉</code> is returned to a stack whose top frame represents an application, where the hole is in the argument position and the function is a lambda abstraction, the machine pops the frame, extends the environment to bind <code>𝑥</code> to <code>𝑉</code>, and continues by evaluating <code>𝑀</code>.
+This corresponds to beta reduction.</p>
+<p><a id="15" href="plutus/cek.html#15"><strong>15.</strong></a> If the returned value is a lambda abstraction, and the top stack frame represents an application, where the hole is in the function position and the argument is a value, the machine proceeds in the same way as the previous rule.</p>
+<p><a id="16" href="plutus/cek.html#16"><strong>16.</strong></a> When a value <code>𝑉</code> is returned to a stack whose top frame represents an application where the hole is in the argument position, and the function is a builtin expecting at least two more arguments (since <code>𝜂</code> is a non-empty list, <code>𝜄⋅𝜂</code> contains at least two elements) and the first is a term argument, the machine pops the frame, and returns an updated <code>builtin</code> value.
+Because the builtin still requires at least one more argument, the builtin application cannot yet be evaluated and is therefore considered a value.</p>
+<p><a id="17" href="plutus/cek.html#17"><strong>17.</strong></a> If the returned value is a builtin application expecting at least two arguments, where the first is a term argument, and the top stack frame represents an application, where the hole is in the function position and the argument is a value, the machine proceeds in the same way as the previous rule.</p>
+<p><a id="18" href="plutus/cek.html#18"><strong>18.</strong></a> Like Rule 16, except that the builtin expects exactly one more argument, and it is term argument.
 In this case the builtin application is now saturated, so it is evaluated via <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code>.
-The mechanism of <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code> is described later.</li>
-<li>Like Rule 17, except that the builtin expects exactly one more argument, and it is term argument.
-The machine proceeds in the same way as the previous rule.</li>
-<li>If the returned value is a delayed computation, and the top stack frame is a <code>force</code> frame, then the <code>force</code> and <code>delay</code> cancel each other, and the machine continues by evaluating the <code>𝑀</code> in the captured environment.</li>
-<li>If the returned value is a builtin application expecting at least two arguments, where the first is a type argument, and the top stack frame is a <code>force</code> frame, the machine pops the frame, and returns an updated builtin application value, with the first argument removed.
+The mechanism of <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code> is described later.</p>
+<p><a id="19" href="plutus/cek.html#19"><strong>19.</strong></a> Like Rule 17, except that the builtin expects exactly one more argument, and it is term argument.
+The machine proceeds in the same way as the previous rule.</p>
+<p><a id="20" href="plutus/cek.html#20"><strong>20.</strong></a> If the returned value is a delayed computation, and the top stack frame is a <code>force</code> frame, then the <code>force</code> and <code>delay</code> cancel each other, and the machine continues by evaluating the <code>𝑀</code> in the captured environment.</p>
+<p><a id="21" href="plutus/cek.html#21"><strong>21.</strong></a> If the returned value is a builtin application expecting at least two arguments, where the first is a type argument, and the top stack frame is a <code>force</code> frame, the machine pops the frame, and returns an updated builtin application value, with the first argument removed.
 In Plutus, forcing corresponds to applying a type argument.
-A builtin application expecting a type argument must be forced before evaluation can continue.</li>
-<li>Like Rule 21, except that the builtin excepts exactly one more argument, and it is type argument.
-In this case the <code>force</code> makes the builtin application saturated, so it is evaluated via <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code>.</li>
-<li>When a value <code>𝑉</code> is returned to a stack whose top frame is a constructor application, with the hole in any argument position except the last (in other words, there is at least one more argument to be evaluated), the machine replaces the frame with one where the hole is moved to the next argument, and proceeds to evaluate the next argument <code>𝑀</code> in the captured environment.</li>
-<li>Like Rule 23, except that the hole is in the position of the last argument.
-In this case, all arguments have been evaluated, so the machine pops the frame and returns a <code>constr</code> value.</li>
-<li>If the returned value is a constructor application with index <code>𝑖</code>, and the top stack frame is a <code>case</code> frame, the machine will evaluate the <code>𝑖</code>th branch - <code>𝑀𝑖</code> - applied to arguments <code>𝑉ₘ … 𝑉₁</code> (it is important to note that arguments under <code>constr</code> are reversed when passing to a <code>case</code> branch - this is done for performance reasons).
-To do so, it pops the frame, and pushes <code>m</code> frames, each representing an application, with the top frame corresponding to <code>𝑉ₘ</code> (the first argument).</li>
-</ol>
+A builtin application expecting a type argument must be forced before evaluation can continue.</p>
+<p><a id="22" href="plutus/cek.html#22"><strong>22.</strong></a> Like Rule 21, except that the builtin excepts exactly one more argument, and it is type argument.
+In this case the <code>force</code> makes the builtin application saturated, so it is evaluated via <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code>.</p>
+<p><a id="23" href="plutus/cek.html#23"><strong>23.</strong></a> When a value <code>𝑉</code> is returned to a stack whose top frame is a constructor application, with the hole in any argument position except the last (in other words, there is at least one more argument to be evaluated), the machine replaces the frame with one where the hole is moved to the next argument, and proceeds to evaluate the next argument <code>𝑀</code> in the captured environment.</p>
+<p><a id="24" href="plutus/cek.html#24"><strong>24.</strong></a> Like Rule 23, except that the hole is in the position of the last argument.
+In this case, all arguments have been evaluated, so the machine pops the frame and returns a <code>constr</code> value.</p>
+<p><a id="25" href="plutus/cek.html#25"><strong>25.</strong></a> If the returned value is a constructor application with index <code>𝑖</code>, and the top stack frame is a <code>case</code> frame, the machine will evaluate the <code>𝑖</code>th branch - <code>𝑀𝑖</code> - applied to arguments <code>𝑉ₘ … 𝑉₁</code> (it is important to note that arguments under <code>constr</code> are reversed when passing to a <code>case</code> branch - this is done for performance reasons).
+To do so, it pops the frame, and pushes <code>m</code> frames, each representing an application, with the top frame corresponding to <code>𝑉ₘ</code> (the first argument).</p>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
