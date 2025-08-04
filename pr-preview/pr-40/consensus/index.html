@@ -36,11 +36,23 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/consensus/README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/consensus/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -229,19 +249,20 @@
 }
 
 </style>
-<h1 id="the-consensus-layer"><a class="header" href="#the-consensus-layer">The Consensus Layer</a></h1>
-<p>This document describes the components of the Consensus layer of a Cardano node,
-serving as a reference for Cardano developers who want to implement a node or
-interact with the Consensus layer of an existing implementation. We strive to
-provide implementation-agnostic requirements and responsibilities for the
-Consensus layer.</p>
+<h1 id="consensus"><a class="header" href="#consensus">Consensus</a></h1>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
   warning
 </p>
-<p>This document is a work in progress.</p>
+<p>This blueprint is a work in progress.
+See also <a href="#resources">Resources</a></p>
 </div>
+<p>This document describes the components of the Consensus layer of a Cardano node,
+serving as a reference for Cardano developers who want to implement a node or
+interact with the Consensus layer of an existing implementation. We strive to
+provide implementation-agnostic requirements and responsibilities for the
+Consensus layer.</p>
 <p>The Consensus Layer runs the Consensus Protocol and invokes the <a href="../ledger">Ledger
 layer</a> to validate chains produced according to the
 protocol. The chain is then persisted in the <a href="../storage">Storage
@@ -256,8 +277,6 @@ layer</a>. The contents of new blocks are provided by the
     NTN2 --&gt; N6(&quot;Node&quot;)
     NTN2 --&gt; N4(&quot;Node&quot;)
     NTN2 --&gt; N5(&quot;Node&quot;)
-
-    NTC &lt;--&gt; CL(&quot;Client (e.g. wallet)&quot;)
 
     subgraph &quot;Node&quot;;
       subgraph NTN1 [&quot;Network NTN (upstream)&quot;];
@@ -281,12 +300,6 @@ layer</a>. The contents of new blocks are provided by the
       A(&quot;Consensus&quot;) &lt;--&gt; |apply blocks| C(&quot;Ledger&quot;)
       A(&quot;Consensus&quot;) &lt;--&gt;|transactions snapshot| G(&quot;Mempool&quot;)
       G --&gt; |transactions| N3
-      G &lt;--&gt; |transactions| O2
-      A(&quot;Consensus&quot;) &lt;--&gt;|state queries| O1
-      subgraph NTC [Network NTC];
-          O1(&quot;LocalStateQuery&quot;)
-          O2(&quot;TxSubmission2&quot;)
-      end
 
     end
 </pre>
@@ -297,6 +310,7 @@ layer</a>. The contents of new blocks are provided by the
 <li><a href="#resilience-of-the-consensus-layer">Resilience of the Consensus layer</a></li>
 <li><a href="#requirements-imposed-onto-the-networkingdiffusion-layer">Requirements imposed onto the Networking/Diffusion layer</a></li>
 <li><a href="#requirements-imposed-onto-the-ledger-layer">Requirements imposed onto the Ledger layer</a></li>
+<li><a href="#resources">Resources</a></li>
 </ul>
 <h2 id="the-consensus-protocol-in-cardano"><a class="header" href="#the-consensus-protocol-in-cardano">The Consensus Protocol in Cardano</a></h2>
 <p>The consensus protocol has three main responsibilities:</p>
@@ -304,7 +318,7 @@ layer</a>. The contents of new blocks are provided by the
 <li>
 <p><a href="./chainvalid.html">Chain validity check</a>: the validity of a chain of blocks
 is defined by the Consensus protocol, whether the values in the block match
-are as expected. This involves things like singature checking, checking the
+are as expected. This involves things like signature checking, checking the
 previous hash, ensuring the header is consistent, etc.</p>
 </li>
 <li>
@@ -391,14 +405,14 @@ resource draining attacks.</p>
 <p>So the design at this stage involves transmitting chains of headers rather than
 whole blocks, and using a secondary mechanism to download block bodies of
 interest. This gives the reason why
-<a href="../storage/miniprotocols/chainsync.html"><code>ChainSync</code></a> and
-<a href="../storage/miniprotocols/blockfetch.html"><code>BlockFetch</code></a> are separate protocols.
+<a href="../network/node-to-node/chainsync"><code>ChainSync</code></a> and
+<a href="../network/node-to-node/blockfetch"><code>BlockFetch</code></a> are separate protocols.
 The Consensus chain selection can look only at chains of block headers, whereas
 the validity check of the block body can be performed by the Ledger rules,
 effectively separating concerns.</p>
 <h2 id="mini-protocols"><a class="header" href="#mini-protocols">Mini-protocols</a></h2>
-<p>The mini-protocols mentioned in this chapter of the book are one of the possible
-mechanisms used for data difussion. The <a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Networking design
+<p>The mini-protocols mentioned in the neworking chapter are one of the possible
+mechanisms used for data diffusion. The <a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Networking design
 document</a> has many more insights on why these protocols were
 implemented, and how they differ from other off-the-shelf mechanisms.</p>
 <p>Although it is conceivable having other alternative mechanisms to exchange the
@@ -459,12 +473,18 @@ ledger state but also that it can predict what view will be for slots in the
 near future.</p>
 </li>
 </ul>
+<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Technical report: Data Diffusion and Network</a>: Original design document of the peer-to-peer network protocols and diffusion semantics</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf">Technical report: Cardano Consensus and Storage Layer</a>: Documentation of the Haskell implementation of consensus components</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers">Website: ouroboros-consensus &gt; For Developers</a>: Collection of developer articles on the Haskell implementation of consensus components</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../network/handshake.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../network/node-to-node/keep-alive/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -478,7 +498,7 @@ near future.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../network/handshake.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../network/node-to-node/keep-alive/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -508,6 +528,7 @@ near future.</p>
         <!-- Custom JS scripts -->
         <script src="../.mdbook/mermaid.min.js"></script>
         <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Multi-era considerations - Cardano Blueprint</title>
+        <title>ChainSync - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex.js";
+            window.path_to_searchindex_js = "../../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -106,7 +106,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -141,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/consensus/multiera.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/network/node-to-node/chainsync/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -249,102 +249,205 @@
 }
 
 </style>
-<h1 id="multi-era-considerations"><a class="header" href="#multi-era-considerations">Multi-era considerations</a></h1>
-<p>With the blockchain network evolving, the block format and ledger
-rules are bound to change. In Cardano, every significant change starts
-a new “era”. There are several ways to deal with multiple eras in the
-node software, associated here with some of <a href="https://en.wikipedia.org/wiki/Alignment_(role-playing_games)#Dungeons_&amp;_Dragons">the DnD
-alignments</a>:</p>
+<h1 id="chainsync"><a class="header" href="#chainsync">ChainSync</a></h1>
+<p><strong>Mini-protocol number: 2</strong></p>
+<p><code>ChainSync</code> is the miniprotocol used to transmit chains of headers. It is a
+pull-based miniprotocol: data is transmitted only upon explicit request from the
+client.</p>
+<p>The purpose of <code>ChainSync</code> is to enable the client to acquire and validate the
+headers of the server’s selected chain, and if it is better than the client’s
+current selection, direct <code>BlockFetch</code> to download the corresponding blocks.</p>
+<div class="mdbook-alerts mdbook-alerts-tip">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  tip
+</p>
+<p>There usually is one <code>ChainSync</code> client per-peer connected to the node, such
+that the <em>chain state</em> of each peer is tracked independently.</p>
+</div>
+<p>The connection is abruptly terminated if the peer misbehaves. In particular,
+actions considered as misbehaviour are (not exclusively):</p>
 <ul>
-<li>
-<p>Chaotic Evil: the node software only ever implements one era. When
-the protocol needs to be updated, all participants must update the
-software or risk being ejected from the network. Most importantly, the
-decision to transition to the new era needs to happen off-chain.</p>
+<li>The peer violates the state machine of the protocol,</li>
+<li>The server sends an invalid header,</li>
+<li>The server announces a fork that is more than <code>k</code> blocks deep from the
+client’s current selection.</li>
+</ul>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: Make this list exhaustive</p>
+</div>
+<h2 id="state-machine"><a class="header" href="#state-machine">State machine</a></h2>
+<p>The state machine for ChainSync is as follows:</p>
+<pre class="mermaid">stateDiagram
+    direction LR
+    [*] --&gt; StIdle
+    StIdle --&gt; [*]: MsgDone
+    StIdle --&gt; StIntersect: MsgFindIntersect
+    StIdle --&gt; StCanAwait: MsgRequestNext
+    StIntersect --&gt; StIdle: MsgIntersectNotFound
+    StIntersect --&gt; StIdle: MsgIntersectFound
+    StCanAwait --&gt; StIdle: MsgRollForward
+    StCanAwait --&gt; StIdle: MsgRollBackward
+    StCanAwait --&gt; StMustReply: MsgAwaitReply
+    StMustReply --&gt; StIdle: MsgRollForward
+    StMustReply --&gt; StIdle: MsgRollBackward
+
+    classDef initiator color:#080
+    classDef responder color:#008, text-decoration: underline
+    class StIdle initiator
+    class StCanAwait responder
+    class StIntersect responder
+    class StMustReply responder
+</pre>
+<h3 id="state-agencies"><a class="header" href="#state-agencies">State agencies</a></h3>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">State</th><th style="text-align: left">Agency</th></tr></thead><tbody>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left"><span style="color:#080">Initiator</span></td></tr>
+<tr><td style="text-align: left">StIntersect</td><td style="text-align: left"><span style="color:#008;text-decoration:underline">Responder</span></td></tr>
+<tr><td style="text-align: left">StCanAwait</td><td style="text-align: left"><span style="color:#008;text-decoration:underline">Responder</span></td></tr>
+<tr><td style="text-align: left">StMustReply</td><td style="text-align: left"><span style="color:#008;text-decoration:underline">Responder</span></td></tr>
+</tbody></table>
+</div>
+<h3 id="state-transitions"><a class="header" href="#state-transitions">State transitions</a></h3>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">From state</th><th style="text-align: left">Message</th><th>Parameters</th><th style="text-align: left">To state</th></tr></thead><tbody>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgRequestNext</td><td></td><td style="text-align: left">StCanAwait</td></tr>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgFindIntersect</td><td><code>[point]</code></td><td style="text-align: left">StIntersect</td></tr>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgDone</td><td></td><td style="text-align: left">End</td></tr>
+<tr><td style="text-align: left">StCanAwait</td><td style="text-align: left">MsgAwaitReply</td><td></td><td style="text-align: left">StMustReply</td></tr>
+<tr><td style="text-align: left">StCanAwait</td><td style="text-align: left">MsgRollForward</td><td><code>header</code>, <code>tip</code></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StCanAwait</td><td style="text-align: left">MsgRollBackward</td><td><code>point_old</code>, <code>tip</code></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StMustReply</td><td style="text-align: left">MsgRollForward</td><td><code>header</code>, <code>tip</code></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StMustReply</td><td style="text-align: left">MsgRollBackward</td><td><code>point_old</code>, <code>tip</code></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StIntersect</td><td style="text-align: left">MsgIntersectFound</td><td><code>point_intersect</code>, <code>tip</code></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StIntersect</td><td style="text-align: left">MsgIntersectNotFound</td><td><code>tip</code></td><td style="text-align: left">StIdle</td></tr>
+</tbody></table>
+</div>
+<h2 id="chainsync-pipelining-or-pipelined-diffusion"><a class="header" href="#chainsync-pipelining-or-pipelined-diffusion">ChainSync pipelining or pipelined diffusion</a></h2>
+<p>Not to be confused with <em>protocol pipelining</em>. The original design of ChainSync
+was extended with pipelining capabilities: a server can transmit a <em>tentative</em>
+header on top of the selected chain, and the invalidity of such header (or the
+associated body) will not cause the connection to terminate. If the client wants
+(by considering such header as the best known chain) it can request the body of
+the block via <code>BlockFetch</code> as usually done for any block.</p>
+<p>This optimization is used to shorten the time it takes to diffuse chains on the
+network, as otherwise nodes would only announce blocks <em>after</em> they validated
+it, causing each hop through the network to be bottle-necked by validation
+times.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: expand pipelining explanation, possibly with diagrams</p>
+</div>
+<p>There are some important considerations to take into account regarding pipelined
+diffusion:</p>
 <ul>
-<li>
-<p>Pros:</p>
+<li>Nodes can pipeline only <strong>one</strong> header which must be on top of its current
+selection,</li>
+<li>If the server then validates the pipelined block and finds out it was invalid,
+it is encouraged to announce it promptly to its clients.</li>
+</ul>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: Are these hard requirements?</p>
+</div>
+<p>More information can be found <a href="https://iohk.io/en/blog/posts/2022/02/01/introducing-pipelining-cardanos-consensus-layer-scaling-solution/">here</a>.</p>
+<h2 id="access-pattern-of-chainsync"><a class="header" href="#access-pattern-of-chainsync">Access pattern of ChainSync</a></h2>
+<p><code>ChainSync</code> involves potentially serving the whole chain, both the immutable
+part and the volatile part (the current node’s selection). As the current
+selection is bound to be rolled back, the <code>ChainSync</code> protocol has capabilities
+for announcing such rollbacks to clients and following rollbacks of servers.</p>
 <ul>
-<li>the simplest possible node software.</li>
+<li>For the immutable part of the chain: <code>ChainSync</code> accesses blocks in a
+sequential manner, a simple iterator over such chain would suffice.</li>
+<li>For the volatile part of the chain: <code>ChainSync</code> accesses the current
+selection in a sequential manner but such selection is bound to
+change if a new chain is selected. The abstraction used to implement
+the access to the selection must be able to follow such rollbacks.</li>
+<li>Blocks that become immutable usually are written to the disk as they are not
+used for following the current chain once the node is caught up, following the
+description in <a href="../../../consensus/chainsel.html#the-k-security-parameter">the <code>k</code> security parameter</a> section. The
+implementation of <code>ChainSync</code> should be able to identify this situation, as
+blocks might be gone from the volatile part of the chain as the selection
+advances. This does not need to be made explicit for clients but it has to be
+taken into account on the implementation of the server.</li>
 </ul>
-</li>
-<li>
-<p>Cons:</p>
-<ul>
-<li>on-chain governance of the hard-fork is impossible, as the
-software has no way of knowing where the era boundary is and
-does not even have such a concept.</li>
-<li>Additionally, special care is needed to process history blocks:
-chain replay is likely to be handled by special code, separate
-from the active era’s logic.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Chaotic Good: the node software supports the current era and the
-next era. Once the next era is adopted, a grace period is allowed
-for the participants to upgrade. The decision to upgrade may happen
-on chain.</p>
-<ul>
-<li>Pros:
-<ul>
-<li>allows for on-chain governance of the hard fork.</li>
-</ul>
-</li>
-<li>Cons:
-<ul>
-<li>supporting two eras is more difficult than one: higher chances
-of bugs that will cause the network to fork in an unintended
-way.</li>
-<li>Like in the previous case, special care is needed to process
-historic blocks.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>True Neutral: software is structured in such a way that is supports
-all eras.</p>
-<ul>
-<li>Pros:
-<ul>
-<li>enables massive code reuse and forces the code to be structured
-in the way that allows for abstract manipulation of blocks of
-different eras.</li>
-<li>The on-chain governance of hard-forks is reflected in the code,
-and ideally in the types as well, making it more likely that
-unintended scenarios are either impossible or easily discover
-able through type checking and testing.</li>
-</ul>
-</li>
-<li>Cons:
-<ul>
-<li>abstraction is a double-edged sword and may be difficult to
-encode in some programming languages.</li>
-<li>Engineers require extended onboarding to be productive.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>We argue that Cardano has been the True Neutral so far, which allowed
-to maintain the stability of the network while allowing it to change
-and evolve.</p>
-<p>Having multiple eras comes with some subtleties on era boundaries that
-implementors need to take into account:</p>
-<h2 id="time"><a class="header" href="#time">Time</a></h2>
-<h2 id="forecast-range"><a class="header" href="#forecast-range">Forecast range</a></h2>
+<h2 id="codecs"><a class="header" href="#codecs">Codecs</a></h2>
+<p>The messages depicted in the state machine follow this CDDL specification:</p>
+<pre><code class="language-cddl">;; messages.cddl
+chainSyncMessage
+    = msgRequestNext
+    / msgAwaitReply
+    / msgRollForward
+    / msgRollBackward
+    / msgFindIntersect
+    / msgIntersectFound
+    / msgIntersectNotFound
+    / chainSyncMsgDone
+
+msgRequestNext         = [0]
+msgAwaitReply          = [1]
+msgRollForward         = [2, header.header, tip]
+msgRollBackward        = [3, point, tip]
+msgFindIntersect       = [4, [* point]]
+msgIntersectFound      = [5, point, tip]
+msgIntersectNotFound   = [6, tip]
+chainSyncMsgDone       = [7]
+
+tip = [ point, base.blockNo ]
+
+point = []                         ; the genesis point
+      / [ base.slotNo, base.hash ]
+
+;# import base as base
+;# import header as header
+</code></pre>
+<p>The header is a tag-encoded value that contains CBOR-in-CBOR headers
+for the particular era:</p>
+<pre><code class="language-cddl">;; header.cddl
+header
+ = base.ns7&lt;byronHeader,
+            serialisedShelleyHeader&lt;shelley.header&gt;,
+            serialisedShelleyHeader&lt;allegra.header&gt;,
+            serialisedShelleyHeader&lt;mary.header&gt;,
+            serialisedShelleyHeader&lt;alonzo.header&gt;,
+            serialisedShelleyHeader&lt;babbage.header&gt;,
+            serialisedShelleyHeader&lt;conway.header&gt;&gt;
+
+byronHeader = [byronRegularIdx, #6.24(bytes .cbor byron.blockhead)]
+            / [byronBoundaryIdx, #6.24(bytes .cbor byron.ebbhead)]
+
+byronBoundaryIdx = [0, base.word32]
+byronRegularIdx = [1, base.word32]
+
+serialisedShelleyHeader&lt;era&gt; = #6.24(bytes .cbor era)
+
+;# include byron as byron
+;# include shelley as shelley
+;# include allegra as allegra
+;# include mary as mary
+;# include alonzo as alonzo
+;# include babbage as babbage
+;# include conway as conway
+;# import base as base
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../consensus/forging.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../network/node-to-node/handshake/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../storage/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../network/node-to-node/blockfetch/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -354,11 +457,11 @@ implementors need to take into account:</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../consensus/forging.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../network/node-to-node/handshake/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../storage/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../network/node-to-node/blockfetch/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -373,17 +476,17 @@ implementors need to take into account:</p>
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../.mdbook/mermaid.min.js"></script>
-        <script src="../.mdbook/mermaid-init.js"></script>
+        <script src="../../../.mdbook/mermaid.min.js"></script>
+        <script src="../../../.mdbook/mermaid-init.js"></script>
 
 
 

@@ -36,11 +36,23 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/storage/README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/storage/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -229,9 +249,17 @@
 }
 
 </style>
-<h1 id="the-storage-layer"><a class="header" href="#the-storage-layer">The Storage Layer</a></h1>
+<h1 id="storage"><a class="header" href="#storage">Storage</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.
+See also <a href="#resources">Resources</a></p>
+</div>
 <p>The Storage layer is responsible of storing the blocks on behalf of the
-Consensus layer. It is also involved in serving the data for <a href="./diffusion.html">Chain
+Consensus layer. It is also involved in serving the data for <a href="#chain-diffusion">Chain
 diffusion</a>.</p>
 <p>Some of this data is volatile and relates to the candidate chains and other data
 is immutable and relates to the historical chain, following the principle
@@ -269,6 +297,41 @@ candidate chain once assembled in the volatile part of the chain,</li>
 <p>It is interesting to note that the storage layer does not need to provide the
 Durability in the ACID acronym: upstream peers will always be available to
 replace any blocks a node loses.</p>
+<h2 id="chain-diffusion"><a class="header" href="#chain-diffusion">Chain diffusion</a></h2>
+<p>The mathematical model of the Ouroboros Consensus Protocols assumes
+instantaneous transmission (and validation) of chains, becoming instantly
+available even for newly joined peers. This is, even if just because of physical
+real-world limitations, infeasible in practice. For this reason, transmission of
+chains is done in a block-by-block basis instead. This allows chains to be
+incrementally sent to peers but comes with its own risks for newly joined peers
+(see <a href="../consensus/chainsel.html#ouroboros-genesis">Ouroboros Genesis</a>).</p>
+<p>Furthermore, blocks (which in the end is the data transmitted over the network)
+are subdivided in block headers and block bodies, as described in the
+<a href="../consensus/#headerbody-split">Header|body split</a> section.</p>
+<p>The diffusion of data in the Cardano network is in fact a responsibility of the
+<a href="../network/">Networking layer</a>. The diffusion of chains involves accessing the
+Storage layer and serving its contents to peers, however it is ultimately the
+<a href="../consensus/">Consensus layer</a> the one that decides how the data in the
+Storage layer is mutated, as an outcome of <a href="../consensus/chainsel.html">Chain
+Selection</a>.</p>
+<blockquote>
+<p>Chain diffusion is a joint effort of the Consensus, Network and Storage
+layers.</p>
+</blockquote>
+<p>Diffusion of chains is achieved by means of
+<a href="../network/node-to-node/chainsync"><code>ChainSync</code></a> and
+<a href="../network/node-to-node/blockfetch"><code>BlockFetch</code></a> mini-protocols.</p>
+<p>In a sense, the Storage layer has the data to provide the meaning of the
+messages in the mini-protocol whereas the networking layer describes the kinds
+of messages a protocol is composed by. It is possible to run an interaction of
+the protocol exchanging data that does not follow the intended semantics (for
+example an evil node sending all the chains it knows about instead of only the
+best selection).</p>
+<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf">Technical report: Cardano Consensus and Storage Layer</a>: Documentation of the Haskell implementation of consensus components</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers">Website: ouroboros-consensus &gt; For Developers</a>: Collection of developer articles on the Haskell implementation of consensus components</li>
+</ul>
 
                     </main>
 
@@ -278,7 +341,7 @@ replace any blocks a node loses.</p>
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../storage/diffusion.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../storage/cardano-node-chaindb/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -292,7 +355,7 @@ replace any blocks a node loses.</p>
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../storage/diffusion.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../storage/cardano-node-chaindb/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -318,6 +381,7 @@ replace any blocks a node loses.</p>
         <!-- Custom JS scripts -->
         <script src="../.mdbook/mermaid.min.js"></script>
         <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

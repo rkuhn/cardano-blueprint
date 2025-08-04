@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>ChainSync - Cardano Blueprint</title>
+        <title>Serialization - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,35 +12,47 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../../favicon.svg">
-        <link rel="shortcut icon" href="../../favicon.png">
-        <link rel="stylesheet" href="../../css/variables.css">
-        <link rel="stylesheet" href="../../css/general.css">
-        <link rel="stylesheet" href="../../css/chrome.css">
-        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../../";
+            const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc.js"></script>
+        <script src="../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,17 +93,20 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -126,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/storage/miniprotocols/chainsync.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/plutus/serialization.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -229,110 +249,40 @@
 }
 
 </style>
-<h1 id="chainsync"><a class="header" href="#chainsync">ChainSync</a></h1>
-<p><code>ChainSync</code> is the miniprotocol used to transmit chains of headers. It is a
-pull-based miniprotocol: data is transmitted only upon explicit request from the
-client.</p>
-<p>The purpose of <code>ChainSync</code> is to enable the client to acquire and validate the
-headers of the server’s selected chain, and if it is better than the client’s
-current selection, direct <code>BlockFetch</code> to download the corresponding blocks.</p>
-<div class="mdbook-alerts mdbook-alerts-tip">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  tip
-</p>
-<p>There usually is one <code>ChainSync</code> client per-peer connected to the node, such
-that the <em>chain state</em> of each peer is tracked independently.</p>
-</div>
-<p>The connection is abruptly terminated if the peer misbehaves. In particular,
-actions considered as misbehaviour are (not exclusively):</p>
-<ul>
-<li>The peer violates the state machine of the protocol,</li>
-<li>The server sends an invalid header,</li>
-<li>The server announces a fork that is more than <code>k</code> blocks deep from the
-client’s current selection.</li>
-</ul>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>TODO: Make this list exhaustive</p>
-</div>
-<p>The specification of the state machine of <code>ChainSync</code> is described in the
-Network documentation (<a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">design</a> and <a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf">spec</a>).</p>
-<h2 id="chainsync-pipelining-or-pipelined-diffusion"><a class="header" href="#chainsync-pipelining-or-pipelined-diffusion">ChainSync pipelining or pipelined diffusion</a></h2>
-<p>Not to be confused with <em>protocol pipelining</em>. The original design of ChainSync
-was extended with pipelining capabilities: a server can transmit a <em>tentative</em>
-header on top of the selected chain, and the invalidity of such header (or the
-associated body) will not cause the connection to terminate. If the client wants
-(by considering such header as the best known chain) it can request the body of
-the block via <code>BlockFetch</code> as usually done for any block.</p>
-<p>This optimization is used to shorten the time it takes to diffuse chains on the
-network, as otherwise nodes would only announce blocks <em>after</em> they validated
-it, causing each hop through the network to be bottle-necked by validation
-times.</p>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>TODO: expand pipelining explanation, possibly with diagrams</p>
-</div>
-<p>There are some important considerations to take into account regarding pipelined
-diffusion:</p>
-<ul>
-<li>Nodes can pipeline only <strong>one</strong> header which must be on top of its current
-selection,</li>
-<li>If the server then validates the pipelined block and finds out it was invalid,
-it is encouraged to announce it promptly to its clients.</li>
-</ul>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>TODO: Are these hard requirements?</p>
-</div>
-<p>More information can be found <a href="https://iohk.io/en/blog/posts/2022/02/01/introducing-pipelining-cardanos-consensus-layer-scaling-solution/">here</a>.</p>
-<h2 id="access-pattern-of-chainsync"><a class="header" href="#access-pattern-of-chainsync">Access pattern of ChainSync</a></h2>
-<p><code>ChainSync</code> involves potentially serving the whole chain, both the immutable
-part and the volatile part (the current node’s selection). As the current
-selection is bound to be rolled back, the <code>ChainSync</code> protocol has capabilities
-for announcing such rollbacks to clients and following rollbacks of servers.</p>
-<ul>
-<li>For the immutable part of the chain: <code>ChainSync</code> accesses blocks in a
-sequential manner, a simple iterator over such chain would suffice.</li>
-<li>For the volatile part of the chain: <code>ChainSync</code> accesses the current
-selection in a sequential manner but such selection is bound to
-change if a new chain is selected. The abstraction used to implement
-the access to the selection must be able to follow such rollbacks.</li>
-<li>Blocks that become immutable usually are written to the disk as they are not
-used for following the current chain once the node is caught up, following the
-description in <a href="../../consensus/chainsel.html#the-k-security-parameter">the <code>k</code> security parameter</a> section. The
-implementation of <code>ChainSync</code> should be able to identify this situation, as
-blocks might be gone from the volatile part of the chain as the selection
-advances. This does not need to be made explicit for clients but it has to be
-taken into account on the implementation of the server.</li>
-</ul>
-<h2 id="codecs"><a class="header" href="#codecs">Codecs</a></h2>
-<p>The headers sent through <code>ChainSync</code> on the Cardano network are tagged with the
-index of the era they belong to. The serialization of the header proper is its
-CBOR-in-CBOR representation.</p>
-<pre><code>serialise header = &lt;era tag&gt;&lt;cbor-in-cbor of header&gt;
+<h1 id="serialization"><a class="header" href="#serialization">Serialization</a></h1>
+<h2 id="serializing-data-objects-using-the-cbor-format"><a class="header" href="#serializing-data-objects-using-the-cbor-format">Serializing Data Objects Using the CBOR Format</a></h2>
+<p><code>Data</code> is a Plutus Core built-in type.
+It is used for on-chain data interchange, such as arguments to Plutus validators.
+The following is the Haskell definition of <code>Data</code>:</p>
+<pre><code class="language-haskell">data Data =
+  Constr Integer [Data]
+  | Map [(Data, Data)]
+  | List [Data]
+  | I Integer
+  | B ByteString
 </code></pre>
-<!-- iohk.io links return 403 "if you are not a human" -->
-<!-- markdown-link-check-disable-next-line -->
+<p>Because blockchains store and transmit data in binary format, a <code>Data</code> object must be serialized into bytes whenever it is included in a transaction, or stored in a UTxO.
+The serialization method must be deterministic, compact and stable.</p>
+<p>Cardano uses CBOR extensively as a serialization format, so CBOR is also used for <code>Data</code> objects.
+All Cardano node implementations must agree on how <code>Data</code> objects are serialized.
+The serialization method used by the Haskell node is described in the Plutus Core spec, Appendix B.</p>
+<h2 id="serializing-plutus-scripts-using-the-flat-format"><a class="header" href="#serializing-plutus-scripts-using-the-flat-format">Serializing Plutus Scripts Using the Flat Format</a></h2>
+<p>Plutus scripts must also be serialized into a binary format so that they can be stored, transmitted and hashed.</p>
+<p>Plutus scripts are serialized using the <code>flat</code> format.
+<code>flat</code> is much more compact and faster than CBOR for serializing programs due to avoiding unnecessary metadata, resulting in a smaller script size and faster serialization - important for on-chain storage and transaction fees.</p>
+<p>The <code>flat</code>-serialized script is then serialized into CBOR, based on which script hashes are calculated.</p>
+<p>All Cardano node implementations must agree on how Plutus scripts are serialized.
+The serialization method used by the Haskell node is described in the Plutus Core script, Appendix C.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../storage/diffusion.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../plutus/cek.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../storage/miniprotocols/blockfetch.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../client/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -342,11 +292,11 @@ CBOR-in-CBOR representation.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../storage/diffusion.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../plutus/cek.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../storage/miniprotocols/blockfetch.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../client/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -361,17 +311,18 @@ CBOR-in-CBOR representation.</p>
         </script>
 
 
-        <script src="../../elasticlunr.min.js"></script>
-        <script src="../../mark.min.js"></script>
-        <script src="../../searcher.js"></script>
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
 
-        <script src="../../clipboard.min.js"></script>
-        <script src="../../highlight.js"></script>
-        <script src="../../book.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../../.mdbook/mermaid.min.js"></script>
-        <script src="../../.mdbook/mermaid-init.js"></script>
+        <script src="../.mdbook/mermaid.min.js"></script>
+        <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

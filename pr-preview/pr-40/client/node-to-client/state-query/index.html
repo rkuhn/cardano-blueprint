@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Semantics of storage mini-protocols - Cardano Blueprint</title>
+        <title>LocalStateQuery - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,35 +12,47 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,17 +93,20 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -126,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/storage/diffusion.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/client/node-to-client/state-query/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -229,47 +249,146 @@
 }
 
 </style>
-<h1 id="semantics-of-storage-mini-protocols"><a class="header" href="#semantics-of-storage-mini-protocols">Semantics of storage mini-protocols</a></h1>
-<p>The mathematical model of the Ouroboros Consensus Protocols assumes
-instantaneous transmission (and validation) of chains, becoming instantly
-available even for newly joined peers. This is, even if just because of physical
-real-world limitations, infeasible in practice. For this reason, transmission of
-chains is done in a block-by-block basis instead. This allows chains to be
-incrementally sent to peers but comes with its own risks for newly joined peers
-(see <a href="../consensus/chainsel.html#ouroboros-genesis">Ouroboros Genesis</a>).</p>
-<p>Furthermore, blocks (which in the end is the data transmitted over the network)
-are subdivided in block headers and block bodies, as described in the
-<a href="../consensus/#headerbody-split">Header|body split</a> section.</p>
-<p>The diffusion of data in the Cardano network is in fact a responsibility of the
-<a href="../network">Networking layer</a>. The diffusion of chains involves accessing the
-Storage layer and serving its contents to peers, however it is ultimately the
-<a href="../consensus/">Consensus layer</a> the one that decides how the data in the
-Storage layer is mutated, as an outcome of <a href="../consensus/chainsel.html">Chain
-Selection</a>.</p>
+<h1 id="localstatequery"><a class="header" href="#localstatequery">LocalStateQuery</a></h1>
 <blockquote>
-<p>Chain diffusion is a joint effort of the Consensus, Network and Storage
-layers.</p>
+<p>Protocol version: V19</p>
 </blockquote>
-<p>Diffusion of chains is achieved by means of
-<a href="./miniprotocols/chainsync.html"><code>ChainSync</code></a> and
-<a href="./miniprotocols/blockfetch.html"><code>BlockFetch</code></a> mini-protocols.</p>
-<p>In a sense, the Storage layer has the data to provide the meaning of the
-messages in the mini-protocol whereas the networking layer describes the kinds
-of messages a protocol is composed by. It is possible to run an interaction of
-the protocol exchanging data that does not follow the intended semantics (for
-example an evil node sending all the chains it knows about instead of only the
-best selection). That’s why we describe here when each message should be emitted
-and what information it should carry.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: Explain how to use and relate state diagram to full protocol in <a href="../../../network">network</a> chapter?</p>
+</div>
+<details>
+  <summary> Full mini-protocol state diagram</summary>
+<pre class="mermaid">stateDiagram
+    direction LR
+    [*] --&gt; StIdle
+    StIdle --&gt; [*]: MsgDone
+    StIdle --&gt; Acquiring: MsgAcquire
+    Acquiring --&gt; Acquired: MsgAcquired
+    Acquired --&gt; Querying: MsgQuery
+    Querying --&gt; Acquired: MsgResult
+    Acquired --&gt; Acquiring: MsgReAcquire
+    Acquiring --&gt; StIdle: MsgFailure
+    Acquired --&gt; StIdle: MsgRelease
+</pre>
+<p>See also definition in <a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf#section.3.13">network spec</a>.</p>
+</details>
+<p>Client-side view on the protocol<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup>:</p>
+<pre><code>                      ●
+                      │
+                      ▼
+              ┌───────────────┐ MsgDone
+       ╭─────▶│     Idle      ├────────▶ ○
+       │      └───────┬───────┘
+       │   MsgAcquire │
+       │              ▼  ╭────────╮
+       │      ┌──────────┴────┐   │ MsgReAcquire
+       ╰──────┤   Acquired    │◀──╯
+  MsgRelease  └───┬───────────┘
+                  │       ▲
+                  ╰───────╯
+                   MsgQuery
+</code></pre>
+<details>
+  <summary>Broken mermaid rendering</summary>
+<pre class="mermaid">stateDiagram
+    direction LR
+    [*] --&gt; StIdle
+    StIdle --&gt; Acquired: MsgAcquire
+    Acquired --&gt; Acquired: MsgQuery, MsgReAcquire, MsgFailure
+    StIdle --&gt; StIdle: MsgFailure
+    Acquired --&gt; StIdle: MsgRelease
+    StIdle --&gt; [*]: MsgDone
+</pre>
+</details>
+<h2 id="acquire-a-state"><a class="header" href="#acquire-a-state">Acquire a state</a></h2>
+<p>To use the ledger state query API, a client needs to first specify at which point on the chain the query should be executed. Depending on the server implementation, this point may only be within the “volatile” recent part of the chain. A typical practice is to acquire the tip of the chain, perform one or more queries and close the connection again.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: show how to acquire a point with an example CBOR message</p>
+</div>
+<h2 id="queries"><a class="header" href="#queries">Queries</a></h2>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: Explain distinction between consensus and block queries here</p>
+</div>
+<h3 id="getsystemstart"><a class="header" href="#getsystemstart">getSystemStart</a></h3>
+<p><em>Since: v9</em></p>
+<p>Query the chain’s start time as a <code>UTCTime</code>.</p>
+<div class="mdbook-alerts mdbook-alerts-caution">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  caution
+</p>
+<p>Is this the Byron or Shelly start time?</p>
+</div>
+<pre><code class="language-cddl">msgQuery     = [3, $query]
+msgResult    = [4, $result]
+</code></pre>
+<pre><code class="language-cddl">$query /= [1]
+$result /= [year, dayOfYear, timeOfDayPico]
 
+year = bigint
+dayOfYear = uint
+timeOfDayPico = bigint
+</code></pre>
+<p>Example query:</p>
+<pre><code class="language-cbor">82038101
+</code></pre>
+<p>Example response:</p>
+<pre><code class="language-cbor">820483c2581ecca45aff5ff13d202641114479adc1b566b8a778514878b6b8c7410aa4a41a1fbe21aac2581e9de64341ff22211c81b5479ea4ad812682e3db52f36447dfc107a992e49d
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: Create more realistic examples and use a tool to probabilistically verify more data.
+TODO: Also use CBOR diagnostic notation for examples</p>
+</div>
+<div class="mdbook-alerts mdbook-alerts-caution">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  caution
+</p>
+<p>FIXME: While I experimented in using the network / consensus cddl parts above, <code>time</code> would be defined in the CDDL prelude (a number, assuming seconds since epoch), but is actually incorrect and the result is serialized using <code>ToCBOR UTCTime</code> following this cddl:</p>
+<pre><code class="language-cddl">time = [year, dayOfYear, timeOfDayPico]
+year = bigint
+dayOfYear = int
+timeOfDayPico = bigint
+</code></pre>
+</div>
+<h3 id="getcurrentpparams"><a class="header" href="#getcurrentpparams">getCurrentPParams</a></h3>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: Era-specific query with an involved answer</p>
+</div>
+<hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>Derived from <a href="https://ogmios.dev/mini-protocols/local-state-query/">ogmios</a>’ great ascii art description. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../storage/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../client/node-to-client/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../storage/miniprotocols/chainsync.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../client/utxo-rpc/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -279,11 +398,11 @@ and what information it should carry.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../storage/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../client/node-to-client/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../storage/miniprotocols/chainsync.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../client/utxo-rpc/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -298,17 +417,18 @@ and what information it should carry.</p>
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../.mdbook/mermaid.min.js"></script>
-        <script src="../.mdbook/mermaid-init.js"></script>
+        <script src="../../../.mdbook/mermaid.min.js"></script>
+        <script src="../../../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

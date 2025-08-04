@@ -36,11 +36,23 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/consensus/chainsel.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/consensus/chainsel.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -243,8 +263,8 @@ implies that even non-block-forging nodes contribute to the security of the
 network as a whole.</p>
 <p>Because each node performs chain selection, the Cardano network acts as a
 forward-filtering diffusion network.</p>
-<p>The block headers come from <a href="../storage/miniprotocols/chainsync.html"><code>ChainSync</code></a> and
-the block bodies come from <a href="../storage/miniprotocols/blockfetch.html"><code>BlockFetch</code></a>.</p>
+<p>The block headers come from <a href="../network/node-to-node/chainsync"><code>ChainSync</code></a> and
+the block bodies come from <a href="../network/node-to-node/blockfetch"><code>BlockFetch</code></a>.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -380,7 +400,7 @@ validity of blocks, making parts of the block superfluous. It therefore also
 uses length to choose among candidates.</p>
 <h3 id="ouroboros-tpraos-and-praos"><a class="header" href="#ouroboros-tpraos-and-praos">Ouroboros TPraos and Praos</a></h3>
 <p>Ouroboros Praos circles back to defining the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathcal" style="margin-right:0.05834em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbb">C</span><span class="mclose">)</span></span></span></span> function, with identical behaviour to that in Ouroboros
-Classic. This means that longer candidates are preferrable to shorter ones, and
+Classic. This means that longer candidates are preferable to shorter ones, and
 that ties are broken in favour of the already selected candidate.</p>
 <p>See Figure 4 and the definition of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6111em;"></span><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span></span></span></span> above it in the
 <a href="https://iohk.io/en/research/library/papers/ouroboros-praos-an-adaptively-secure-semi-synchronous-proof-of-stake-protocol/">paper</a>.</p>
@@ -432,7 +452,7 @@ era).</p>
 <p>However, in Praos, the rule for selecting the best chain between two competing
 chains is fundamentally based on chain length. The protocol assumes
 instantaneous transmission of entire chains, meaning that the perceived length
-of a candidate would be its actual length.  Due to fundamental real-world
+of a candidate would be its actual length. Due to fundamental real-world
 limitations, sending such a large amount of data instantaneously is impossible;
 instead, data is streamed to the syncing node. Consequently, nodes only know the
 length of the received prefix of the candidate chain. This creates the risk of
@@ -474,9 +494,6 @@ were implemented on top of the Genesis specification:</p>
 <p>Once the node finishes syncing with the network, this rule gracefully converges
 into the usual length-based comparison used in Praos, so the node can safely
 switch to running only Ouroboros Praos.</p>
-<!-- iohk.io links return 403 "if you are not a human" -->
-<!-- markdown-link-check-disable -->
-<!-- markdown-link-check-enable -->
 
                     </main>
 
@@ -526,6 +543,7 @@ switch to running only Ouroboros Praos.</p>
         <!-- Custom JS scripts -->
         <script src="../.mdbook/mermaid.min.js"></script>
         <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

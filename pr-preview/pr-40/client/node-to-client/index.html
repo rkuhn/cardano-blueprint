@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Multi-era considerations - Cardano Blueprint</title>
+        <title>NTC - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex.js";
+            window.path_to_searchindex_js = "../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -106,7 +106,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -141,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/consensus/multiera.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/client/node-to-client/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -249,102 +249,32 @@
 }
 
 </style>
-<h1 id="multi-era-considerations"><a class="header" href="#multi-era-considerations">Multi-era considerations</a></h1>
-<p>With the blockchain network evolving, the block format and ledger
-rules are bound to change. In Cardano, every significant change starts
-a new “era”. There are several ways to deal with multiple eras in the
-node software, associated here with some of <a href="https://en.wikipedia.org/wiki/Alignment_(role-playing_games)#Dungeons_&amp;_Dragons">the DnD
-alignments</a>:</p>
+<h1 id="node-to-client-ntc"><a class="header" href="#node-to-client-ntc">Node-To-Client (NTC)</a></h1>
+<p><code>cardano-node</code> implements a set of mini-protocols that follow rules very similar
+to those in the Node-To-Node interface, except that they communicate through a
+named pipe. As these protocols establish connections to local clients there is
+trust between peers and consequently they behave more like traditional
+client/server APIs.</p>
+<p>In particular, these mini-protocols will also be wrapped by a
+<a href="../../network/multiplexing.html">multiplexer</a>.</p>
+<p>These mini-protocols are:</p>
 <ul>
-<li>
-<p>Chaotic Evil: the node software only ever implements one era. When
-the protocol needs to be updated, all participants must update the
-software or risk being ejected from the network. Most importantly, the
-decision to transition to the new era needs to happen off-chain.</p>
-<ul>
-<li>
-<p>Pros:</p>
-<ul>
-<li>the simplest possible node software.</li>
+<li><a href="">Handshake</a>: to negotiate the versions used in the connection,</li>
+<li><a href="">LocalTxSubmission</a>: to submit transactions to the network,</li>
+<li><a href="state-query">LocalStateQuery</a>: to query for information about the ledger state,</li>
+<li><a href="">TxMonitor</a>: to monitor the status of transactions,</li>
+<li><a href="">LocalChainSync</a>: to retrieve chains of blocks from the node.</li>
 </ul>
-</li>
-<li>
-<p>Cons:</p>
-<ul>
-<li>on-chain governance of the hard-fork is impossible, as the
-software has no way of knowing where the era boundary is and
-does not even have such a concept.</li>
-<li>Additionally, special care is needed to process history blocks:
-chain replay is likely to be handled by special code, separate
-from the active era’s logic.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Chaotic Good: the node software supports the current era and the
-next era. Once the next era is adopted, a grace period is allowed
-for the participants to upgrade. The decision to upgrade may happen
-on chain.</p>
-<ul>
-<li>Pros:
-<ul>
-<li>allows for on-chain governance of the hard fork.</li>
-</ul>
-</li>
-<li>Cons:
-<ul>
-<li>supporting two eras is more difficult than one: higher chances
-of bugs that will cause the network to fork in an unintended
-way.</li>
-<li>Like in the previous case, special care is needed to process
-historic blocks.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>True Neutral: software is structured in such a way that is supports
-all eras.</p>
-<ul>
-<li>Pros:
-<ul>
-<li>enables massive code reuse and forces the code to be structured
-in the way that allows for abstract manipulation of blocks of
-different eras.</li>
-<li>The on-chain governance of hard-forks is reflected in the code,
-and ideally in the types as well, making it more likely that
-unintended scenarios are either impossible or easily discover
-able through type checking and testing.</li>
-</ul>
-</li>
-<li>Cons:
-<ul>
-<li>abstraction is a double-edged sword and may be difficult to
-encode in some programming languages.</li>
-<li>Engineers require extended onboarding to be productive.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>We argue that Cardano has been the True Neutral so far, which allowed
-to maintain the stability of the network while allowing it to change
-and evolve.</p>
-<p>Having multiple eras comes with some subtleties on era boundaries that
-implementors need to take into account:</p>
-<h2 id="time"><a class="header" href="#time">Time</a></h2>
-<h2 id="forecast-range"><a class="header" href="#forecast-range">Forecast range</a></h2>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../consensus/forging.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../client/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../storage/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../client/node-to-client/state-query/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -354,11 +284,11 @@ implementors need to take into account:</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../consensus/forging.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../client/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../storage/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../client/node-to-client/state-query/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -373,17 +303,17 @@ implementors need to take into account:</p>
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../.mdbook/mermaid.min.js"></script>
-        <script src="../.mdbook/mermaid-init.js"></script>
+        <script src="../../.mdbook/mermaid.min.js"></script>
+        <script src="../../.mdbook/mermaid-init.js"></script>
 
 
 

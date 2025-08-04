@@ -36,11 +36,23 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -230,15 +250,38 @@
 
 </style>
 <h1 id="ledger"><a class="header" href="#ledger">Ledger</a></h1>
-<p>Cardano uses the Extended Unspent Transaction Output (EUTxO) ledger model…</p>
-<pre><code class="language-agda">data S
-</code></pre>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.</p>
+</div>
+<p>The Ledger is responsible for validating Blocks and represents the actual semantics of Cardano transactions. The format of blocks and transactions is defined in so-called <strong>eras</strong>: <code>Byron</code>, <code>Shelley</code>, <code>Allegra</code>, <code>Mary</code>, <code>Alonzo</code>, <code>Babbage</code> and <code>Conway</code>.</p>
+<p>This blueprint is currently more of an entrypoint to already existing implementation-independent descriptions of Cardano transactions and the ledger rules. While existing work covers a lot already, the <code>cardano-blueprint</code> may serve as an incubation or staging area for material to cover gaps.</p>
+<p>For starters, the <a href="https://aiken-lang.org/fundamentals/eutxo">EUTxO Crash Course</a> from Aiken is a very good introduction about Cardano transactions.</p>
+<p>See <a href="./transaction-fee.html">Transaction fee</a> for an informal write-up on how transaction fees are currently calculated.</p>
+<h2 id="ledger-rules"><a class="header" href="#ledger-rules">Ledger rules</a></h2>
+<p>The <a href="https://intersectmbo.github.io/formal-ledger-specifications/site/index.html">Formal Specification</a> is the source of truth for ledger semantics. While it is currently being made more accessible by interleaving explanations with Agda definitions, its very dense on the Agda and actively worked on to close the gap latest era descriptions and the old era definitions. The Haskell implementation of the ledger holds a list of <a href="https://github.com/IntersectMBO/cardano-ledger?tab=readme-ov-file#cardano-ledger">design documents and ledger specifications</a> for all eras.</p>
+<p>See <a href="./block-validation.html">Block Validation</a> for a description of the <code>Conway</code> era block validation rules.</p>
+<h2 id="block-and-transaction-format"><a class="header" href="#block-and-transaction-format">Block and transaction format</a></h2>
+<p>The <a href="https://github.com/search?q=repo%3AIntersectMBO%2Fcardano-ledger+path%3A.cddl&amp;type=code">.cddl files in cardano-ledger</a> define the wire-format of blocks and transactions for each era. These are self-contained for each
+era and are referenced in <a href="../codecs#cddl">other blueprint CDDL schemas</a>.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: make ledger cddls available through blueprint directly</p>
+</div>
+<h2 id="conformance-tests"><a class="header" href="#conformance-tests">Conformance tests</a></h2>
+<p>Despite the formal specification provides a precise definition for semantics, testing the behavior of ledger implementations against the specification and also the ledger implementations against each other is crucial. For this purpose, a conformance test suite with <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main/src/ledger/conformance-test-vectors">implementation-independent test vectors</a> can be used.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../mempool/txsubmission2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../mempool/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -252,7 +295,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../mempool/txsubmission2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../mempool/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -282,6 +325,7 @@
         <!-- Custom JS scripts -->
         <script src="../.mdbook/mermaid.min.js"></script>
         <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

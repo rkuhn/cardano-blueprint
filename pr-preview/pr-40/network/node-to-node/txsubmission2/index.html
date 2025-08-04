@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Handshake Mini-protocol - Cardano Blueprint</title>
+        <title>TxSubmission2 - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,35 +12,47 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,17 +93,20 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -126,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/network/handshake.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/network/node-to-node/txsubmission2/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -229,213 +249,180 @@
 }
 
 </style>
-<h1 id="handshake-mini-protocol"><a class="header" href="#handshake-mini-protocol">Handshake mini-protocol</a></h1>
-<p><strong>Mini-protocol number: 0</strong></p>
-<p>The Handshake mini-protocol is used to establish a connection and
-negotiate protocol versions and parameters between the initiator
-(client) and responder (server).  There are two versions, one for
-node-to-node (N2N) and one for node-to-client (N2C), which differ only
-in their protocol parameters.</p>
+<h1 id="txsubmission2"><a class="header" href="#txsubmission2">TxSubmission2</a></h1>
+<p><strong>Mini-protocol number: 4</strong></p>
+<p><code>TxSubmission2</code> is the mini protocol in charge of diffusing pending transactions
+through the network. It is a pull-based miniprotocol: data is transmitted only
+upon explicit request from the client.</p>
+<p>The goal of <code>TxSubmission2</code> is to let other peers know about the transactions
+that the local node considers valid (with respects to the chain that the local
+node has selected in <a href="../../../consensus/chainsel.html">Chain Selection</a> in the
+consensus layer), and transmit such transactions if requested.</p>
+<p>An important piece of information is that transactions flow in the
+opposite direction than blocks/headers. Blocks flow from
+block-producers to their clients reaching the entirety of the network,
+while transactions flow from all the network aiming to reach
+block-producers. For this reason, in the state machine below it might
+seem that agency is flipped but this is intentional. It is the
+“client” (or the “initiator”) the one that gives transactions to the
+“server” (or “responder).</p>
+<p>Honest nodes will try to validate every transaction they come to know about.</p>
+<p>There are some situations in which this miniprotocol would terminate abruptly,
+closing all the connections to the remote peer. Actions that are considered as
+misbehaviour are (not exclusively):</p>
+<ul>
+<li>Violation of the miniprotocol state machine,</li>
+<li>Too many or not enough transactions sent or acknowledged via the client or
+server,</li>
+<li>Requesting zero transactions,</li>
+<li>The client requesting a transaction that was not announced by the server.</li>
+</ul>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: Make this list exhaustive</p>
+</div>
 <h2 id="state-machine"><a class="header" href="#state-machine">State machine</a></h2>
+<p>The state machine for TxSubmission2 is as follows:</p>
 <pre class="mermaid">stateDiagram
-
-    [*] --&gt; StPropose
-    StPropose --&gt; StConfirm: MsgProposeVersions
-    StConfirm --&gt; [*]: MsgAcceptVersion
-    StConfirm --&gt; [*]: MsgReplyVersion
-    StConfirm --&gt; [*]: MsgRefuse
-
-    direction LR
+   direction LR
+   [*] --&gt; StInit
+   StInit --&gt; StIdle: MsgInit
+   StIdle --&gt; StTxs: MsgRequestTxs
+   StTxs --&gt; StIdle: MsgReplyTxs
+   StIdle --&gt; StTxIdsNonBlocking: MsgRequestTxIdsNonBlocking
+   StTxIdsNonBlocking --&gt; StIdle: MsgReplyTxIds
+   StIdle --&gt; StTxIdsBlocking: MsgRequestTxIdsBlocking
+   StTxIdsBlocking --&gt; StIdle: MsgReplyTxIds
+   StTxIdsBlocking --&gt; [*]: MsgDone
 
     classDef initiator color:#080
     classDef responder color:#008, text-decoration: underline
-    class StPropose initiator
-    class StConfirm responder
+    class StIdle responder
+    class StInit initiator
+    class StTxs initiator
+    class StTxIdsBlocking initiator
+    class StTxIdsNonBlocking initiator
 </pre>
 <h3 id="state-agencies"><a class="header" href="#state-agencies">State agencies</a></h3>
 <div class="table-wrapper"><table><thead><tr><th style="text-align: left">State</th><th style="text-align: left">Agency</th></tr></thead><tbody>
-<tr><td style="text-align: left">StPropose</td><td style="text-align: left"><span style="color:#080">Initiator</span></td></tr>
-<tr><td style="text-align: left">StConfirm</td><td style="text-align: left"><span style="color:#008;text-decoration:underline">Responder</span></td></tr>
+<tr><td style="text-align: left">StInit</td><td style="text-align: left"><span style="color:#080">Initiator</span></td></tr>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left"><span style="color:#008;text-decoration:underline">Responder</span></td></tr>
+<tr><td style="text-align: left">StTxs</td><td style="text-align: left"><span style="color:#080">Initiator</span></td></tr>
+<tr><td style="text-align: left">StTxIdsBlocking</td><td style="text-align: left"><span style="color:#080">Initiator</span></td></tr>
+<tr><td style="text-align: left">StTxIdsNonBlocking</td><td style="text-align: left"><span style="color:#080">Initiator</span></td></tr>
 </tbody></table>
 </div>
 <h3 id="state-transitions"><a class="header" href="#state-transitions">State transitions</a></h3>
 <div class="table-wrapper"><table><thead><tr><th style="text-align: left">From state</th><th style="text-align: left">Message</th><th>Parameters</th><th style="text-align: left">To state</th></tr></thead><tbody>
-<tr><td style="text-align: left">StPropose</td><td style="text-align: left">MsgProposeVersions</td><td><code>versionTable</code></td><td style="text-align: left">StConfirm</td></tr>
-<tr><td style="text-align: left">StConfirm</td><td style="text-align: left">MsgReplyVersion</td><td><code>versionTable</code></td><td style="text-align: left">End</td></tr>
-<tr><td style="text-align: left">StConfirm</td><td style="text-align: left">MsgAcceptVersion</td><td><code>(versionNumber, versionData)</code></td><td style="text-align: left">End</td></tr>
-<tr><td style="text-align: left">StConfirm</td><td style="text-align: left">MsgRefuse</td><td><code>reason</code></td><td style="text-align: left">End</td></tr>
+<tr><td style="text-align: left">StInit</td><td style="text-align: left">MsgInit</td><td></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgRequestTxIdsNonBlocking</td><td><code>ack</code>, <code>req</code></td><td style="text-align: left">StTxIdsNonBlocking</td></tr>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgRequestTxIdsBlocking</td><td><code>ack</code>, <code>req</code></td><td style="text-align: left">StTxIdsBlocking</td></tr>
+<tr><td style="text-align: left">StTxIdsNonBlocking</td><td style="text-align: left">MsgReplyTxIds</td><td><code>[(id, size)]</code></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StTxIdsBlocking</td><td style="text-align: left">MsgReplyTxIds</td><td><code>[(id, size)]</code></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgRequestTxs</td><td><code>[id]</code></td><td style="text-align: left">StTxs</td></tr>
+<tr><td style="text-align: left">StTxs</td><td style="text-align: left">MsgReplyTxs</td><td><code>[tx]</code></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgDone</td><td></td><td style="text-align: left">End</td></tr>
 </tbody></table>
 </div>
-<h2 id="tcp-simultaneous-open"><a class="header" href="#tcp-simultaneous-open">TCP simultaneous open</a></h2>
-<p>In the rare case when both sides try to connect to each other at the same time,
-it’s possible to get a “TCP simultaneous open” where you end up with a single
-socket, not two.  In this case, both sides will think they are the initiator
-so will send a <code>MsgProposeVersions</code>, and this protocol handles this by treating
-the received one in <code>StConfirm</code> state as a <code>MsgReplyVersion</code>, which has the same
-CBOR encoding.</p>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>Why does the message need to change name?  The state machine would be
-valid with an <code>StConfirm -- MsgProposeVersions --&gt; End</code> arc.</p>
-</div>
-<div class="mdbook-alerts mdbook-alerts-note">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  note
-</p>
-<p>Also, is the negotiation always deemed successful in this case?  What if
-one side can’t accept the other’s version? (there is talk of resetting
-the connection)</p>
-</div>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p><code>MsgReplyVersion</code> is no longer mentioned in the CDDL - is this therefore
-out of date?</p>
-</div>
-<h2 id="messages"><a class="header" href="#messages">Messages</a></h2>
-<p>The <code>MsgProposeVersions</code> message is sent by the initiator to propose a
-set of possible versions and protocol parameters.  <code>versionTable</code> is a map
-of version numbers to associated parameters - bear in mind that different
-versions may have different sets of parameters.  The version number keys
-must be unique and in ascending order.</p>
-<div class="mdbook-alerts mdbook-alerts-note">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  note
-</p>
-<p>This seems an arbitrary constraint which could easily be avoided by
-implementations, although deterministic CBOR encoding would enforce it.</p>
-</div>
-<p>The <code>MsgAcceptVersion</code> message is returned by the responder to confirm
-a mutually acceptable version and set of parameters.</p>
-<p>The <code>MsgRefuse</code> message is returned by the responder to indicate there is
-no acceptable version match, or another reason.  If it is a version mismatch
-it returns a set of version numbers that it could have accepted.</p>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>The content of <code>MsgRefuse</code> is inconsistent between the paper and CDDL -
-check the above.</p>
-</div>
-<h3 id="message-size-limits"><a class="header" href="#message-size-limits">Message size limits</a></h3>
-<p>Because the Handshake protocol operates before the multiplexer is fully
-set up, the messages must not be split into segments, and this imposes
-a size limit of 5760 bytes.</p>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>This seems like a protocol level mix, and since the negotiated parameters
-don’t seem to affect the mux config (and could be changed dynamically even
-if they did), it’s not clear why this constraint is needed.</p>
-</div>
-<div class="mdbook-alerts mdbook-alerts-note">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  note
-</p>
-<p>Why 5076 when the mux protocol can handle 65535? Implementation detail?</p>
-</div>
-<h3 id="timeouts"><a class="header" href="#timeouts">Timeouts</a></h3>
-<p>The maximum time to wait for a message in <code>StPropose</code> (for the responder)
-or <code>StConfirm</code> (for the initiator) is 10 seconds.  After this the connection
-should be torn down.</p>
-<h2 id="cddl"><a class="header" href="#cddl">CDDL</a></h2>
-<p>Here’s the CDDL for the latest node-to-node handshake protocol:</p>
-<pre><code class="language-cddl">;
-; NodeToNode Handshake (&gt;=v13)
-;
-handshakeMessage
-    = msgProposeVersions
-    / msgAcceptVersion
-    / msgRefuse
-    / msgQueryReply
+<h2 id="codecs"><a class="header" href="#codecs">Codecs</a></h2>
+<p>The messages depicted in the state machine follow this CDDL specification:</p>
+<pre><code class="language-cddl">;; messages.cddl
+txSubmission2Message
+    = msgInit
+    ; corresponds to either MsgRequestTxIdsBlocking or
+    ; MsgRequestTxIdsNonBlocking in the spec
+    / msgRequestTxIds
+    / msgReplyTxIds
+    / msgRequestTxs
+    / msgReplyTxs
+    / tsMsgDone
 
-msgProposeVersions = [0, versionTable]
-msgAcceptVersion   = [1, versionNumber, nodeToNodeVersionData]
-msgRefuse          = [2, refuseReason]
-msgQueryReply      = [3, versionTable]
 
-versionTable = { * versionNumber =&gt; nodeToNodeVersionData }
+msgInit         = [6]
+msgRequestTxIds = [0, tsBlocking, txCount, txCount]
+msgReplyTxIds   = [1, txIdsAndSizes ]
+msgRequestTxs   = [2, txIdList ]
+msgReplyTxs     = [3, txList ]
+tsMsgDone       = [4]
 
-versionNumber = 13 / 14
+tsBlocking      = false / true
+txCount         = base.word16
+; The codec only accepts indefinite-length lists.
+txIdList        = [ *txId.txId ]
+txList          = [ *tx.tx ]
+txIdAndSize     = [base.txId, txSizeInBytes]
+; The codec only accepts definite-length lists.
+txIdsAndSizes   = [ *txIdAndSize ]
+txSizeInBytes   = base.word32
 
-nodeToNodeVersionData = [ networkMagic, initiatorOnlyDiffusionMode, peerSharing, query ]
-
-; range between 0 and 0xffffffff
-networkMagic = 0..4294967295
-initiatorOnlyDiffusionMode = bool
-; range between 0 and 1
-peerSharing = 0..1
-query = bool
-
-refuseReason
-    = refuseReasonVersionMismatch
-    / refuseReasonHandshakeDecodeError
-    / refuseReasonRefused
-
-refuseReasonVersionMismatch      = [0, [ *versionNumber ] ]
-refuseReasonHandshakeDecodeError = [1, versionNumber, tstr]
-refuseReasonRefused              = [2, versionNumber, tstr]
+;# import tx as tx
+;# import txId as txId
+;# import base as base
 </code></pre>
-<p>And the node-to-client version:</p>
-<pre><code class="language-cddl">;
-; NodeToClient Handshake
-;
+<p>A transaction ID is a tag-encoded alternative of the transaction IDs
+for each of the eras. Note that in Byron there are 4 alternatives for
+a transaction ID:</p>
+<pre><code class="language-cddl">;; txid.cddl
+txId =
+  base.ns7&lt;byronTxId,
+           shelley.transaction_id,
+           allegra.transaction_id,
+           mary.transaction_id,
+           alonzo.transaction_id,
+           conway.transaction_id,
+           babbage.transaction_id&gt;
 
-handshakeMessage
-    = msgProposeVersions
-    / msgAcceptVersion
-    / msgRefuse
-    / msgQueryReply
+byronTxId = [0, byron.txid]
+          / [1, byron.certificateid]
+          / [2, byron.updid]
+          / [3, byron.voteid]
 
-msgProposeVersions = [0, versionTable]
-msgAcceptVersion   = [1, versionNumber, nodeToClientVersionData]
-msgRefuse          = [2, refuseReason]
-msgQueryReply      = [3, versionTable]
+;# include byron as byron
+;# include shelley as shelley
+;# include allegra as allegra
+;# include mary as mary
+;# include alonzo as alonzo
+;# include babbage as babbage
+;# include conway as conway
+;# import base as base
+</code></pre>
+<p>A transaction as transmitted in <code>TxSubmission2</code> is a tag-encoded
+alternative of the transactions for each of the eras. Note that for
+Shelley-onwards, the transaction is serialized in CBOR-in-CBOR:</p>
+<pre><code class="language-cddl">;; tx.cddl
+tx =
+  base.ns7&lt;byron.tx,
+           serialisedShelleyTx&lt;shelley.transaction&gt;,
+           serialisedShelleyTx&lt;allegra.transaction&gt;,
+           serialisedShelleyTx&lt;mary.transaction&gt;,
+           serialisedShelleyTx&lt;alonzo.transaction&gt;,
+           serialisedShelleyTx&lt;babbage.transaction&gt;,
+           serialisedShelleyTx&lt;conway.transaction&gt;&gt;
 
-; Entries must be sorted by version number. For testing, this is handled in `handshakeFix`.
-versionTable = { * versionNumber =&gt; nodeToClientVersionData }
+serialisedShelleyTx&lt;era&gt; = #6.24(bytes .cbor era)
 
-
-; as of version 2 (which is no longer supported) we set 15th bit to 1
-;               16    / 17    / 18    / 19
-versionNumber = 32784 / 32785 / 32786 / 32787
-
-; As of version 15 and higher
-nodeToClientVersionData = [networkMagic, query]
-
-networkMagic = uint
-query        = bool
-
-refuseReason
-    = refuseReasonVersionMismatch
-    / refuseReasonHandshakeDecodeError
-    / refuseReasonRefused
-
-refuseReasonVersionMismatch      = [0, [ *versionNumber ] ]
-refuseReasonHandshakeDecodeError = [1, versionNumber, tstr]
-refuseReasonRefused              = [2, versionNumber, tstr]
+;# include byron as byron
+;# include shelley as shelley
+;# include allegra as allegra
+;# include mary as mary
+;# include alonzo as alonzo
+;# include babbage as babbage
+;# include conway as conway
+;# import base as base
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../network/mini-protocols.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../network/node-to-node/blockfetch/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../consensus/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../network/node-to-node/keep-alive/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -445,11 +432,11 @@ refuseReasonRefused              = [2, versionNumber, tstr]
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../network/mini-protocols.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../network/node-to-node/blockfetch/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../consensus/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../network/node-to-node/keep-alive/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -464,17 +451,18 @@ refuseReasonRefused              = [2, versionNumber, tstr]
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../.mdbook/mermaid.min.js"></script>
-        <script src="../.mdbook/mermaid-init.js"></script>
+        <script src="../../../.mdbook/mermaid.min.js"></script>
+        <script src="../../../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

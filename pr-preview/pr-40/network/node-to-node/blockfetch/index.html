@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Multi-era considerations - Cardano Blueprint</title>
+        <title>BlockFetch - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex.js";
+            window.path_to_searchindex_js = "../../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -106,7 +106,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -141,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/consensus/multiera.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/network/node-to-node/blockfetch/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -249,102 +249,139 @@
 }
 
 </style>
-<h1 id="multi-era-considerations"><a class="header" href="#multi-era-considerations">Multi-era considerations</a></h1>
-<p>With the blockchain network evolving, the block format and ledger
-rules are bound to change. In Cardano, every significant change starts
-a new “era”. There are several ways to deal with multiple eras in the
-node software, associated here with some of <a href="https://en.wikipedia.org/wiki/Alignment_(role-playing_games)#Dungeons_&amp;_Dragons">the DnD
-alignments</a>:</p>
+<h1 id="blockfetch"><a class="header" href="#blockfetch">BlockFetch</a></h1>
+<p><strong>Mini-protocol number: 3</strong></p>
+<p><code>BlockFetch</code> is the mini-protocol in charge of diffusing block
+bodies. It is a pull-based mini-protocol: data is transmitted only upon
+explicit request from the client.</p>
+<div class="mdbook-alerts mdbook-alerts-tip">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  tip
+</p>
+<p>There is usually one <code>BlockFetch</code> client per peer which is the one
+in charge of exchanging the messages, but <code>BlockFetch</code> is
+orchestrated by a central decision component in order to minimise
+network usage by fetching blocks on-demand from a single peer and
+avoid duplicated requests.</p>
+</div>
+<p>Received blocks are then given to the <a href="../../../consensus/chainsel.html">chain
+selection</a> logic to determine their
+<a href="../../../consensus/chainvalid.html">validity</a> and, depending on the chain selection
+outcome, may be incorporated into the currently selected chain.</p>
+<p>If the peer misbehaves, the connection will be abruptly
+terminated. Actions that are considered misbehaving are (not exclusively):</p>
 <ul>
-<li>
-<p>Chaotic Evil: the node software only ever implements one era. When
-the protocol needs to be updated, all participants must update the
-software or risk being ejected from the network. Most importantly, the
-decision to transition to the new era needs to happen off-chain.</p>
-<ul>
-<li>
-<p>Pros:</p>
-<ul>
-<li>the simplest possible node software.</li>
+<li>The peer violates the state machine of the protocol,</li>
+<li>The server provided blocks that the client did not request,</li>
+<li>The server sends a block that does not match the header it was supposed to match,</li>
+<li>The server sends a block with a valid header but an invalid body.</li>
 </ul>
-</li>
-<li>
-<p>Cons:</p>
-<ul>
-<li>on-chain governance of the hard-fork is impossible, as the
-software has no way of knowing where the era boundary is and
-does not even have such a concept.</li>
-<li>Additionally, special care is needed to process history blocks:
-chain replay is likely to be handled by special code, separate
-from the active era’s logic.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Chaotic Good: the node software supports the current era and the
-next era. Once the next era is adopted, a grace period is allowed
-for the participants to upgrade. The decision to upgrade may happen
-on chain.</p>
-<ul>
-<li>Pros:
-<ul>
-<li>allows for on-chain governance of the hard fork.</li>
-</ul>
-</li>
-<li>Cons:
-<ul>
-<li>supporting two eras is more difficult than one: higher chances
-of bugs that will cause the network to fork in an unintended
-way.</li>
-<li>Like in the previous case, special care is needed to process
-historic blocks.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>True Neutral: software is structured in such a way that is supports
-all eras.</p>
-<ul>
-<li>Pros:
-<ul>
-<li>enables massive code reuse and forces the code to be structured
-in the way that allows for abstract manipulation of blocks of
-different eras.</li>
-<li>The on-chain governance of hard-forks is reflected in the code,
-and ideally in the types as well, making it more likely that
-unintended scenarios are either impossible or easily discover
-able through type checking and testing.</li>
-</ul>
-</li>
-<li>Cons:
-<ul>
-<li>abstraction is a double-edged sword and may be difficult to
-encode in some programming languages.</li>
-<li>Engineers require extended onboarding to be productive.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>We argue that Cardano has been the True Neutral so far, which allowed
-to maintain the stability of the network while allowing it to change
-and evolve.</p>
-<p>Having multiple eras comes with some subtleties on era boundaries that
-implementors need to take into account:</p>
-<h2 id="time"><a class="header" href="#time">Time</a></h2>
-<h2 id="forecast-range"><a class="header" href="#forecast-range">Forecast range</a></h2>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: Make this list exhaustive</p>
+</div>
+<h2 id="state-machine"><a class="header" href="#state-machine">State machine</a></h2>
+<p>The state machine for BlockFetch is as follows:</p>
+<pre class="mermaid">stateDiagram
+   direction LR
+   [*] --&gt; StIdle
+   StIdle --&gt; [*]: MsgClientDone
+   StIdle --&gt; StBusy: MsgRequestRange
+   StBusy --&gt; StIdle: MsgNoBlocks
+   StBusy --&gt; StStreaming: MsgStartBatch
+   StStreaming --&gt; StStreaming: MsgBlock
+   StStreaming --&gt; StIdle: MsgBatchDone
+
+    classDef initiator color:#080
+    classDef responder color:#008, text-decoration: underline
+    class StIdle initiator
+    class StBusy responder
+    class StStreaming responder
+</pre>
+<h3 id="state-agencies"><a class="header" href="#state-agencies">State agencies</a></h3>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">State</th><th style="text-align: left">Agency</th></tr></thead><tbody>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left"><span style="color:#080">Initiator</span></td></tr>
+<tr><td style="text-align: left">StBusy</td><td style="text-align: left"><span style="color:#008;text-decoration:underline">Responder</span></td></tr>
+<tr><td style="text-align: left">StStreaming</td><td style="text-align: left"><span style="color:#008;text-decoration:underline">Responder</span></td></tr>
+</tbody></table>
+</div>
+<h3 id="state-transitions"><a class="header" href="#state-transitions">State transitions</a></h3>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">From state</th><th style="text-align: left">Message</th><th>Parameters</th><th style="text-align: left">To state</th></tr></thead><tbody>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgClientDone</td><td></td><td style="text-align: left">End</td></tr>
+<tr><td style="text-align: left">StIdle</td><td style="text-align: left">MsgRequestRange</td><td><code>range</code></td><td style="text-align: left">StBusy</td></tr>
+<tr><td style="text-align: left">StBusy</td><td style="text-align: left">MsgNoBlocks</td><td></td><td style="text-align: left">StIdle</td></tr>
+<tr><td style="text-align: left">StBusy</td><td style="text-align: left">MsgStartBatch</td><td></td><td style="text-align: left">StStreaming</td></tr>
+<tr><td style="text-align: left">StStreaming</td><td style="text-align: left">MsgBlock</td><td><code>body</code></td><td style="text-align: left">StStreaming</td></tr>
+<tr><td style="text-align: left">StStreaming</td><td style="text-align: left">MsgBatchDone</td><td></td><td style="text-align: left">StIdle</td></tr>
+</tbody></table>
+</div>
+<h2 id="access-pattern-of-blockfetch"><a class="header" href="#access-pattern-of-blockfetch">Access pattern of <code>BlockFetch</code></a></h2>
+<p>The requests for blocks involve sequential portions of the chain, whether in the
+immutable part or the volatile part of the chain.</p>
+<p>The only special case being when a block has become immutable due to the current
+chain selection growing in length. In such case the abstraction used to iterate
+over the blocks has to be able to find the block which now would live in the
+immutable storage.</p>
+<h2 id="codecs"><a class="header" href="#codecs">Codecs</a></h2>
+<p>The messages depicted in the state machine follow this CDDL specification:</p>
+<pre><code class="language-cddl">;; messages.cddl
+blockFetchMessage
+     = msgRequestRange
+     / msgClientDone
+     / msgStartBatch
+     / msgNoBlocks
+     / msgBlock
+     / msgBatchDone
+
+msgRequestRange = [0, point, point]
+msgClientDone   = [1]
+msgStartBatch   = [2]
+msgNoBlocks     = [3]
+msgBlock        = [4, block.block]
+msgBatchDone    = [5]
+
+point = []                         ; the genesis point
+      / [ base.slotNo, base.hash ]
+
+;# import block as block
+;# import base as base
+</code></pre>
+<p>The block is a tag-encoded value that contains CBOR-in-CBOR blocks for
+the particular era. Note that byron takes both the <code>0</code> and the <code>1</code>
+tags, one for a regular block, one for EBBs:</p>
+<pre><code class="language-cddl">;; block.cddl
+serialisedCardanoBlock = #6.24(bytes .cbor cardanoBlock)
+
+cardanoBlock = byron.block
+             / [2, shelley.block]
+             / [3, allegra.block]
+             / [4, mary.block]
+             / [5, alonzo.block]
+             / [6, babbage.block]
+             / [7, conway.block]
+
+;# import byron as byron
+;# import shelley as shelley
+;# import allegra as allegra
+;# import mary as mary
+;# import alonzo as alonzo
+;# import babbage as babbage
+;# import conway as conway
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../consensus/forging.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../../network/node-to-node/chainsync/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../storage/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../../network/node-to-node/txsubmission2/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -354,11 +391,11 @@ implementors need to take into account:</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../consensus/forging.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../../network/node-to-node/chainsync/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../storage/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../../network/node-to-node/txsubmission2/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -373,17 +410,17 @@ implementors need to take into account:</p>
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../.mdbook/mermaid.min.js"></script>
-        <script src="../.mdbook/mermaid-init.js"></script>
+        <script src="../../../.mdbook/mermaid.min.js"></script>
+        <script src="../../../.mdbook/mermaid-init.js"></script>
 
 
 

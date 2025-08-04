@@ -36,11 +36,23 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/styleguide.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/styleguide.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -247,9 +267,9 @@ Poorly written documentation can confuse readers rather than clarify, and the mo
 the reader in mind, thinking what is the best way to pass on the
 knowledge you have given the current state of knowledge they have.
 This is a hard thing to do, but it is worth aiming for!</p>
-<p>People take in information in different ways.  Some like literate
+<p>People take in information in different ways. Some like literate
 prose, many like visual diagrams and pseudo-code, and a few like
-mathematical formulae.  If you can do all of these, so much the
+mathematical formulae. If you can do all of these, so much the
 better, but good diagrams are often the place to start.</p>
 <p>As a general rule, approach it with the same level of care and thoughtfulness as you would when writing a peer-reviewed paper for a top-tier conference or journal that you are eager to publish.
 More specifically, here are a few general tips.</p>
@@ -311,7 +331,7 @@ Thus documentation should be versioned and released like software packages, with
 <h2 id="language"><a class="header" href="#language">Language</a></h2>
 <p>Text should be written in American English, at the reading level of a
 competent software developer - which is often very high, but bear in mind
-that English may not be their first language.  Use technical language by all
+that English may not be their first language. Use technical language by all
 means, but there is no need to be egregiously erudite in your elucidation.</p>
 <p>It may not be necessary to talk about humans in much of this documentation,
 but if you do, please use gender-neutral pronouns - ‘they’ and ‘their’:</p>
@@ -324,8 +344,8 @@ but if you do, please use gender-neutral pronouns - ‘they’ and ‘their’:<
 </blockquote>
 <h3 id="normative-vs-declarative-style"><a class="header" href="#normative-vs-declarative-style">Normative vs declarative style</a></h3>
 <p>Some standards documentation is very SHOUTY about MUST, SHALL and so on.
-Even if it doesn’t SHOUT it can still be rather clumsy to read.  Instead,
-we want to use a <em>declarative</em> style.  We can express what an implementation
+Even if it doesn’t SHOUT it can still be rather clumsy to read. Instead,
+we want to use a <em>declarative</em> style. We can express what an implementation
 has to do conform to the specification as a simple descriptive fact - e.g.</p>
 <blockquote>
 <p>The tester discards widgets with broken flibbits.</p>
@@ -334,7 +354,7 @@ has to do conform to the specification as a simple descriptive fact - e.g.</p>
 <blockquote>
 <p>The tester SHALL discard widgets with broken flibbits.</p>
 </blockquote>
-<p>So in this style there is an implicit ‘must’.  If something is optional, this
+<p>So in this style there is an implicit ‘must’. If something is optional, this
 can be said explicitly:</p>
 <blockquote>
 <p>The package may use extra sproggles if required.</p>
@@ -380,7 +400,7 @@ How about code blocks?</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="api/node-to-client.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="codecs/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -394,7 +414,7 @@ How about code blocks?</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="api/node-to-client.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="codecs/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -424,6 +444,7 @@ How about code blocks?</p>
         <!-- Custom JS scripts -->
         <script src=".mdbook/mermaid.min.js"></script>
         <script src=".mdbook/mermaid-init.js"></script>
+
 
 
     </div>

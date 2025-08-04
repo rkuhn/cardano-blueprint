@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>ChainDB format - Cardano Blueprint</title>
+        <title>Client interfaces - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -36,11 +36,23 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -81,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -118,7 +133,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -132,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/storage/chaindb.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/client/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -141,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -229,102 +249,46 @@
 }
 
 </style>
-<h1 id="the-chaindb-format"><a class="header" href="#the-chaindb-format">The ChainDB format</a></h1>
-<p>In the Haskell reference implementation, the Storage layer manages a <code>ChainDB</code>,
-whose storage components are the Immutable Database, Volatile Database and
-Ledger State snapshots:</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Component</th><th style="text-align: left">Responsibility</th></tr></thead><tbody>
-<tr><td style="text-align: left">Immutable Database</td><td style="text-align: left">Store definitive blocks and headers sequentially</td></tr>
-<tr><td style="text-align: left">Volatile Database</td><td style="text-align: left">Store a bag of non-definitive blocks and headers. In particular it contains the blocks which, when linked sequentially, form the current selected chain</td></tr>
-<tr><td style="text-align: left">Ledger State snapshots</td><td style="text-align: left">Periodically store the ledger state at the tip of the ImmutableDB</td></tr>
+<h1 id="client-interfaces"><a class="header" href="#client-interfaces">Client interfaces</a></h1>
+<p>Node implementations may offer interfaces to clients for submitting new data to
+the network (transactions) as well as query data from the node. The spectrum of
+protocols that could serve this purpose is open and the choice is free for each
+implementation. Here we aggregate some interfaces that have been implemented for
+enabling this interaction:</p>
+<ul>
+<li>the <a href="./node-to-client/">Node-To-Client (NTC)</a> interface as introduced by <a href="https://github.com/IntersectMBO/cardano-node">cardano-node</a>, which is very similar to the Node-To-Node (NTN) <a href="../network">network</a> protocols,</li>
+<li>the <a href="utxo-rpc/README.html">UTxO RPC</a> interface as a standard interface shared
+with other UTxO-based blockchains.</li>
+</ul>
+<p>Below we present a table with clients and servers that implement each protocol:</p>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Server</th><th>NTC</th><th>UTxO RPC</th></tr></thead><tbody>
+<tr><td style="text-align: left"><a href="https://github.com/IntersectMBO/cardano-node">cardano-node</a></td><td>✅</td><td>❔</td></tr>
+<tr><td style="text-align: left"><a href="https://github.com/blinklabs-io/dingo">dingo</a></td><td>✅</td><td>✅</td></tr>
+<tr><td style="text-align: left"><a href="https://github.com/pragma-org/amaru/">amaru</a></td><td>❔</td><td>❔</td></tr>
 </tbody></table>
+</div><br/>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Client</th><th>NTC</th><th>UTxO RPC</th></tr></thead><tbody>
+<tr><td style="text-align: left"><a href="https://github.com/IntersectMBO/cardano-cli">cardano-cli</a></td><td>✅</td><td>⬜</td></tr>
+<tr><td style="text-align: left"><a href="https://github.com/txpipe/pallas">pallas</a></td><td>✅</td><td>❔</td></tr>
+<tr><td style="text-align: left"><a href="https://github.com/blinklabs-io/gouroboros">gouroboros</a></td><td>✅</td><td>❔</td></tr>
+</tbody></table>
+</div><div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>Please help us keep this list up-to-date by <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/client/README.md">suggesting an edit</a>.</p>
 </div>
-<p>Although this implementation represents just one of many possible data storage
-solutions, it is the one used by the reference <code>cardano-node</code> implementation and
-has become the de-facto standard for distributing the Cardano chain when the
-node is not involved. Consequently, services like Mithril sign this directory
-structure and its format.</p>
-<p>It consists of 3 separate directories in which different data is stored:</p>
-<pre><code>db
-├── immutable
-│   ├── 00000.chunk
-│   ├── 00000.primary
-│   ├── 00000.secondary
-│   └── ...
-├── ledger
-│   └── 164021355
-└── volatile
-    ├── blocks-0.dat
-    └── ...
-</code></pre>
-<p>This diagram depicts where the blocks are distributed in such directories:</p>
-<pre class="mermaid">flowchart RL
-    subgraph volatile;
-      subgraph &quot;current selection&quot;;
-        Tip --&gt;|...| Km1[&quot;(k-1)-th Block&quot;]
-        Km1 --&gt; K[&quot;k-th Block&quot;]
-      end
-
-      O1[&quot;Block&quot;] --&gt; O2[&quot;Block&quot;]
-      O3[&quot;Block&quot;] --&gt; K
-
-      O4[&quot;Block&quot;]
-    end
-
-    subgraph immutable;
-     subgraph &quot;Chunk 0&quot;;
-        C0[&quot; &quot;]
-        C1[&quot; &quot;] --&gt; C0
-        C2[&quot; &quot;] --&gt;|...| C1
-     end
-     subgraph &quot;Chunk 1&quot;;
-        D0[&quot; &quot;]
-        D1[&quot; &quot;] --&gt; D0
-        D2[&quot; &quot;] --&gt;|...| D1
-     end
-
-     D0 --&gt; C2
-     subgraph &quot;Chunk n&quot;;
-     Kp1[&quot;(k+1)-th Block&quot;] --&gt; Kp2[&quot;(k+2)-th Block&quot;]
-     Kp2[&quot;(k+2)-th Block&quot;] --&gt; |...| E0[&quot; &quot;]
-     end
-
-     E0 --&gt;|...| D2
-    end
-    K --&gt; Kp1
-    C0 --&gt; Genesis
-    subgraph ledger;
-     S[&quot;Persisted snapshot&quot;] --&gt; Kp1
-    end
-</pre>
-<h2 id="immutable"><a class="header" href="#immutable"><code>immutable</code></a></h2>
-<p>Contains the historical chain of blocks.</p>
-<p>TODO explain NestedCtxt, Header, Block, the Hard Fork Block, chunks, primary and secondary indices.</p>
-<h2 id="volatile"><a class="header" href="#volatile"><code>volatile</code></a></h2>
-<p>Contains blocks that form the current selection of the node (i.e. the best chain
-it knows about) and other blocks (both connected or disconnected from the
-selected chain) but whose slot number is greater than the <code>k</code>-th block in the
-current selection (so they might belong to a fork less than <code>k</code> blocks deep).</p>
-<p>TODO describe the format in which the blocks are stored</p>
-<h2 id="ledger"><a class="header" href="#ledger"><code>ledger</code></a></h2>
-<p>Contains ledger state snapshots at immutable blocks. Ideally, this is the most
-recent immutable block, but since snapshots are taken periodically (due to their
-cost), it may be an older block. Snapshots are named after the slot number of
-the block when they were taken.</p>
-<p>The snapshot is a file containing a CBOR-encoded Extended Ledger State. The
-<em>Extended Ledger State</em> is a combination of the Chain State (used by the
-protocol used in such era) and the Ledger State.</p>
-<p>Coming soon: UTxO-HD</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../storage/miniprotocols/blockfetch.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../plutus/serialization.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../mempool/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../client/node-to-client/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -334,11 +298,11 @@ protocol used in such era) and the Ledger State.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../storage/miniprotocols/blockfetch.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../plutus/serialization.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../mempool/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../client/node-to-client/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -364,6 +328,7 @@ protocol used in such era) and the Ledger State.</p>
         <!-- Custom JS scripts -->
         <script src="../.mdbook/mermaid.min.js"></script>
         <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>
