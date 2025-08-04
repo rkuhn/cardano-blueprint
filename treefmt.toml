@@ -1,0 +1,12 @@
+# The formatter multiplexer - https://github.com/numtide/treefmt
+[formatter.mdformat]
+command = "mdformat"
+excludes = []
+includes = ["*.md"]
+options = ["--extensions", "gfm", "--extensions", "footnote"]
+
+[formatter.typos]
+command = "typos"
+excludes = []
+includes = ["*.md"]
+options = ["--write-changes"]

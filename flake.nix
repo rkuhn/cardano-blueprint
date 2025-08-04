@@ -25,6 +25,12 @@
                 mdbook-katex
                 mdbook-alerts
                 mdbook-toc
+                # formatting
+                treefmt
+                mdformat
+                python3Packages.mdformat-footnote
+                python3Packages.mdformat-gfm
+                typos
               ];
               phases = [ "unpackPhase" "buildPhase" ];
               buildPhase = ''
