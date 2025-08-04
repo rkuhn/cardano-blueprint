@@ -258,8 +258,8 @@ mini-protocols to share the same underlying TCP or local socket connection.</p>
 that can be passed between the parties.</p>
 <h2 id="state-machines"><a class="header" href="#state-machines">State machines</a></h2>
 <p>The progress of the communication is defined by a state machine, which
-is replicated at each end.  The transitions of the state machine
-are messages being sent/received.  As well as defining which messages
+is replicated at each end. The transitions of the state machine
+are messages being sent/received. As well as defining which messages
 are valid to send and receive in each state, the state machine also
 defines which side has <em>agency</em> - that is, should be the one to send
 the next message.</p>
@@ -267,7 +267,7 @@ the next message.</p>
 connection be opened - the client in a simple client/server model.</p>
 <p>The <em>responder</em> or is the one that responds to the connection request - the
 server, in other words.</p>
-<p>In every case it is the initiator (client) which has agency first.  In many
+<p>In every case it is the initiator (client) which has agency first. In many
 cases the initiator and responder take turns to have agency (send messages),
 but in some cases where one party must wait for a response, the other will
 keep agency and send a follow-up message later.</p>
