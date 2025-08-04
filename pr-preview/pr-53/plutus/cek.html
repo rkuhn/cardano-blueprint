@@ -350,7 +350,7 @@ After <code>𝑀</code> is evaluated to a value, the forcing will continue (rule
 The frame also stores the remaining arguments along with the current environment.
 It then proceeds to evaluate the first argument <code>𝑀</code>.</p>
 <p><a id="8" href="#8"><strong>8.</strong></a> A nullary constructor evaluates to itself, as it is already a value.</p>
-<p><a id="9" href="#9"><strong>9.</strong></a>  To evaluate a <code>case</code> expression, the machine pushes a frame onto the stack with a hole in place of the scrutinee.
+<p><a id="9" href="#9"><strong>9.</strong></a> To evaluate a <code>case</code> expression, the machine pushes a frame onto the stack with a hole in place of the scrutinee.
 The frame also stores the branches, <code>𝑀*</code>, along with the current environment.
 It then proceeds to evaluate the scrutinee <code>𝑁</code>.</p>
 <p><a id="10" href="#10"><strong>10.</strong></a> A builtin function evaluates to itself as it is already a value.</p>
