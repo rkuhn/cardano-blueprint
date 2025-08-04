@@ -16,6 +16,7 @@
           mdformat
           python3Packages.mdformat-footnote
           python3Packages.mdformat-gfm
+          python3Packages.mdformat-myst # for latex math
           typos
         ];
       in

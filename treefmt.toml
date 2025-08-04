@@ -3,7 +3,7 @@
 command = "mdformat"
 excludes = []
 includes = ["*.md"]
-options = ["--extensions", "gfm", "--extensions", "footnote"]
+options = ["--extensions", "gfm", "--extensions", "footnote", "--extensions", "myst"]
 
 [formatter.typos]
 command = "typos"
