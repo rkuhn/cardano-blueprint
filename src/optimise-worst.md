@@ -1,5 +1,3 @@
-# Principles
-
 ## Optimise only for the worst case
 
 Algorithms often possess different performance characteristics in the best,
@@ -41,7 +39,7 @@ are unlikely to be spent, while recently created entries are quite likely to
 come up again.
 
 We could choose to take advantage of this to organise the UTxO along the form
-of a MRU (most recently used) cache. This would likely speed up UTxO lookup
+of a LRU (least recently used) cache. This would likely speed up UTxO lookup
 in the average case, particularly were the UTxO stored on disk.
 
 However, an attacker could then choose to deliberately craft a number of
