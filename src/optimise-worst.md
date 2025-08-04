@@ -26,7 +26,7 @@ There are two motivating ideas behind this principle:
    example, there may be pressure to use that extra time to allow larger script
    execution budgets.
 
-2. Forcing honest nodes to do more work provides an attack opportunity for the
+1. Forcing honest nodes to do more work provides an attack opportunity for the
    adversary. In the worst case, an adversary could potentially force nodes to
    fail to adopt or forge blocks, and hence potentially gain control of the
    chain.
@@ -57,11 +57,11 @@ various considerations that effect how much we want to follow it:
 1. The situation we most want to avoid is where an attacker could control an
    input such that they can force the worst-case behaviour. The UTxO locality
    example above is one such.
-2. Still problematic are cases where an attacker cannot control the performance
+1. Still problematic are cases where an attacker cannot control the performance
    but can predict it, or less serious still, observe it. Either way a
    prepared attacker could take advantage of the degraded performance to launch
    an attack on the chain.
-3. Either of these cases are exacerbated if the same behaviour is coordinated
+1. Either of these cases are exacerbated if the same behaviour is coordinated
    across all nodes, since this allows an attacker to exploit a performance
    drop across the entire network.
 
