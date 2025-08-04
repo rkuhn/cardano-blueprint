@@ -57,7 +57,7 @@ stateDiagram
 ### State agencies
 
 | State       | Agency                                                              |
-|:------------|:--------------------------------------------------------------------|
+| :---------- | :------------------------------------------------------------------ |
 | StIdle      | <span style="color:#080">Initiator</span>                           |
 | StIntersect | <span style="color:#008;text-decoration:underline">Responder</span> |
 | StCanAwait  | <span style="color:#008;text-decoration:underline">Responder</span> |
@@ -66,7 +66,7 @@ stateDiagram
 ### State transitions
 
 | From state  | Message              | Parameters               | To state    |
-|:------------|:---------------------|--------------------------|:------------|
+| :---------- | :------------------- | ------------------------ | :---------- |
 | StIdle      | MsgRequestNext       |                          | StCanAwait  |
 | StIdle      | MsgFindIntersect     | `[point]`                | StIntersect |
 | StIdle      | MsgDone              |                          | End         |
@@ -148,9 +148,5 @@ for the particular era:
 {{#include header.cddl}}
 ```
 
-[network-design]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf
-[network-spec]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf
 [k-secparam]: ../../../consensus/chainsel.md#the-k-security-parameter
-<!-- iohk.io links return 403 "if you are not a human" -->
-<!-- markdown-link-check-disable-next-line -->
 [pipelining]: https://iohk.io/en/blog/posts/2022/02/01/introducing-pipelining-cardanos-consensus-layer-scaling-solution/

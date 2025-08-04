@@ -13,7 +13,7 @@ enabling this interaction:
 Below we present a table with clients and servers that implement each protocol:
 
 | Server         | NTC | UTxO RPC |
-|:---------------|-----|----------|
+| :------------- | --- | -------- |
 | [cardano-node] | ✅  | ❔       |
 | [dingo]        | ✅  | ✅       |
 | [amaru]        | ❔  | ❔       |
@@ -21,7 +21,7 @@ Below we present a table with clients and servers that implement each protocol:
 <br/>
 
 | Client        | NTC | UTxO RPC |
-|:--------------|-----|----------|
+| :------------ | --- | -------- |
 | [cardano-cli] | ✅  | ⬜       |
 | [pallas]      | ✅  | ❔       |
 | [gouroboros]  | ✅  | ❔       |
@@ -30,9 +30,9 @@ Below we present a table with clients and servers that implement each protocol:
 >
 > Please help us keep this list up-to-date by [suggesting an edit](https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/client/README.md).
 
-[cardano-node]: https://github.com/IntersectMBO/cardano-node
+[amaru]: https://github.com/pragma-org/amaru/
 [cardano-cli]: https://github.com/IntersectMBO/cardano-cli
+[cardano-node]: https://github.com/IntersectMBO/cardano-node
 [dingo]: https://github.com/blinklabs-io/dingo
 [gouroboros]: https://github.com/blinklabs-io/gouroboros
-[amaru]: https://github.com/pragma-org/amaru/
 [pallas]: https://github.com/txpipe/pallas

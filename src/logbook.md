@@ -44,7 +44,7 @@ By @ch1bo
 
 By @ch1bo
 
-- Javier shared with me some interesting data from this article on [Node diversity on Ethereum]( https://ethereum.org/en/developers/docs/nodes-and-clients/client-diversity/)
+- Javier shared with me some interesting data from this article on [Node diversity on Ethereum](https://ethereum.org/en/developers/docs/nodes-and-clients/client-diversity/)
 - Also <https://clientdiversity.org/> contains most recent data on distribution of implementations!
 
 ## 2025-03-10

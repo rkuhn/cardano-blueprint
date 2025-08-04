@@ -56,7 +56,7 @@ stateDiagram
 ### State agencies
 
 | State       | Agency                                                              |
-|:------------|:--------------------------------------------------------------------|
+| :---------- | :------------------------------------------------------------------ |
 | StIdle      | <span style="color:#080">Initiator</span>                           |
 | StBusy      | <span style="color:#008;text-decoration:underline">Responder</span> |
 | StStreaming | <span style="color:#008;text-decoration:underline">Responder</span> |
@@ -64,7 +64,7 @@ stateDiagram
 ### State transitions
 
 | From state  | Message         | Parameters | To state    |
-|:------------|:----------------|------------|:------------|
+| :---------- | :-------------- | ---------- | :---------- |
 | StIdle      | MsgClientDone   |            | End         |
 | StIdle      | MsgRequestRange | `range`    | StBusy      |
 | StBusy      | MsgNoBlocks     |            | StIdle      |

@@ -5,7 +5,7 @@ whose storage components are the Immutable Database, Volatile Database and
 Ledger State snapshots:
 
 | Component              | Responsibility                                                                                                                                          |
-|:-----------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Immutable Database     | Store definitive blocks and headers sequentially                                                                                                        |
 | Volatile Database      | Store a bag of non-definitive blocks and headers. In particular it contains the blocks which, when linked sequentially, form the current selected chain |
 | Ledger State snapshots | Periodically store the ledger state at the tip of the ImmutableDB                                                                                       |
@@ -104,9 +104,9 @@ blob in the file `<slotno>/state`. The former however, depends on
 which backend was being used by the node taking the snapshot:
 
 | Backend    | <slotno>/tables                                               |
-|:-----------|---------------------------------------------------------------|
+| :--------- | ------------------------------------------------------------- |
 | V2InMemory | a file `tvar` containing the CBOR-encoded UTxO set            |
-| V1LMDB     | a file `data.mdb` of an LMDB database contianing the UTxO set |
+| V1LMDB     | a file `data.mdb` of an LMDB database containing the UTxO set |
 
 There is also a file `<slotno>/meta` that contains a string
 identifying the backend used, and a checksum of the stored files for

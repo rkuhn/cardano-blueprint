@@ -4,7 +4,7 @@
 
 The Handshake mini-protocol is used to establish a connection and
 negotiate protocol versions and parameters between the initiator
-(client) and responder (server).  There are two versions, one for
+(client) and responder (server). There are two versions, one for
 node-to-node (NTN) and one for node-to-client (NTC), which differ only
 in their protocol parameters.
 
@@ -30,14 +30,14 @@ stateDiagram
 ### State agencies
 
 | State     | Agency                                                              |
-|:----------|:--------------------------------------------------------------------|
+| :-------- | :------------------------------------------------------------------ |
 | StPropose | <span style="color:#080">Initiator</span>                           |
 | StConfirm | <span style="color:#008;text-decoration:underline">Responder</span> |
 
 ### State transitions
 
 | From state | Message            | Parameters                     | To state  |
-|:-----------|:-------------------|--------------------------------|:----------|
+| :--------- | :----------------- | ------------------------------ | :-------- |
 | StPropose  | MsgProposeVersions | `versionTable`                 | StConfirm |
 | StConfirm  | MsgReplyVersion    | `versionTable`                 | End       |
 | StConfirm  | MsgAcceptVersion   | `(versionNumber, versionData)` | End       |
@@ -47,17 +47,17 @@ stateDiagram
 
 In the rare case when both sides try to connect to each other at the same time,
 it's possible to get a "TCP simultaneous open" where you end up with a single
-socket, not two.  In this case, both sides will think they are the initiator
+socket, not two. In this case, both sides will think they are the initiator
 so will send a `MsgProposeVersions`, and this protocol handles this by treating
 the received one in `StConfirm` state as a `MsgReplyVersion`, which has the same
 CBOR encoding.
 
 > [!WARNING]
-> Why does the message need to change name?  The state machine would be
+> Why does the message need to change name? The state machine would be
 > valid with an `StConfirm -- MsgProposeVersions --> End` arc.
 
 > [!NOTE]
-> Also, is the negotiation always deemed successful in this case?  What if
+> Also, is the negotiation always deemed successful in this case? What if
 > one side can't accept the other's version? (there is talk of resetting
 > the connection)
 
@@ -68,9 +68,9 @@ CBOR encoding.
 ## Messages
 
 The `MsgProposeVersions` message is sent by the initiator to propose a
-set of possible versions and protocol parameters.  `versionTable` is a map
+set of possible versions and protocol parameters. `versionTable` is a map
 of version numbers to associated parameters - bear in mind that different
-versions may have different sets of parameters.  The version number keys
+versions may have different sets of parameters. The version number keys
 must be unique and in ascending order.
 
 > [!NOTE]
@@ -81,7 +81,7 @@ The `MsgAcceptVersion` message is returned by the responder to confirm
 a mutually acceptable version and set of parameters.
 
 The `MsgRefuse` message is returned by the responder to indicate there is
-no acceptable version match, or another reason.  If it is a version mismatch
+no acceptable version match, or another reason. If it is a version mismatch
 it returns a set of version numbers that it could have accepted.
 
 > [!WARNING]
@@ -105,7 +105,7 @@ a size limit of 5760 bytes.
 ### Timeouts
 
 The maximum time to wait for a message in `StPropose` (for the responder)
-or `StConfirm` (for the initiator) is 10 seconds.  After this the connection
+or `StConfirm` (for the initiator) is 10 seconds. After this the connection
 should be torn down.
 
 ## CDDL

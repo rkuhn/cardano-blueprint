@@ -26,6 +26,6 @@ era and are referenced in [other blueprint CDDL schemas](../codecs#cddl).
 > [!WARNING]
 > TODO: make ledger cddls available through blueprint directly
 
-## Conformance tests 
+## Conformance tests
 
 Despite the formal specification provides a precise definition for semantics, testing the behavior of ledger implementations against the specification and also the ledger implementations against each other is crucial. For this purpose, a conformance test suite with [implementation-independent test vectors](https://github.com/cardano-scaling/cardano-blueprint/tree/main/src/ledger/conformance-test-vectors) can be used.

@@ -31,6 +31,7 @@ flowchart TD
 
 Any storage system designed for Cardano must meet certain requirements for the
 miniprotocols and the Consensus layer to function properly:
+
 - Fast sequential access to immutable blocks: syncing peers request historical
   chain blocks sequentially,
 - Fast sequential access to current chain-selection blocks in the volatile part

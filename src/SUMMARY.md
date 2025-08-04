@@ -9,7 +9,7 @@
     - [BlockFetch](network/node-to-node/blockfetch/README.md)
     - [TxSubmission2](network/node-to-node/txsubmission2/README.md)
     - [KeepAlive](network/node-to-node/keep-alive/README.md)
-    - [PeerSharing]()
+    - [PeerSharing](<>)
 - [Consensus](consensus/README.md)
   - [Chain validity](consensus/chainvalid.md)
   - [Chain selection](consensus/chainsel.md)
@@ -28,15 +28,15 @@
   - [Serialization](plutus/serialization.md)
 - [Client interfaces](client/README.md)
   - [NTC](client/node-to-client/README.md)
-    - [Handshake]()
+    - [Handshake](<>)
     - [LocalStateQuery](client/node-to-client/state-query/README.md)
-    - [LocalTxSubmission]()
-    - [TxMonitor]()
-    - [LocalChainSync]()
+    - [LocalTxSubmission](<>)
+    - [TxMonitor](<>)
+    - [LocalChainSync](<>)
   - [UTxO-RPC](client/utxo-rpc/README.md)
 - [Codec basics](codecs/README.md)
 
----
+______________________________________________________________________
 
 - [Styleguide](styleguide.md)
 - [Contributing](CONTRIBUTING.md)

@@ -14,14 +14,13 @@ wide developer audience to understand the protocol and build Cardano components.
 
 ## Building
 
-The blueprints are written using markdown and can be viewed
-[directly in Github](./src/introduction/README.md) or built into
-[the HTML site](https://cardano-scaling.github.io/cardano-blueprint)
-using [mdbook][mdbook].
+The blueprints are written using markdown and can be viewed [directly in
+Github](./src/introduction/README.md) or built into [the HTML
+site](https://cardano-scaling.github.io/cardano-blueprint) using [mdbook].
 
 ### With cargo
 
-You can install [mdbook][mdbook] and the plugins we use with `cargo`:
+You can install [mdbook] and the plugins we use with `cargo`:
 
 ```shell
 cargo install mdbook mdbook-katex mdbook-mermaid mdbook-alerts mdbook-toc
@@ -47,7 +46,7 @@ cargo binstall mdbook mdbook-katex mdbook-mermaid mdbook-alerts mdbook-toc
 
 ### With nix
 
-You can also use [nix][nix]:
+You can also use [nix]:
 
 ```shell
 nix build -o out
@@ -55,8 +54,8 @@ nix build -o out
 
 ## Editing
 
-With [mdbook][mdbook] installed or inside a `nix develop` shell, you
-can live preview the result with:
+With [mdbook] installed or inside a `nix develop` shell, you can live preview
+the result with:
 
 ```shell
 mdbook serve --open
@@ -65,20 +64,39 @@ mdbook serve --open
 See the [mdbook manual][mdbook] or [github flavored markdown][gfm] for
 more information on what is available for editing.
 
-[mdbook]: https://rust-lang.github.io/mdBook/index.html
-[gfm]: https://github.github.com/gfm/
-[nix]: https://nixos.org/download.html
+### Formatting & spell checking
+
+We use `treefmt` that runs a few formatting and spell checking tools. This is
+also enforced through CI. See `formattingPkgs` in [`flake.nix`](./flake.nix) for
+a list of packages needed, then:
+
+```shell
+treefmt
+```
 
 ## License
 
-Cardano Blueprint created by [the Cardano Blueprint contributors](https://github.com/cardano-scaling/cardano-blueprint/graphs/contributors) is licensed under the [Apache 2.0 License](./LICENSE).
+Cardano Blueprint created by [the Cardano Blueprint
+contributors](https://github.com/cardano-scaling/cardano-blueprint/graphs/contributors)
+is licensed under the [Apache 2.0 License](./LICENSE).
 
 ## Logo
 
-The [logo and wordmark](./logo/README.md) for the Cardano Blueprint was created by Roberto Nicolo, Sebastian Nagel and Input Output Global Ltd. Obviously, the design is derived from the official Cardano logo and we hereby accept and intend to follow the [official trademark policy](https://www.cardanofoundation.org/policy/trademark-policy). Cardano Blueprint is NOT registered as a trademark, nor shall it represent a commercial product, but any artifacts produced are covered under an open source [license](./LICENSE).
+The [logo and wordmark](./logo/README.md) for the Cardano Blueprint was created
+by Roberto Nicolo, Sebastian Nagel and Input Output Global Ltd. Obviously, the
+design is derived from the official Cardano logo and we hereby accept and intend
+to follow the [official trademark
+policy](https://www.cardanofoundation.org/policy/trademark-policy). Cardano
+Blueprint is NOT registered as a trademark, nor shall it represent a commercial
+product, but any artifacts produced are covered under an open source
+[license](./LICENSE).
 
----
+______________________________________________________________________
 
 <p align="center">
 Thanks for visiting and hopefully the cardano blueprint is useful to you 💙!
 </p>
+
+[gfm]: https://github.github.com/gfm/
+[mdbook]: https://rust-lang.github.io/mdBook/index.html
+[nix]: https://nixos.org/download.html

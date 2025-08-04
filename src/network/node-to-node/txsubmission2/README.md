@@ -65,7 +65,7 @@ stateDiagram
 ### State agencies
 
 | State              | Agency                                                              |
-|:-------------------|:--------------------------------------------------------------------|
+| :----------------- | :------------------------------------------------------------------ |
 | StInit             | <span style="color:#080">Initiator</span>                           |
 | StIdle             | <span style="color:#008;text-decoration:underline">Responder</span> |
 | StTxs              | <span style="color:#080">Initiator</span>                           |
@@ -75,7 +75,7 @@ stateDiagram
 ### State transitions
 
 | From state         | Message                    | Parameters     | To state           |
-|:-------------------|:---------------------------|----------------|:-------------------|
+| :----------------- | :------------------------- | -------------- | :----------------- |
 | StInit             | MsgInit                    |                | StIdle             |
 | StIdle             | MsgRequestTxIdsNonBlocking | `ack`, `req`   | StTxIdsNonBlocking |
 | StIdle             | MsgRequestTxIdsBlocking    | `ack`, `req`   | StTxIdsBlocking    |
@@ -111,5 +111,3 @@ Shelley-onwards, the transaction is serialized in CBOR-in-CBOR:
 ;; tx.cddl
 {{#include tx.cddl}}
 ```
-
-[network-spec]: https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf

@@ -13,11 +13,12 @@ While different node implementations may implement these rules in different ways
 In this section, we will walk through the [cardano-ledger](https://github.com/IntersectMBO/cardano-ledger) implementation of Conway era block validation.
 We will break up the validation process into smaller sections to make it easier to visualize and understand. All diagrams should be read from left to right and top to bottom in terms of order of execution.
 
-
 The [cardano-ledger](https://github.com/IntersectMBO/cardano-ledger) has the concept of an _EraRule_, which is a set of validations that are applied to a block in a specific era. Often, a newer era may call a previous era's EraRule instead of reimplementing the same logic.
 
 ### EraRule BBODY
+
 This is the "entrypoint" for block validation, responsible for validating the body of a block.
+
 ```mermaid
 flowchart LR
     EBBC[EraRule BBODY Conway]
@@ -32,7 +33,9 @@ flowchart LR
 ```
 
 ### EraRule LEDGERS
+
 This EraRule is responsible for validating and updating the ledger state, namely UTxO state, governance state, and certificate state.
+
 ```mermaid
 flowchart LR
     ELC[EraRule LEDGERS Conway]
@@ -56,7 +59,9 @@ flowchart LR
 ```
 
 ### EraRule CERTS
+
 This EraRule is responsible for validating and updating the certificate state.
+
 ```mermaid
 flowchart LR
     ECSC --> conwayCertsTransition
@@ -72,7 +77,7 @@ flowchart LR
                 certTransition --> |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                     EDC --> conwayDelegTransition
                         conwayDelegTransition --> |ConwayRegCert| crcDoBlock[do]
-                            crcDoBlock --> crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                            crcDoBlock --> crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                             crcDoBlock --> crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                         conwayDelegTransition --> |ConwayUnregCert| cucDoBlock[do]
                             cucDoBlock --> checkInvalidRefund(checkInvalidRefund)
@@ -114,16 +119,17 @@ flowchart LR
                         cudrDoBlock --> cudrDRepState[(vsDReps)]
                     conwayGovCertTransition --> |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                     conwayGovCertTransition --> |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                        crcckDoBlock --> checkAndOverwriteCommitteMemberState
-                        cachkDoBlock --> checkAndOverwriteCommitteMemberState
-                            checkAndOverwriteCommitteMemberState --> coldCredResigned(failOnJust coldCredResigned)
-                            checkAndOverwriteCommitteMemberState --> isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                            checkAndOverwriteCommitteMemberState --> vsCommitteeState[(vsCommitteeState)]
+                        crcckDoBlock --> checkAndOverwriteCommitteeMemberState
+                        cachkDoBlock --> checkAndOverwriteCommitteeMemberState
+                            checkAndOverwriteCommitteeMemberState --> coldCredResigned(failOnJust coldCredResigned)
+                            checkAndOverwriteCommitteeMemberState --> isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                            checkAndOverwriteCommitteeMemberState --> vsCommitteeState[(vsCommitteeState)]
 ```
 
-
 ### EraRule GOV
+
 This EraRule is responsible for validating and updating the governance state.
+
 ```mermaid
 flowchart LR
     EGC[EraRule GOV Conway]
@@ -145,16 +151,17 @@ flowchart LR
                 pcDoBlock --> checkPolicy(checkPolicy)
         govTransition --> ancestryCheck(ancestryCheck)
         govTransition --> unknownVoters(failOnNonEmpty unknownVoters)
-        govTransition --> unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+        govTransition --> unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
         govTransition --> checkBootstrapVotes(checkBootstrapVotes)
         govTransition --> checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
         govTransition --> checkVotersAreValid(checkVotersAreValid)
         govTransition --> updatedProposalStates[(updatedProposalStates)]
 ```
 
-
 ### EraRule UTXOW
+
 This EraRule is responsible for validating and updating the UTxO state.
+
 ```mermaid
 flowchart LR
 EUC[EraRule UTXOW Conway]
@@ -165,7 +172,7 @@ EUC[EraRule UTXOW Conway]
         babbageUtxowTransition --> hasExactSetOfRedeemers(hasExactSetOfRedeemers)
         babbageUtxowTransition --> validateVerifiedWits(Shelley.validateVerifiedWits)
         babbageUtxowTransition --> validateNeededWitnesses(validateNeededWitnesses)
-        babbageUtxowTransition --> validateMetdata(Shelley.validateMetadata)
+        babbageUtxowTransition --> validateMetadata(Shelley.validateMetadata)
         babbageUtxowTransition --> validateScriptsWellFormed(validateScriptsWellFormed)
         babbageUtxowTransition --> ppViewHashesMatch(ppViewHashesMatch)
         babbageUtxowTransition --> EUTXOC[EraRule UTXO Conway]
@@ -179,7 +186,7 @@ EUC[EraRule UTXOW Conway]
                 utxoTransition --> validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                 utxoTransition --> validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                 utxoTransition --> validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                utxoTransition --> validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                utxoTransition --> validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                 utxoTransition --> validateWrongNetwork(Shelley.validateWrongNetwork)
                 utxoTransition --> validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                 utxoTransition --> validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
@@ -198,9 +205,10 @@ EUC[EraRule UTXOW Conway]
     EUC --> LedgerState[(LedgerState utxoState'' certStateAfterCERTS)]
 ```
 
-
 ### Full Diagram
+
 Here is the full diagram, with all EraRules combined.
+
 ```mermaid
 flowchart LR
     EBBC[EraRule BBODY Conway]
@@ -237,7 +245,7 @@ flowchart LR
                                             certTransition --> |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                                                 EDC --> conwayDelegTransition
                                                     conwayDelegTransition --> |ConwayRegCert| crcDoBlock[do]
-                                                        crcDoBlock --> crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                                                        crcDoBlock --> crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                                                         crcDoBlock --> crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                                                     conwayDelegTransition --> |ConwayUnregCert| cucDoBlock[do]
                                                         cucDoBlock --> checkInvalidRefund(checkInvalidRefund)
@@ -282,11 +290,11 @@ flowchart LR
                                                     cudrDoBlock --> cudrDRepState[(vsDReps)]
                                                 conwayGovCertTransition --> |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                                                 conwayGovCertTransition --> |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                                                    crcckDoBlock --> checkAndOverwriteCommitteMemberState
-                                                    cachkDoBlock --> checkAndOverwriteCommitteMemberState
-                                                        checkAndOverwriteCommitteMemberState --> coldCredResigned(failOnJust coldCredResigned)
-                                                        checkAndOverwriteCommitteMemberState --> isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                                                        checkAndOverwriteCommitteMemberState --> vsCommitteeState[(vsCommitteeState)]
+                                                    crcckDoBlock --> checkAndOverwriteCommitteeMemberState
+                                                    cachkDoBlock --> checkAndOverwriteCommitteeMemberState
+                                                        checkAndOverwriteCommitteeMemberState --> coldCredResigned(failOnJust coldCredResigned)
+                                                        checkAndOverwriteCommitteeMemberState --> isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                                                        checkAndOverwriteCommitteeMemberState --> vsCommitteeState[(vsCommitteeState)]
                                 ltDoBlock --> EGC[EraRule GOV Conway]
                                     EGC --> govTransition
                                         govTransition --> badHardFork(failOnJust badHardFork)
@@ -306,7 +314,7 @@ flowchart LR
                                                 pcDoBlock --> checkPolicy(checkPolicy)
                                         govTransition --> ancestryCheck(ancestryCheck)
                                         govTransition --> unknownVoters(failOnNonEmpty unknownVoters)
-                                        govTransition --> unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+                                        govTransition --> unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
                                         govTransition --> checkBootstrapVotes(checkBootstrapVotes)
                                         govTransition --> checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
                                         govTransition --> checkVotersAreValid(checkVotersAreValid)
@@ -321,7 +329,7 @@ flowchart LR
                                 babbageUtxowTransition --> hasExactSetOfRedeemers(hasExactSetOfRedeemers)
                                 babbageUtxowTransition --> validateVerifiedWits(Shelley.validateVerifiedWits)
                                 babbageUtxowTransition --> validateNeededWitnesses(validateNeededWitnesses)
-                                babbageUtxowTransition --> validateMetdata(Shelley.validateMetadata)
+                                babbageUtxowTransition --> validateMetadata(Shelley.validateMetadata)
                                 babbageUtxowTransition --> validateScriptsWellFormed(validateScriptsWellFormed)
                                 babbageUtxowTransition --> ppViewHashesMatch(ppViewHashesMatch)
                                 babbageUtxowTransition --> EUTXOC[EraRule UTXO Conway]
@@ -335,7 +343,7 @@ flowchart LR
                                         utxoTransition --> validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                                         utxoTransition --> validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                                         utxoTransition --> validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                                        utxoTransition --> validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                                        utxoTransition --> validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                                         utxoTransition --> validateWrongNetwork(Shelley.validateWrongNetwork)
                                         utxoTransition --> validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                                         utxoTransition --> validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)

@@ -3,8 +3,9 @@
 Thank you for considering contributing and sharing your knowledge about the Cardano protocol in one capacity or another.
 
 There are basically two ways to contribute:
- - Validate and provide feedback about existing blueprints
- - Create or update blueprints
+
+- Validate and provide feedback about existing blueprints
+- Create or update blueprints
 
 ## Validate blueprints
 
@@ -44,10 +45,10 @@ Thank you for contributing your changes by opening a pull request!
 
 We do appreciate it if your pull request meets the following criteria:
 
-+ **Description of the changes**: providing a clear summary of the changes is beneficial
-+ **Quality of changes**: ensure that new or updated automated tests validate your changes
-+ **Scope**: we prefer multiple pull requests that are well-scoped rather than a single large one
-+ **Correctness**: the pull request should pass the continuous integration (CI) pipeline.
+- **Description of the changes**: providing a clear summary of the changes is beneficial
+- **Quality of changes**: ensure that new or updated automated tests validate your changes
+- **Scope**: we prefer multiple pull requests that are well-scoped rather than a single large one
+- **Correctness**: the pull request should pass the continuous integration (CI) pipeline.
 
 The project is currently in an expand-and-gather phase with no requirement of approvals, but consider requesting for reviews on Github-suggested reviewers.
 

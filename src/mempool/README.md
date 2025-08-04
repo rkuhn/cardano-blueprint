@@ -17,7 +17,7 @@ are valid on top of the latest known Ledger State (the one at the tip of the
 chain selected by [Chain Selection](../consensus/chainsel.md) in the Consensus
 layer). The validity of transactions is defined by the Ledger layer. Notice a
 change in the selected chain should trigger a prompt revalidation of the pending
-transactions to discard those that became invalid on the new selection.  Such
+transactions to discard those that became invalid on the new selection. Such
 collection of valid transactions will be requested by the Consensus layer to
 [forge new blocks](../consensus/forging.md).
 
@@ -53,6 +53,7 @@ one used to diffuse the pending transactions through the network.
 To be able to diffuse transactions through `TxSubmission2` and to fulfill the
 requirements of the Consensus layer, any mempool implementation has the
 following requirements:
+
 - Acquiring a snapshot of valid transactions for a newly forged block should be
   as fast as possible, as it will delay all other steps in the diffusion of such
   a block. This is required by the Consensus layer for [forging
