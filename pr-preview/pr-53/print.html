@@ -535,7 +535,7 @@ raw connection (TCP or local socket) and provides:</p>
 </pre>
 <h2 id="packet-format"><a class="header" href="#packet-format">Packet format</a></h2>
 <p>A multiplexer packet consists of an 8-byte header followed by up to 65535 bytes
-of payload.  Multiple payload segments can be combined to form a full message.</p>
+of payload. Multiple payload segments can be combined to form a full message.</p>
 <pre class="mermaid">packet-beta
     0-31: &quot;Transmission time&quot;
     32: &quot;M&quot;
@@ -643,8 +643,8 @@ mini-protocols to share the same underlying TCP or local socket connection.</p>
 that can be passed between the parties.</p>
 <h2 id="state-machines"><a class="header" href="#state-machines">State machines</a></h2>
 <p>The progress of the communication is defined by a state machine, which
-is replicated at each end.  The transitions of the state machine
-are messages being sent/received.  As well as defining which messages
+is replicated at each end. The transitions of the state machine
+are messages being sent/received. As well as defining which messages
 are valid to send and receive in each state, the state machine also
 defines which side has <em>agency</em> - that is, should be the one to send
 the next message.</p>
@@ -652,7 +652,7 @@ the next message.</p>
 connection be opened - the client in a simple client/server model.</p>
 <p>The <em>responder</em> or is the one that responds to the connection request - the
 server, in other words.</p>
-<p>In every case it is the initiator (client) which has agency first.  In many
+<p>In every case it is the initiator (client) which has agency first. In many
 cases the initiator and responder take turns to have agency (send messages),
 but in some cases where one party must wait for a response, the other will
 keep agency and send a follow-up message later.</p>
@@ -771,7 +771,7 @@ basics</a> for more details.</p>
 <p><strong>Mini-protocol number: 0</strong></p>
 <p>The Handshake mini-protocol is used to establish a connection and
 negotiate protocol versions and parameters between the initiator
-(client) and responder (server).  There are two versions, one for
+(client) and responder (server). There are two versions, one for
 node-to-node (NTN) and one for node-to-client (NTC), which differ only
 in their protocol parameters.</p>
 <h2 id="state-machine"><a class="header" href="#state-machine">State machine</a></h2>
@@ -807,7 +807,7 @@ in their protocol parameters.</p>
 <h2 id="tcp-simultaneous-open"><a class="header" href="#tcp-simultaneous-open">TCP simultaneous open</a></h2>
 <p>In the rare case when both sides try to connect to each other at the same time,
 it’s possible to get a “TCP simultaneous open” where you end up with a single
-socket, not two.  In this case, both sides will think they are the initiator
+socket, not two. In this case, both sides will think they are the initiator
 so will send a <code>MsgProposeVersions</code>, and this protocol handles this by treating
 the received one in <code>StConfirm</code> state as a <code>MsgReplyVersion</code>, which has the same
 CBOR encoding.</p>
@@ -816,7 +816,7 @@ CBOR encoding.</p>
   <span class="mdbook-alerts-icon"></span>
   warning
 </p>
-<p>Why does the message need to change name?  The state machine would be
+<p>Why does the message need to change name? The state machine would be
 valid with an <code>StConfirm -- MsgProposeVersions --&gt; End</code> arc.</p>
 </div>
 <div class="mdbook-alerts mdbook-alerts-note">
@@ -824,7 +824,7 @@ valid with an <code>StConfirm -- MsgProposeVersions --&gt; End</code> arc.</p>
   <span class="mdbook-alerts-icon"></span>
   note
 </p>
-<p>Also, is the negotiation always deemed successful in this case?  What if
+<p>Also, is the negotiation always deemed successful in this case? What if
 one side can’t accept the other’s version? (there is talk of resetting
 the connection)</p>
 </div>
@@ -838,9 +838,9 @@ out of date?</p>
 </div>
 <h2 id="messages"><a class="header" href="#messages">Messages</a></h2>
 <p>The <code>MsgProposeVersions</code> message is sent by the initiator to propose a
-set of possible versions and protocol parameters.  <code>versionTable</code> is a map
+set of possible versions and protocol parameters. <code>versionTable</code> is a map
 of version numbers to associated parameters - bear in mind that different
-versions may have different sets of parameters.  The version number keys
+versions may have different sets of parameters. The version number keys
 must be unique and in ascending order.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
 <p class="mdbook-alerts-title">
@@ -853,7 +853,7 @@ implementations, although deterministic CBOR encoding would enforce it.</p>
 <p>The <code>MsgAcceptVersion</code> message is returned by the responder to confirm
 a mutually acceptable version and set of parameters.</p>
 <p>The <code>MsgRefuse</code> message is returned by the responder to indicate there is
-no acceptable version match, or another reason.  If it is a version mismatch
+no acceptable version match, or another reason. If it is a version mismatch
 it returns a set of version numbers that it could have accepted.</p>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
@@ -885,7 +885,7 @@ if they did), it’s not clear why this constraint is needed.</p>
 </div>
 <h3 id="timeouts"><a class="header" href="#timeouts">Timeouts</a></h3>
 <p>The maximum time to wait for a message in <code>StPropose</code> (for the responder)
-or <code>StConfirm</code> (for the initiator) is 10 seconds.  After this the connection
+or <code>StConfirm</code> (for the initiator) is 10 seconds. After this the connection
 should be torn down.</p>
 <h2 id="cddl"><a class="header" href="#cddl">CDDL</a></h2>
 <p>Here’s the CDDL for the latest node-to-node handshake protocol:</p>
@@ -1835,7 +1835,7 @@ layer</a>. The contents of new blocks are provided by the
 <li>
 <p><a href="consensus/./chainvalid.html">Chain validity check</a>: the validity of a chain of blocks
 is defined by the Consensus protocol, whether the values in the block match
-are as expected. This involves things like singature checking, checking the
+are as expected. This involves things like signature checking, checking the
 previous hash, ensuring the header is consistent, etc.</p>
 </li>
 <li>
@@ -1929,7 +1929,7 @@ the validity check of the block body can be performed by the Ledger rules,
 effectively separating concerns.</p>
 <h2 id="mini-protocols-1"><a class="header" href="#mini-protocols-1">Mini-protocols</a></h2>
 <p>The mini-protocols mentioned in the neworking chapter are one of the possible
-mechanisms used for data difussion. The <a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Networking design
+mechanisms used for data diffusion. The <a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Networking design
 document</a> has many more insights on why these protocols were
 implemented, and how they differ from other off-the-shelf mechanisms.</p>
 <p>Although it is conceivable having other alternative mechanisms to exchange the
@@ -2133,13 +2133,13 @@ parameters.</li>
 </li>
 </ul>
 <h2 id="ouroboros-bft"><a class="header" href="#ouroboros-bft">Ouroboros BFT</a></h2>
-<p>In Ouroboros BFT, a block is a tuple <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">s</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">block</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> where</p>
+<p>In Ouroboros BFT, a block is a tuple <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">h</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mpunct">,</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.0044em;vertical-align:-0.31em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">ma</span><span class="mord" style="margin-right:0.02778em;"><em></span><span class="mord"><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span><span class="mpunct">,</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">ma</span><span class="mord" style="margin-right:0.02778em;"></em></span><span class="mord"><span class="mspace newline"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord mathnormal">x</span><span class="mord mathnormal">t</span><span class="mord"><span class="mord mathnormal">b</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">oc</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span><span class="mclose">)</span></span></span></span> where</p>
 <ul>
 <li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> is the hash of the previous block,</li>
 <li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">d</span></span></span></span> is a set of transactions,</li>
 <li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span></span> is a (slot) time-stamp,</li>
-<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">s</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is a signature of the slot number, and</li>
-<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">block</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is a signature of the entire block.</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.0044em;vertical-align:-0.31em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">ma</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord"><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span></span></span> is a signature of the slot number, and</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.0044em;vertical-align:-0.31em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">ma</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord"><span class="mspace newline"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord mathnormal">x</span><span class="mord mathnormal">t</span><span class="mord"><span class="mord mathnormal">b</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">oc</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></span></span> is a signature of the entire block.</li>
 </ul>
 <p>We can reorganize the contents of a block in <em>header</em> and <em>body</em> following the
 <a href="consensus/./#headerbody-split">Header|body split</a>. The <em>body</em> would contain
@@ -2392,27 +2392,27 @@ blocks arrive, creating new candidates.</p>
 <p>The specific rule for determining the best chain is dictated by the active era’s
 protocol.</p>
 <h3 id="ouroboros-classic"><a class="header" href="#ouroboros-classic">Ouroboros Classic</a></h3>
-<p>In Ouroboros Classic, the protocol defines the function <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathcal" style="margin-right:0.05834em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbb">C</span><span class="mclose">)</span></span></span></span> for choosing the best chain considering
-the current selected chain <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.05834em;">C</span></span></span></span> and the set of valid chains
-<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6889em;"></span><span class="mord mathbb">C</span></span></span></span> available in the network. The rule states that the chosen candidate
-must be the longest one, breaking ties in favor of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.05834em;">C</span></span></span></span>.</p>
-<p>See the definition of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6111em;"></span><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span></span></span></span> in section 4.1 in the <a href="https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/">paper</a>.</p>
+<p>In Ouroboros Classic, the protocol defines the function <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord"><span class="mspace newline"></span><span class="mord mathnormal">tt</span><span class="mord mathnormal">ma</span><span class="mord mathnormal" style="margin-right:0.03588em;">xv</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">i</span><span class="mord mathnormal">d</span></span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mopen">(</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal">c</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span><span class="mpunct">,</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">t</span><span class="mord mathnormal">hbb</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span><span class="mclose">)</span></span></span></span> for choosing the best chain considering
+the current selected chain <span class="katex"><span class="katex-html" aria-hidden="true"><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal">c</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span></span> and the set of valid chains
+<span class="katex"><span class="katex-html" aria-hidden="true"><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">t</span><span class="mord mathnormal">hbb</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span></span> available in the network. The rule states that the chosen candidate
+must be the longest one, breaking ties in favor of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal">c</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span></span>.</p>
+<p>See the definition of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord"><span class="mspace newline"></span><span class="mord mathnormal">tt</span><span class="mord mathnormal">ma</span><span class="mord mathnormal" style="margin-right:0.03588em;">xv</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">i</span><span class="mord mathnormal">d</span></span></span></span></span> in section 4.1 in the <a href="https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/">paper</a>.</p>
 <h3 id="ouroboros-bft-and-pbft"><a class="header" href="#ouroboros-bft-and-pbft">Ouroboros BFT and PBFT</a></h3>
 <p>In Ouroboros BFT, the protocol declares that a node should replace the local
-chain <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> with a different chain
-<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9019em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> if <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span></span>, therefore if the candidate is longer
+chain <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9933em;vertical-align:-0.31em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord" style="margin-right:0.02778em;"><em></span><span class="mord"><span class="mord">0</span></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord" style="margin-right:0.02778em;"></em></span><span class="mord"><span class="mord">1</span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.0044em;vertical-align:-0.31em;"></span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">d</span><span class="mord mathnormal">o</span><span class="mord mathnormal">t</span><span class="mord mathnormal">s</span><span class="mord"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord" style="margin-right:0.02778em;"><em></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span></span></span> with a different chain
+<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0619em;vertical-align:-0.31em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord" style="margin-right:0.02778em;"></em></span><span class="mord"><span class="mord">0</span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.9019em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">d</span><span class="mord mathnormal">o</span><span class="mord mathnormal">t</span><span class="mord mathnormal">s</span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> if <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span></span></span>, therefore if the candidate is longer
 than the current selection.</p>
 <p>See Figure 1 in the <a href="https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/">paper</a>.</p>
 <p>Ouroboros PBFT does not change the chain selection rules of BFT, just focuses on
 validity of blocks, making parts of the block superfluous. It therefore also
 uses length to choose among candidates.</p>
 <h3 id="ouroboros-tpraos-and-praos"><a class="header" href="#ouroboros-tpraos-and-praos">Ouroboros TPraos and Praos</a></h3>
-<p>Ouroboros Praos circles back to defining the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathcal" style="margin-right:0.05834em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbb">C</span><span class="mclose">)</span></span></span></span> function, with identical behaviour to that in Ouroboros
-Classic. This means that longer candidates are preferrable to shorter ones, and
+<p>Ouroboros Praos circles back to defining the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord"><span class="mspace newline"></span><span class="mord mathnormal">tt</span><span class="mord mathnormal">ma</span><span class="mord mathnormal" style="margin-right:0.03588em;">xv</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">i</span><span class="mord mathnormal">d</span></span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mopen">(</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal">c</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span><span class="mpunct">,</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">t</span><span class="mord mathnormal">hbb</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span><span class="mclose">)</span></span></span></span> function, with identical behaviour to that in Ouroboros
+Classic. This means that longer candidates are preferable to shorter ones, and
 that ties are broken in favour of the already selected candidate.</p>
-<p>See Figure 4 and the definition of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6111em;"></span><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span></span></span></span> above it in the
+<p>See Figure 4 and the definition of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord"><span class="mspace newline"></span><span class="mord mathnormal">tt</span><span class="mord mathnormal">ma</span><span class="mord mathnormal" style="margin-right:0.03588em;">xv</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">i</span><span class="mord mathnormal">d</span></span></span></span></span> above it in the
 <a href="https://iohk.io/en/research/library/papers/ouroboros-praos-an-adaptively-secure-semi-synchronous-proof-of-stake-protocol/">paper</a>.</p>
-<p>Ouroboros TPraos refines how blocks are produced, but doesn’t modify the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6111em;"></span><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span></span></span></span> function in any way.</p>
+<p>Ouroboros TPraos refines how blocks are produced, but doesn’t modify the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord"><span class="mspace newline"></span><span class="mord mathnormal">tt</span><span class="mord mathnormal">ma</span><span class="mord mathnormal" style="margin-right:0.03588em;">xv</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">i</span><span class="mord mathnormal">d</span></span></span></span></span> function in any way.</p>
 <h3 id="tie-breakers-in-praos-and-older-protocols"><a class="header" href="#tie-breakers-in-praos-and-older-protocols">Tie breakers in Praos and older protocols</a></h3>
 <p>The rules above do specify that in case of a tie with the already selected
 chain, the node should not alter its selection however this leads to some
@@ -2460,7 +2460,7 @@ era).</p>
 <p>However, in Praos, the rule for selecting the best chain between two competing
 chains is fundamentally based on chain length. The protocol assumes
 instantaneous transmission of entire chains, meaning that the perceived length
-of a candidate would be its actual length.  Due to fundamental real-world
+of a candidate would be its actual length. Due to fundamental real-world
 limitations, sending such a large amount of data instantaneously is impossible;
 instead, data is streamed to the syncing node. Consequently, nodes only know the
 length of the received prefix of the candidate chain. This creates the risk of
@@ -2633,12 +2633,12 @@ then its body via BlockFetch) is as fast as possible.</p>
 <h2 id="leadership-check-in-ouroboros-praos"><a class="header" href="#leadership-check-in-ouroboros-praos">Leadership check in Ouroboros Praos</a></h2>
 <p>In Ouroboros Praos, the stake distribution is what dictates the elegibility of
 an stake pool for being elected. The probability of a stake pool <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> with
-relative stake <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> being elected as slot leader comes from this formula:</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord mathnormal">ϕ</span><span class="mord"><span class="mord"></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3281em;"><span style="top:-2.357em;margin-left:-0.0037em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+relative stake <span class="katex"><span class="katex-html" aria-hidden="true"><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">lp</span><span class="mord mathnormal">h</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> being elected as slot leader comes from this formula:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal">p</span><span class="mord mathnormal">hi</span><span class="mord"></span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">lp</span><span class="mord mathnormal">h</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1491em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mspace mtight newline"></span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">lp</span><span class="mord mathnormal mtight">h</span><span class="mord mtight"><span class="mord mathnormal mtight">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3281em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
 <p>Some important properties are ensured by Praos:</p>
 <ul>
 <li>There can be multiple slot leaders as the events “<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is a leader for slot
-<code>sl</code>” are independant,</li>
+<code>sl</code>” are independent,</li>
 <li>There can be slots with no leader,</li>
 <li>Only a slot leader is aware that it is indeed a leader for a given slot,</li>
 <li>The probability of being a slot leader is independent of whether the stake
@@ -3116,7 +3116,7 @@ blob in the file <code>&lt;slotno&gt;/state</code>. The former however, depends 
 which backend was being used by the node taking the snapshot:</p>
 <div class="table-wrapper"><table><thead><tr><th style="text-align: left">Backend</th><th><slotno>/tables</th></tr></thead><tbody>
 <tr><td style="text-align: left">V2InMemory</td><td>a file <code>tvar</code> containing the CBOR-encoded UTxO set</td></tr>
-<tr><td style="text-align: left">V1LMDB</td><td>a file <code>data.mdb</code> of an LMDB database contianing the UTxO set</td></tr>
+<tr><td style="text-align: left">V1LMDB</td><td>a file <code>data.mdb</code> of an LMDB database containing the UTxO set</td></tr>
 </tbody></table>
 </div>
 <p>There is also a file <code>&lt;slotno&gt;/meta</code> that contains a string
@@ -3213,7 +3213,7 @@ are valid on top of the latest known Ledger State (the one at the tip of the
 chain selected by <a href="mempool/../consensus/chainsel.html">Chain Selection</a> in the Consensus
 layer). The validity of transactions is defined by the Ledger layer. Notice a
 change in the selected chain should trigger a prompt revalidation of the pending
-transactions to discard those that became invalid on the new selection.  Such
+transactions to discard those that became invalid on the new selection. Such
 collection of valid transactions will be requested by the Consensus layer to
 <a href="mempool/../consensus/forging.html">forge new blocks</a>.</p>
 <p>Once a transaction has been included in some block, it cannot be a <em>pending
@@ -3481,7 +3481,7 @@ era and are referenced in <a href="ledger/../codecs#cddl">other blueprint CDDL s
 <p>See also:</p>
 <ul>
 <li>Formal ledger specification: <a href="https://github.com/intersectmbo/cardano-ledger/releases/latest/download/alonzo-ledger.pdf">Alonzo, Figure 4, minfee</a> and <a href="https://intersectmbo.github.io/formal-ledger-specifications/conway-ledger.pdf#section.4">Conway, chapter 4</a></li>
-<li>Haskell implementation: <a href="https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138">getConwayMinFeeTxUtxo</a> and releated functions</li>
+<li>Haskell implementation: <a href="https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138">getConwayMinFeeTxUtxo</a> and related functions</li>
 </ul>
 <h2 id="inputs"><a class="header" href="#inputs">Inputs</a></h2>
 <ul>
@@ -3524,7 +3524,7 @@ TODO: Explain protocol parameters somewhere</p>
 <p>Next, calculate the untagged size of each <code>scriptRef</code> on each of the transaction inputs and reference inputs. Specifically, each <code>scriptRef</code> field is serialized as a cbor tag, an integer plutus version, and then the raw script bytes. We’re interested in the size of the raw script bytes only.</p>
 <p>Next, calculate the reference script fee. First, sum up the length in bytes of each of script reference into <code>scriptRefLengths</code>. The <code>minFeeReferenceScripts</code> parameter consists of a <code>base</code>, a <code>multiplier</code>, and a <code>range</code>. (Note that in conway, the multiplier and the range are hard coded, rather than protocol parameters, but the intention is to change this at the next hardfork.)</p>
 <p>To calculate the fee, starting from a <code>baseFee</code> of <code>minFeeReferenceScripts.base</code> and remaining bytes of <code>sum(scriptRefLengths)</code>, until remaining bytes is zero, add <code>baseFee * min(remainingBytes, minFeeReferenceScripts.range)</code>, scale <code>baseFee</code> by <code>minFeeReferenceScripts.multiplier</code>, and decrease <code>remainingBytes</code> by <code>min(remainingBytes, minFeeReferenceScripts.range)</code>. This calculation can result in rational values (as the multiplier can be rational), and so you should take the ceiling as a <em>last step</em>.</p>
-<p>Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol paramters (<code>prices.memory</code> and <code>prices.steps</code>), and add them up. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.</p>
+<p>Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol parameters (<code>prices.memory</code> and <code>prices.steps</code>), and add them up. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.</p>
 <p>The final minimum fee is the base fee, plus the reference script fee, plus the evaluation fee.</p>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
 <p>Lets do a decently complex worked example, from mainnet transaction with id (body hash)</p>
@@ -3700,7 +3700,7 @@ We will break up the validation process into smaller sections to make it easier 
                 certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                     EDC --&gt; conwayDelegTransition
                         conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                            crcDoBlock --&gt; crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                            crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDespoitAgainstPParams)
                             crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                         conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                             cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -3742,11 +3742,11 @@ We will break up the validation process into smaller sections to make it easier 
                         cudrDoBlock --&gt; cudrDRepState[(vsDReps)]
                     conwayGovCertTransition --&gt; |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                     conwayGovCertTransition --&gt; |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                        crcckDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                        cachkDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                            checkAndOverwriteCommitteMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
-                            checkAndOverwriteCommitteMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                            checkAndOverwriteCommitteMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
+                        crcckDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                        cachkDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                            checkAndOverwriteCommitteeMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
+                            checkAndOverwriteCommitteeMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                            checkAndOverwriteCommitteeMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
 </pre>
 <h3 id="erarule-gov"><a class="header" href="#erarule-gov">EraRule GOV</a></h3>
 <p>This EraRule is responsible for validating and updating the governance state.</p>
@@ -3770,7 +3770,7 @@ We will break up the validation process into smaller sections to make it easier 
                 pcDoBlock --&gt; checkPolicy(checkPolicy)
         govTransition --&gt; ancestryCheck(ancestryCheck)
         govTransition --&gt; unknownVoters(failOnNonEmpty unknownVoters)
-        govTransition --&gt; unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+        govTransition --&gt; unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
         govTransition --&gt; checkBootstrapVotes(checkBootstrapVotes)
         govTransition --&gt; checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
         govTransition --&gt; checkVotersAreValid(checkVotersAreValid)
@@ -3787,7 +3787,7 @@ EUC[EraRule UTXOW Conway]
         babbageUtxowTransition --&gt; hasExactSetOfRedeemers(hasExactSetOfRedeemers)
         babbageUtxowTransition --&gt; validateVerifiedWits(Shelley.validateVerifiedWits)
         babbageUtxowTransition --&gt; validateNeededWitnesses(validateNeededWitnesses)
-        babbageUtxowTransition --&gt; validateMetdata(Shelley.validateMetadata)
+        babbageUtxowTransition --&gt; validateMetadata(Shelley.validateMetadata)
         babbageUtxowTransition --&gt; validateScriptsWellFormed(validateScriptsWellFormed)
         babbageUtxowTransition --&gt; ppViewHashesMatch(ppViewHashesMatch)
         babbageUtxowTransition --&gt; EUTXOC[EraRule UTXO Conway]
@@ -3801,7 +3801,7 @@ EUC[EraRule UTXOW Conway]
                 utxoTransition --&gt; validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                 utxoTransition --&gt; validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                 utxoTransition --&gt; validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                 utxoTransition --&gt; validateWrongNetwork(Shelley.validateWrongNetwork)
                 utxoTransition --&gt; validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                 utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
@@ -3856,7 +3856,7 @@ EUC[EraRule UTXOW Conway]
                                             certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                                                 EDC --&gt; conwayDelegTransition
                                                     conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                                                        crcDoBlock --&gt; crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                                                        crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDespoitAgainstPParams)
                                                         crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                                                     conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                                                         cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -3901,11 +3901,11 @@ EUC[EraRule UTXOW Conway]
                                                     cudrDoBlock --&gt; cudrDRepState[(vsDReps)]
                                                 conwayGovCertTransition --&gt; |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                                                 conwayGovCertTransition --&gt; |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                                                    crcckDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                                                    cachkDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                                                        checkAndOverwriteCommitteMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
-                                                        checkAndOverwriteCommitteMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                                                        checkAndOverwriteCommitteMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
+                                                    crcckDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                                                    cachkDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                                                        checkAndOverwriteCommitteeMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
+                                                        checkAndOverwriteCommitteeMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                                                        checkAndOverwriteCommitteeMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
                                 ltDoBlock --&gt; EGC[EraRule GOV Conway]
                                     EGC --&gt; govTransition
                                         govTransition --&gt; badHardFork(failOnJust badHardFork)
@@ -3925,7 +3925,7 @@ EUC[EraRule UTXOW Conway]
                                                 pcDoBlock --&gt; checkPolicy(checkPolicy)
                                         govTransition --&gt; ancestryCheck(ancestryCheck)
                                         govTransition --&gt; unknownVoters(failOnNonEmpty unknownVoters)
-                                        govTransition --&gt; unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+                                        govTransition --&gt; unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
                                         govTransition --&gt; checkBootstrapVotes(checkBootstrapVotes)
                                         govTransition --&gt; checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
                                         govTransition --&gt; checkVotersAreValid(checkVotersAreValid)
@@ -3940,7 +3940,7 @@ EUC[EraRule UTXOW Conway]
                                 babbageUtxowTransition --&gt; hasExactSetOfRedeemers(hasExactSetOfRedeemers)
                                 babbageUtxowTransition --&gt; validateVerifiedWits(Shelley.validateVerifiedWits)
                                 babbageUtxowTransition --&gt; validateNeededWitnesses(validateNeededWitnesses)
-                                babbageUtxowTransition --&gt; validateMetdata(Shelley.validateMetadata)
+                                babbageUtxowTransition --&gt; validateMetadata(Shelley.validateMetadata)
                                 babbageUtxowTransition --&gt; validateScriptsWellFormed(validateScriptsWellFormed)
                                 babbageUtxowTransition --&gt; ppViewHashesMatch(ppViewHashesMatch)
                                 babbageUtxowTransition --&gt; EUTXOC[EraRule UTXO Conway]
@@ -3954,7 +3954,7 @@ EUC[EraRule UTXOW Conway]
                                         utxoTransition --&gt; validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                                         utxoTransition --&gt; validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                                         utxoTransition --&gt; validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                                        utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                                        utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                                         utxoTransition --&gt; validateWrongNetwork(Shelley.validateWrongNetwork)
                                         utxoTransition --&gt; validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                                         utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
@@ -5302,9 +5302,9 @@ Poorly written documentation can confuse readers rather than clarify, and the mo
 the reader in mind, thinking what is the best way to pass on the
 knowledge you have given the current state of knowledge they have.
 This is a hard thing to do, but it is worth aiming for!</p>
-<p>People take in information in different ways.  Some like literate
+<p>People take in information in different ways. Some like literate
 prose, many like visual diagrams and pseudo-code, and a few like
-mathematical formulae.  If you can do all of these, so much the
+mathematical formulae. If you can do all of these, so much the
 better, but good diagrams are often the place to start.</p>
 <p>As a general rule, approach it with the same level of care and thoughtfulness as you would when writing a peer-reviewed paper for a top-tier conference or journal that you are eager to publish.
 More specifically, here are a few general tips.</p>
@@ -5366,7 +5366,7 @@ Thus documentation should be versioned and released like software packages, with
 <h2 id="language"><a class="header" href="#language">Language</a></h2>
 <p>Text should be written in American English, at the reading level of a
 competent software developer - which is often very high, but bear in mind
-that English may not be their first language.  Use technical language by all
+that English may not be their first language. Use technical language by all
 means, but there is no need to be egregiously erudite in your elucidation.</p>
 <p>It may not be necessary to talk about humans in much of this documentation,
 but if you do, please use gender-neutral pronouns - ‘they’ and ‘their’:</p>
@@ -5379,8 +5379,8 @@ but if you do, please use gender-neutral pronouns - ‘they’ and ‘their’:<
 </blockquote>
 <h3 id="normative-vs-declarative-style"><a class="header" href="#normative-vs-declarative-style">Normative vs declarative style</a></h3>
 <p>Some standards documentation is very SHOUTY about MUST, SHALL and so on.
-Even if it doesn’t SHOUT it can still be rather clumsy to read.  Instead,
-we want to use a <em>declarative</em> style.  We can express what an implementation
+Even if it doesn’t SHOUT it can still be rather clumsy to read. Instead,
+we want to use a <em>declarative</em> style. We can express what an implementation
 has to do conform to the specification as a simple descriptive fact - e.g.</p>
 <blockquote>
 <p>The tester discards widgets with broken flibbits.</p>
@@ -5389,7 +5389,7 @@ has to do conform to the specification as a simple descriptive fact - e.g.</p>
 <blockquote>
 <p>The tester SHALL discard widgets with broken flibbits.</p>
 </blockquote>
-<p>So in this style there is an implicit ‘must’.  If something is optional, this
+<p>So in this style there is an implicit ‘must’. If something is optional, this
 can be said explicitly:</p>
 <blockquote>
 <p>The package may use extra sproggles if required.</p>
@@ -5403,7 +5403,9 @@ critical, but still, please don’t SHOUT.</p>
     A--&gt;C;
 </pre>
 <p>and maths using <a href="https://katex.org/docs/supported.html">katex</a>:</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.09931em;">U</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">Φ</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7387em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>$$
+\mathcal{U} = ( \Phi \times \mathcal{O} )^*
+$$</p>
 <h2 id="alerts"><a class="header" href="#alerts">Alerts</a></h2>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
