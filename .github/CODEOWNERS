@@ -1,0 +1,12 @@
+* @team-blueprint @ch1bo
+
+src/client/ @ch1bo
+src/codecs/ @jasegredo
+
+src/ledger/ @nc6
+
+src/consensus/ @jasegredo
+src/mempool/ @jasegredo
+src/storage/ @jasegredo
+
+src/plutus/ @zliu41
