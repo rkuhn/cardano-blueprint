@@ -36,6 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
@@ -92,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -143,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/transaction-fee.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/transaction-fee.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -152,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -264,7 +273,7 @@
 <p>See also:</p>
 <ul>
 <li>Formal ledger specification: <a href="https://github.com/intersectmbo/cardano-ledger/releases/latest/download/alonzo-ledger.pdf">Alonzo, Figure 4, minfee</a> and <a href="https://intersectmbo.github.io/formal-ledger-specifications/conway-ledger.pdf#section.4">Conway, chapter 4</a></li>
-<li>Haskell implementation: <a href="https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138">getConwayMinFeeTxUtxo</a> and releated functions</li>
+<li>Haskell implementation: <a href="https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138">getConwayMinFeeTxUtxo</a> and related functions</li>
 </ul>
 <h2 id="inputs"><a class="header" href="#inputs">Inputs</a></h2>
 <ul>
@@ -307,7 +316,7 @@ TODO: Explain protocol parameters somewhere</p>
 <p>Next, calculate the untagged size of each <code>scriptRef</code> on each of the transaction inputs and reference inputs. Specifically, each <code>scriptRef</code> field is serialized as a cbor tag, an integer plutus version, and then the raw script bytes. We’re interested in the size of the raw script bytes only.</p>
 <p>Next, calculate the reference script fee. First, sum up the length in bytes of each of script reference into <code>scriptRefLengths</code>. The <code>minFeeReferenceScripts</code> parameter consists of a <code>base</code>, a <code>multiplier</code>, and a <code>range</code>. (Note that in conway, the multiplier and the range are hard coded, rather than protocol parameters, but the intention is to change this at the next hardfork.)</p>
 <p>To calculate the fee, starting from a <code>baseFee</code> of <code>minFeeReferenceScripts.base</code> and remaining bytes of <code>sum(scriptRefLengths)</code>, until remaining bytes is zero, add <code>baseFee * min(remainingBytes, minFeeReferenceScripts.range)</code>, scale <code>baseFee</code> by <code>minFeeReferenceScripts.multiplier</code>, and decrease <code>remainingBytes</code> by <code>min(remainingBytes, minFeeReferenceScripts.range)</code>. This calculation can result in rational values (as the multiplier can be rational), and so you should take the ceiling as a <em>last step</em>.</p>
-<p>Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol paramters (<code>prices.memory</code> and <code>prices.steps</code>), and add them up. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.</p>
+<p>Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol parameters (<code>prices.memory</code> and <code>prices.steps</code>), and add them up. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.</p>
 <p>The final minimum fee is the base fee, plus the reference script fee, plus the evaluation fee.</p>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
 <p>Lets do a decently complex worked example, from mainnet transaction with id (body hash)</p>
@@ -398,6 +407,7 @@ TODO: Explain protocol parameters somewhere</p>
         <!-- Custom JS scripts -->
         <script src="../.mdbook/mermaid.min.js"></script>
         <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

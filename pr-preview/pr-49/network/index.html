@@ -36,6 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
@@ -92,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -143,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/network/README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/network/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -152,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -241,6 +250,14 @@
 
 </style>
 <h1 id="network"><a class="header" href="#network">Network</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.
+See also <a href="#resources">Resources</a></p>
+</div>
 <p>The network layer is responsible of implementing the Node-To-Node interface of a
 node, for transmitting data between nodes.</p>
 <p>The network protocols consist of a <a href="multiplexing.html">multiplexing layer</a> which
@@ -269,7 +286,7 @@ protocols to use. It often times is convenient to group this interface under
 the networking layer of a node but it is not mandatory. For more information
 see <a href="../client">Client interfaces</a>.</p>
 </div>
-<h3 id="node-to-node-mini-protocols"><a class="header" href="#node-to-node-mini-protocols">Node-to-node mini-protocols</a></h3>
+<h2 id="node-to-node-mini-protocols"><a class="header" href="#node-to-node-mini-protocols">Node-to-node mini-protocols</a></h2>
 <blockquote>
 <p>Current node-to-node protocol version: v14</p>
 </blockquote>
@@ -285,12 +302,17 @@ Cardano chain</li>
 <li><a href="">Peer Sharing</a> - for exchanging peer information to create the peer-to-peer
 (P2P) network</li>
 </ul>
+<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Technical report: Data Diffusion and Network</a>: Original design document of the peer-to-peer network protocols and diffusion semantics</li>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf">Ouroboros Network Specification</a>: Document generated from the Haskell implementation of the Cardano network stack. Contains definitions of all mini-protocols and some documentation the connection management.</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../introduction/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../principles/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -304,7 +326,7 @@ Cardano chain</li>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../introduction/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../principles/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -334,6 +356,7 @@ Cardano chain</li>
         <!-- Custom JS scripts -->
         <script src="../.mdbook/mermaid.min.js"></script>
         <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

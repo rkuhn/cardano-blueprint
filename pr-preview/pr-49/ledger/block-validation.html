@@ -36,6 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
@@ -92,10 +93,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -143,7 +147,7 @@
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/block-validation.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/block-validation.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -152,7 +156,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -242,7 +251,7 @@
 </style>
 <h1 id="ledger-block-validation"><a class="header" href="#ledger-block-validation">Ledger: Block Validation</a></h1>
 <p>Block validation is the process of applying a set of ledger rules to a candidate block before adding it to the blockchain and updating the state of the ledger.
-Each <a href="../consensus/README.html#multi-era-considerations">era</a> has it’s own set of rules for block validation.</p>
+Each <a href="../consensus/multiera.html">era</a> has it’s own set of rules for block validation.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -306,7 +315,7 @@ We will break up the validation process into smaller sections to make it easier 
                 certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                     EDC --&gt; conwayDelegTransition
                         conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                            crcDoBlock --&gt; crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                            crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                             crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                         conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                             cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -348,11 +357,11 @@ We will break up the validation process into smaller sections to make it easier 
                         cudrDoBlock --&gt; cudrDRepState[(vsDReps)]
                     conwayGovCertTransition --&gt; |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                     conwayGovCertTransition --&gt; |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                        crcckDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                        cachkDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                            checkAndOverwriteCommitteMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
-                            checkAndOverwriteCommitteMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                            checkAndOverwriteCommitteMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
+                        crcckDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                        cachkDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                            checkAndOverwriteCommitteeMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
+                            checkAndOverwriteCommitteeMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                            checkAndOverwriteCommitteeMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
 </pre>
 <h3 id="erarule-gov"><a class="header" href="#erarule-gov">EraRule GOV</a></h3>
 <p>This EraRule is responsible for validating and updating the governance state.</p>
@@ -376,7 +385,7 @@ We will break up the validation process into smaller sections to make it easier 
                 pcDoBlock --&gt; checkPolicy(checkPolicy)
         govTransition --&gt; ancestryCheck(ancestryCheck)
         govTransition --&gt; unknownVoters(failOnNonEmpty unknownVoters)
-        govTransition --&gt; unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+        govTransition --&gt; unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
         govTransition --&gt; checkBootstrapVotes(checkBootstrapVotes)
         govTransition --&gt; checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
         govTransition --&gt; checkVotersAreValid(checkVotersAreValid)
@@ -393,7 +402,7 @@ EUC[EraRule UTXOW Conway]
         babbageUtxowTransition --&gt; hasExactSetOfRedeemers(hasExactSetOfRedeemers)
         babbageUtxowTransition --&gt; validateVerifiedWits(Shelley.validateVerifiedWits)
         babbageUtxowTransition --&gt; validateNeededWitnesses(validateNeededWitnesses)
-        babbageUtxowTransition --&gt; validateMetdata(Shelley.validateMetadata)
+        babbageUtxowTransition --&gt; validateMetadata(Shelley.validateMetadata)
         babbageUtxowTransition --&gt; validateScriptsWellFormed(validateScriptsWellFormed)
         babbageUtxowTransition --&gt; ppViewHashesMatch(ppViewHashesMatch)
         babbageUtxowTransition --&gt; EUTXOC[EraRule UTXO Conway]
@@ -407,7 +416,7 @@ EUC[EraRule UTXOW Conway]
                 utxoTransition --&gt; validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                 utxoTransition --&gt; validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                 utxoTransition --&gt; validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                 utxoTransition --&gt; validateWrongNetwork(Shelley.validateWrongNetwork)
                 utxoTransition --&gt; validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                 utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
@@ -462,7 +471,7 @@ EUC[EraRule UTXOW Conway]
                                             certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                                                 EDC --&gt; conwayDelegTransition
                                                     conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                                                        crcDoBlock --&gt; crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                                                        crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                                                         crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                                                     conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                                                         cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -507,11 +516,11 @@ EUC[EraRule UTXOW Conway]
                                                     cudrDoBlock --&gt; cudrDRepState[(vsDReps)]
                                                 conwayGovCertTransition --&gt; |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                                                 conwayGovCertTransition --&gt; |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                                                    crcckDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                                                    cachkDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                                                        checkAndOverwriteCommitteMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
-                                                        checkAndOverwriteCommitteMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                                                        checkAndOverwriteCommitteMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
+                                                    crcckDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                                                    cachkDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                                                        checkAndOverwriteCommitteeMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
+                                                        checkAndOverwriteCommitteeMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                                                        checkAndOverwriteCommitteeMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
                                 ltDoBlock --&gt; EGC[EraRule GOV Conway]
                                     EGC --&gt; govTransition
                                         govTransition --&gt; badHardFork(failOnJust badHardFork)
@@ -531,7 +540,7 @@ EUC[EraRule UTXOW Conway]
                                                 pcDoBlock --&gt; checkPolicy(checkPolicy)
                                         govTransition --&gt; ancestryCheck(ancestryCheck)
                                         govTransition --&gt; unknownVoters(failOnNonEmpty unknownVoters)
-                                        govTransition --&gt; unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+                                        govTransition --&gt; unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
                                         govTransition --&gt; checkBootstrapVotes(checkBootstrapVotes)
                                         govTransition --&gt; checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
                                         govTransition --&gt; checkVotersAreValid(checkVotersAreValid)
@@ -546,7 +555,7 @@ EUC[EraRule UTXOW Conway]
                                 babbageUtxowTransition --&gt; hasExactSetOfRedeemers(hasExactSetOfRedeemers)
                                 babbageUtxowTransition --&gt; validateVerifiedWits(Shelley.validateVerifiedWits)
                                 babbageUtxowTransition --&gt; validateNeededWitnesses(validateNeededWitnesses)
-                                babbageUtxowTransition --&gt; validateMetdata(Shelley.validateMetadata)
+                                babbageUtxowTransition --&gt; validateMetadata(Shelley.validateMetadata)
                                 babbageUtxowTransition --&gt; validateScriptsWellFormed(validateScriptsWellFormed)
                                 babbageUtxowTransition --&gt; ppViewHashesMatch(ppViewHashesMatch)
                                 babbageUtxowTransition --&gt; EUTXOC[EraRule UTXO Conway]
@@ -560,7 +569,7 @@ EUC[EraRule UTXOW Conway]
                                         utxoTransition --&gt; validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                                         utxoTransition --&gt; validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                                         utxoTransition --&gt; validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                                        utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                                        utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                                         utxoTransition --&gt; validateWrongNetwork(Shelley.validateWrongNetwork)
                                         utxoTransition --&gt; validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                                         utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
@@ -589,7 +598,7 @@ EUC[EraRule UTXOW Conway]
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../ledger/cddls.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../plutus/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -603,7 +612,7 @@ EUC[EraRule UTXOW Conway]
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../ledger/cddls.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../plutus/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -629,6 +638,7 @@ EUC[EraRule UTXOW Conway]
         <!-- Custom JS scripts -->
         <script src="../.mdbook/mermaid.min.js"></script>
         <script src="../.mdbook/mermaid-init.js"></script>
+
 
 
     </div>

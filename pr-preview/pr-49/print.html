@@ -37,6 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
@@ -93,10 +94,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -150,7 +154,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -360,7 +369,155 @@
 }
 
 </style>
+<h1 id="principles"><a class="header" href="#principles">Principles</a></h1>
+<p>This section contains general principles to apply when developing Cardano nodes.</p>
+<h2 id="optimise-only-for-the-worst-case"><a class="header" href="#optimise-only-for-the-worst-case">Optimise only for the worst case</a></h2>
+<p>Algorithms often possess different performance characteristics in the best,
+average and worst cases. Quick sort has, for example, <code>O(n*log(n))</code> time
+complexity in the average case, but <code>O(n^2)</code> in the worst case.</p>
+<p>Often in software we are interested in optimising for the average case, since
+over time it tends to result in the highest overall performance. In Cardano,
+however, we take a different approach: we want to only optimise the worst case
+performance, and indeed, pick algorithms where <em>worst case is the same as best
+(or average) case</em>.</p>
+<h3 id="motivation"><a class="header" href="#motivation">Motivation</a></h3>
+<p>There are two motivating ideas behind this principle:</p>
+<ol>
+<li>
+<p><em>Performance will come to be relied upon</em>. This is an instance of Hyrum’s
+law in action:</p>
+<blockquote>
+<p>With a sufficient number of users of an API, it does not matter what you
+promise in the contract: all observable behaviors of your system will be
+depended on by somebody.</p>
+</blockquote>
+<p>If we manage to increase average performance, tools will be developed that
+come to expect this behaviour. If blocks can be processed faster, for
+example, there may be pressure to use that extra time to allow larger script
+execution budgets.</p>
+</li>
+<li>
+<p>Forcing honest nodes to do more work provides an attack opportunity for the
+adversary. In the worst case, an adversary could potentially force nodes to
+fail to adopt or forge blocks, and hence potentially gain control of the
+chain.</p>
+</li>
+</ol>
+<h3 id="example-utxo-locality"><a class="header" href="#example-utxo-locality">Example: UTxO locality</a></h3>
+<p>As an example, there is certain evidence that the UTxO set exhibits a degree of
+temporal locality. That is, there are a number of long-lived UTxO entries that
+are unlikely to be spent, while recently created entries are quite likely to
+come up again.</p>
+<p>We could choose to take advantage of this to organise the UTxO along the form
+of a LRU (least recently used) cache. This would likely speed up UTxO lookup
+in the average case, particularly were the UTxO stored on disk.</p>
+<p>However, an attacker could then choose to deliberately craft a number of
+transactions containing UTxO that were created a long time ago. A block filled
+with such transactions, while being perfectly legitimate, might take
+significantly longer to process than a regular block. The attacker could use
+this delay to gain an advantage in block forging and thus magnify their
+effective stake.</p>
+<h3 id="considerations"><a class="header" href="#considerations">Considerations</a></h3>
+<p>Whilst we have written the above as a general principle, there are of course
+various considerations that effect how much we want to follow it:</p>
+<ol>
+<li>The situation we most want to avoid is where an attacker could control an
+input such that they can force the worst-case behaviour. The UTxO locality
+example above is one such.</li>
+<li>Still problematic are cases where an attacker cannot control the performance
+but can predict it, or less serious still, observe it. Either way a
+prepared attacker could take advantage of the degraded performance to launch
+an attack on the chain.</li>
+<li>Either of these cases are exacerbated if the same behaviour is coordinated
+across all nodes, since this allows an attacker to exploit a performance
+drop across the entire network.</li>
+</ol>
+<p>In situations where the inputs to a function are random or not observable by
+an adversary, or where the effects are purely local, it may therefore still be
+sensible to optimise for the average case. An example of such might be in
+local state query computations, since these are triggered only by a (trusted)
+local connection and do not lie on a critical path for block forging or
+adoption.</p>
+<p>The key point is that, in the Cardano setting, optimisations should be carefully
+considered and it is certainly not the case that better average-case performance
+is always desirable!</p>
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<style>
+.mdbook-alerts {
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-left: 0.25em solid var(--mdbook-alerts-color);
+}
+
+.mdbook-alerts > *:first-child {
+  margin-top: 0;
+}
+
+.mdbook-alerts > *:last-child {
+  margin-bottom: 0;
+}
+
+.mdbook-alerts-title {
+  display: flex;
+  font-weight: 600;
+  align-items: center;
+  line-height: 1;
+  color: var(--mdbook-alerts-color);
+  text-transform: capitalize;
+}
+
+.mdbook-alerts-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+  background-color: currentColor;
+  -webkit-mask: no-repeat center / 100%;
+  mask: no-repeat center / 100%;
+  -webkit-mask-image: var(--mdbook-alerts-icon);
+  mask-image: var(--mdbook-alerts-icon);
+}
+
+.mdbook-alerts-note {
+  --mdbook-alerts-color: rgb(9, 105, 218);
+  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-tip {
+  --mdbook-alerts-color: rgb(26, 127, 55);
+  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-important {
+  --mdbook-alerts-color: rgb(130, 80, 223);
+  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-warning {
+  --mdbook-alerts-color: rgb(154, 103, 0);
+  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
+}
+
+.mdbook-alerts-caution {
+  --mdbook-alerts-color: rgb(207, 34, 46);
+  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
+  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
+}
+
+</style>
 <h1 id="network"><a class="header" href="#network">Network</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.
+See also <a href="network/index.html#resources">Resources</a></p>
+</div>
 <p>The network layer is responsible of implementing the Node-To-Node interface of a
 node, for transmitting data between nodes.</p>
 <p>The network protocols consist of a <a href="network/multiplexing.html">multiplexing layer</a> which
@@ -389,7 +546,7 @@ protocols to use. It often times is convenient to group this interface under
 the networking layer of a node but it is not mandatory. For more information
 see <a href="network/../client">Client interfaces</a>.</p>
 </div>
-<h3 id="node-to-node-mini-protocols"><a class="header" href="#node-to-node-mini-protocols">Node-to-node mini-protocols</a></h3>
+<h2 id="node-to-node-mini-protocols"><a class="header" href="#node-to-node-mini-protocols">Node-to-node mini-protocols</a></h2>
 <blockquote>
 <p>Current node-to-node protocol version: v14</p>
 </blockquote>
@@ -404,6 +561,11 @@ Cardano chain</li>
 <li><a href="network/node-to-node/keep-alive">Keep Alive</a> - for maintaining and measuring timing of the connection</li>
 <li><a href="network/">Peer Sharing</a> - for exchanging peer information to create the peer-to-peer
 (P2P) network</li>
+</ul>
+<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Technical report: Data Diffusion and Network</a>: Original design document of the peer-to-peer network protocols and diffusion semantics</li>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf">Ouroboros Network Specification</a>: Document generated from the Haskell implementation of the Cardano network stack. Contains definitions of all mini-protocols and some documentation the connection management.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
@@ -513,7 +675,7 @@ raw connection (TCP or local socket) and provides:</p>
 </pre>
 <h2 id="packet-format"><a class="header" href="#packet-format">Packet format</a></h2>
 <p>A multiplexer packet consists of an 8-byte header followed by up to 65535 bytes
-of payload.  Multiple payload segments can be combined to form a full message.</p>
+of payload. Multiple payload segments can be combined to form a full message.</p>
 <pre class="mermaid">packet-beta
     0-31: &quot;Transmission time&quot;
     32: &quot;M&quot;
@@ -621,8 +783,8 @@ mini-protocols to share the same underlying TCP or local socket connection.</p>
 that can be passed between the parties.</p>
 <h2 id="state-machines"><a class="header" href="#state-machines">State machines</a></h2>
 <p>The progress of the communication is defined by a state machine, which
-is replicated at each end.  The transitions of the state machine
-are messages being sent/received.  As well as defining which messages
+is replicated at each end. The transitions of the state machine
+are messages being sent/received. As well as defining which messages
 are valid to send and receive in each state, the state machine also
 defines which side has <em>agency</em> - that is, should be the one to send
 the next message.</p>
@@ -630,7 +792,7 @@ the next message.</p>
 connection be opened - the client in a simple client/server model.</p>
 <p>The <em>responder</em> or is the one that responds to the connection request - the
 server, in other words.</p>
-<p>In every case it is the initiator (client) which has agency first.  In many
+<p>In every case it is the initiator (client) which has agency first. In many
 cases the initiator and responder take turns to have agency (send messages),
 but in some cases where one party must wait for a response, the other will
 keep agency and send a follow-up message later.</p>
@@ -749,7 +911,7 @@ basics</a> for more details.</p>
 <p><strong>Mini-protocol number: 0</strong></p>
 <p>The Handshake mini-protocol is used to establish a connection and
 negotiate protocol versions and parameters between the initiator
-(client) and responder (server).  There are two versions, one for
+(client) and responder (server). There are two versions, one for
 node-to-node (NTN) and one for node-to-client (NTC), which differ only
 in their protocol parameters.</p>
 <h2 id="state-machine"><a class="header" href="#state-machine">State machine</a></h2>
@@ -785,7 +947,7 @@ in their protocol parameters.</p>
 <h2 id="tcp-simultaneous-open"><a class="header" href="#tcp-simultaneous-open">TCP simultaneous open</a></h2>
 <p>In the rare case when both sides try to connect to each other at the same time,
 it’s possible to get a “TCP simultaneous open” where you end up with a single
-socket, not two.  In this case, both sides will think they are the initiator
+socket, not two. In this case, both sides will think they are the initiator
 so will send a <code>MsgProposeVersions</code>, and this protocol handles this by treating
 the received one in <code>StConfirm</code> state as a <code>MsgReplyVersion</code>, which has the same
 CBOR encoding.</p>
@@ -794,7 +956,7 @@ CBOR encoding.</p>
   <span class="mdbook-alerts-icon"></span>
   warning
 </p>
-<p>Why does the message need to change name?  The state machine would be
+<p>Why does the message need to change name? The state machine would be
 valid with an <code>StConfirm -- MsgProposeVersions --&gt; End</code> arc.</p>
 </div>
 <div class="mdbook-alerts mdbook-alerts-note">
@@ -802,7 +964,7 @@ valid with an <code>StConfirm -- MsgProposeVersions --&gt; End</code> arc.</p>
   <span class="mdbook-alerts-icon"></span>
   note
 </p>
-<p>Also, is the negotiation always deemed successful in this case?  What if
+<p>Also, is the negotiation always deemed successful in this case? What if
 one side can’t accept the other’s version? (there is talk of resetting
 the connection)</p>
 </div>
@@ -816,9 +978,9 @@ out of date?</p>
 </div>
 <h2 id="messages"><a class="header" href="#messages">Messages</a></h2>
 <p>The <code>MsgProposeVersions</code> message is sent by the initiator to propose a
-set of possible versions and protocol parameters.  <code>versionTable</code> is a map
+set of possible versions and protocol parameters. <code>versionTable</code> is a map
 of version numbers to associated parameters - bear in mind that different
-versions may have different sets of parameters.  The version number keys
+versions may have different sets of parameters. The version number keys
 must be unique and in ascending order.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
 <p class="mdbook-alerts-title">
@@ -831,7 +993,7 @@ implementations, although deterministic CBOR encoding would enforce it.</p>
 <p>The <code>MsgAcceptVersion</code> message is returned by the responder to confirm
 a mutually acceptable version and set of parameters.</p>
 <p>The <code>MsgRefuse</code> message is returned by the responder to indicate there is
-no acceptable version match, or another reason.  If it is a version mismatch
+no acceptable version match, or another reason. If it is a version mismatch
 it returns a set of version numbers that it could have accepted.</p>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
@@ -863,7 +1025,7 @@ if they did), it’s not clear why this constraint is needed.</p>
 </div>
 <h3 id="timeouts"><a class="header" href="#timeouts">Timeouts</a></h3>
 <p>The maximum time to wait for a message in <code>StPropose</code> (for the responder)
-or <code>StConfirm</code> (for the initiator) is 10 seconds.  After this the connection
+or <code>StConfirm</code> (for the initiator) is 10 seconds. After this the connection
 should be torn down.</p>
 <h2 id="cddl"><a class="header" href="#cddl">CDDL</a></h2>
 <p>Here’s the CDDL for the latest node-to-node handshake protocol:</p>
@@ -1161,8 +1323,6 @@ serialisedShelleyHeader&lt;era&gt; = #6.24(bytes .cbor era)
 ;# include conway as conway
 ;# import base as base
 </code></pre>
-<!-- iohk.io links return 403 "if you are not a human" -->
-<!-- markdown-link-check-disable-next-line -->
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -1744,19 +1904,20 @@ msgDone = [ 2 ]
 }
 
 </style>
-<h1 id="the-consensus-layer"><a class="header" href="#the-consensus-layer">The Consensus Layer</a></h1>
-<p>This document describes the components of the Consensus layer of a Cardano node,
-serving as a reference for Cardano developers who want to implement a node or
-interact with the Consensus layer of an existing implementation. We strive to
-provide implementation-agnostic requirements and responsibilities for the
-Consensus layer.</p>
+<h1 id="consensus"><a class="header" href="#consensus">Consensus</a></h1>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
   warning
 </p>
-<p>This document is a work in progress.</p>
+<p>This blueprint is a work in progress.
+See also <a href="consensus/index.html#resources">Resources</a></p>
 </div>
+<p>This document describes the components of the Consensus layer of a Cardano node,
+serving as a reference for Cardano developers who want to implement a node or
+interact with the Consensus layer of an existing implementation. We strive to
+provide implementation-agnostic requirements and responsibilities for the
+Consensus layer.</p>
 <p>The Consensus Layer runs the Consensus Protocol and invokes the <a href="consensus/../ledger">Ledger
 layer</a> to validate chains produced according to the
 protocol. The chain is then persisted in the <a href="consensus/../storage">Storage
@@ -1804,6 +1965,7 @@ layer</a>. The contents of new blocks are provided by the
 <li><a href="consensus/index.html#resilience-of-the-consensus-layer">Resilience of the Consensus layer</a></li>
 <li><a href="consensus/index.html#requirements-imposed-onto-the-networkingdiffusion-layer">Requirements imposed onto the Networking/Diffusion layer</a></li>
 <li><a href="consensus/index.html#requirements-imposed-onto-the-ledger-layer">Requirements imposed onto the Ledger layer</a></li>
+<li><a href="consensus/index.html#resources">Resources</a></li>
 </ul>
 <h2 id="the-consensus-protocol-in-cardano"><a class="header" href="#the-consensus-protocol-in-cardano">The Consensus Protocol in Cardano</a></h2>
 <p>The consensus protocol has three main responsibilities:</p>
@@ -1811,7 +1973,7 @@ layer</a>. The contents of new blocks are provided by the
 <li>
 <p><a href="consensus/./chainvalid.html">Chain validity check</a>: the validity of a chain of blocks
 is defined by the Consensus protocol, whether the values in the block match
-are as expected. This involves things like singature checking, checking the
+are as expected. This involves things like signature checking, checking the
 previous hash, ensuring the header is consistent, etc.</p>
 </li>
 <li>
@@ -1905,7 +2067,7 @@ the validity check of the block body can be performed by the Ledger rules,
 effectively separating concerns.</p>
 <h2 id="mini-protocols-1"><a class="header" href="#mini-protocols-1">Mini-protocols</a></h2>
 <p>The mini-protocols mentioned in the neworking chapter are one of the possible
-mechanisms used for data difussion. The <a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Networking design
+mechanisms used for data diffusion. The <a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Networking design
 document</a> has many more insights on why these protocols were
 implemented, and how they differ from other off-the-shelf mechanisms.</p>
 <p>Although it is conceivable having other alternative mechanisms to exchange the
@@ -1965,6 +2127,12 @@ view</em>. We require not just that the ledger can provide a view of the current
 ledger state but also that it can predict what view will be for slots in the
 near future.</p>
 </li>
+</ul>
+<h2 id="resources-1"><a class="header" href="#resources-1">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-design/network-design.pdf">Technical report: Data Diffusion and Network</a>: Original design document of the peer-to-peer network protocols and diffusion semantics</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf">Technical report: Cardano Consensus and Storage Layer</a>: Documentation of the Haskell implementation of consensus components</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers">Website: ouroboros-consensus &gt; For Developers</a>: Collection of developer articles on the Haskell implementation of consensus components</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
@@ -2378,7 +2546,7 @@ validity of blocks, making parts of the block superfluous. It therefore also
 uses length to choose among candidates.</p>
 <h3 id="ouroboros-tpraos-and-praos"><a class="header" href="#ouroboros-tpraos-and-praos">Ouroboros TPraos and Praos</a></h3>
 <p>Ouroboros Praos circles back to defining the <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathcal" style="margin-right:0.05834em;">C</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbb">C</span><span class="mclose">)</span></span></span></span> function, with identical behaviour to that in Ouroboros
-Classic. This means that longer candidates are preferrable to shorter ones, and
+Classic. This means that longer candidates are preferable to shorter ones, and
 that ties are broken in favour of the already selected candidate.</p>
 <p>See Figure 4 and the definition of <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6111em;"></span><span class="mord"><span class="mord"><span class="mord mathtt">maxvalid</span></span></span></span></span></span> above it in the
 <a href="https://iohk.io/en/research/library/papers/ouroboros-praos-an-adaptively-secure-semi-synchronous-proof-of-stake-protocol/">paper</a>.</p>
@@ -2430,7 +2598,7 @@ era).</p>
 <p>However, in Praos, the rule for selecting the best chain between two competing
 chains is fundamentally based on chain length. The protocol assumes
 instantaneous transmission of entire chains, meaning that the perceived length
-of a candidate would be its actual length.  Due to fundamental real-world
+of a candidate would be its actual length. Due to fundamental real-world
 limitations, sending such a large amount of data instantaneously is impossible;
 instead, data is streamed to the syncing node. Consequently, nodes only know the
 length of the received prefix of the candidate chain. This creates the risk of
@@ -2472,9 +2640,6 @@ were implemented on top of the Genesis specification:</p>
 <p>Once the node finishes syncing with the network, this rule gracefully converges
 into the usual length-based comparison used in Praos, so the node can safely
 switch to running only Ouroboros Praos.</p>
-<!-- iohk.io links return 403 "if you are not a human" -->
-<!-- markdown-link-check-disable -->
-<!-- markdown-link-check-enable -->
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -2608,7 +2773,7 @@ relative stake <span class="katex"><span class="katex-html" aria-hidden="true"><
 <p>Some important properties are ensured by Praos:</p>
 <ul>
 <li>There can be multiple slot leaders as the events “<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> is a leader for slot
-<code>sl</code>” are independant,</li>
+<code>sl</code>” are independent,</li>
 <li>There can be slots with no leader,</li>
 <li>Only a slot leader is aware that it is indeed a leader for a given slot,</li>
 <li>The probability of being a slot leader is independent of whether the stake
@@ -2846,7 +3011,15 @@ implementors need to take into account:</p>
 }
 
 </style>
-<h1 id="the-storage-layer"><a class="header" href="#the-storage-layer">The Storage Layer</a></h1>
+<h1 id="storage"><a class="header" href="#storage">Storage</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.
+See also <a href="storage/index.html#resources">Resources</a></p>
+</div>
 <p>The Storage layer is responsible of storing the blocks on behalf of the
 Consensus layer. It is also involved in serving the data for <a href="storage/index.html#chain-diffusion">Chain
 diffusion</a>.</p>
@@ -2916,6 +3089,11 @@ of messages a protocol is composed by. It is possible to run an interaction of
 the protocol exchanging data that does not follow the intended semantics (for
 example an evil node sending all the chains it knows about instead of only the
 best selection).</p>
+<h2 id="resources-2"><a class="header" href="#resources-2">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf">Technical report: Cardano Consensus and Storage Layer</a>: Documentation of the Haskell implementation of consensus components</li>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers">Website: ouroboros-consensus &gt; For Developers</a>: Collection of developer articles on the Haskell implementation of consensus components</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -3073,7 +3251,7 @@ blob in the file <code>&lt;slotno&gt;/state</code>. The former however, depends 
 which backend was being used by the node taking the snapshot:</p>
 <div class="table-wrapper"><table><thead><tr><th style="text-align: left">Backend</th><th><slotno>/tables</th></tr></thead><tbody>
 <tr><td style="text-align: left">V2InMemory</td><td>a file <code>tvar</code> containing the CBOR-encoded UTxO set</td></tr>
-<tr><td style="text-align: left">V1LMDB</td><td>a file <code>data.mdb</code> of an LMDB database contianing the UTxO set</td></tr>
+<tr><td style="text-align: left">V1LMDB</td><td>a file <code>data.mdb</code> of an LMDB database containing the UTxO set</td></tr>
 </tbody></table>
 </div>
 <p>There is also a file <code>&lt;slotno&gt;/meta</code> that contains a string
@@ -3151,6 +3329,14 @@ tool</a>.</p>
 
 </style>
 <h1 id="mempool"><a class="header" href="#mempool">Mempool</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.
+See also <a href="mempool/index.html#resources">Resources</a></p>
+</div>
 <p>In Cardano, for blocks to have useful data, they have to contain transactions,
 which are codifications of operations on the Ledger state that only some
 authorized actors can enact. Notice that such transactions are what makes up the
@@ -3162,7 +3348,7 @@ are valid on top of the latest known Ledger State (the one at the tip of the
 chain selected by <a href="mempool/../consensus/chainsel.html">Chain Selection</a> in the Consensus
 layer). The validity of transactions is defined by the Ledger layer. Notice a
 change in the selected chain should trigger a prompt revalidation of the pending
-transactions to discard those that became invalid on the new selection.  Such
+transactions to discard those that became invalid on the new selection. Such
 collection of valid transactions will be requested by the Consensus layer to
 <a href="mempool/../consensus/forging.html">forge new blocks</a>.</p>
 <p>Once a transaction has been included in some block, it cannot be a <em>pending
@@ -3239,6 +3425,10 @@ and Memory units.</p>
 </p>
 <p>TODO: describe fairness and what should mempools do in this regard.</p>
 </div>
+<h2 id="resources-3"><a class="header" href="#resources-3">Resources</a></h2>
+<ul>
+<li><a href="https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf">Technical report: Cardano Consensus and Storage Layer</a>: Documentation of the Haskell implementation of consensus components</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -3308,9 +3498,32 @@ and Memory units.</p>
 
 </style>
 <h1 id="ledger-1"><a class="header" href="#ledger-1">Ledger</a></h1>
-<p>Cardano uses the Extended Unspent Transaction Output (EUTxO) ledger model…</p>
-<pre><code class="language-agda">data S
-</code></pre>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This blueprint is a work in progress.</p>
+</div>
+<p>The Ledger is responsible for validating Blocks and represents the actual semantics of Cardano transactions. The format of blocks and transactions is defined in so-called <strong>eras</strong>: <code>Byron</code>, <code>Shelley</code>, <code>Allegra</code>, <code>Mary</code>, <code>Alonzo</code>, <code>Babbage</code> and <code>Conway</code>.</p>
+<p>This blueprint is currently more of an entrypoint to already existing implementation-independent descriptions of Cardano transactions and the ledger rules. While existing work covers a lot already, the <code>cardano-blueprint</code> may serve as an incubation or staging area for material to cover gaps.</p>
+<p>For starters, the <a href="https://aiken-lang.org/fundamentals/eutxo">EUTxO Crash Course</a> from Aiken is a very good introduction about Cardano transactions.</p>
+<p>See <a href="ledger/./transaction-fee.html">Transaction fee</a> for an informal write-up on how transaction fees are currently calculated.</p>
+<h2 id="ledger-rules"><a class="header" href="#ledger-rules">Ledger rules</a></h2>
+<p>The <a href="https://intersectmbo.github.io/formal-ledger-specifications/site/index.html">Formal Specification</a> is the source of truth for ledger semantics. While it is currently being made more accessible by interleaving explanations with Agda definitions, its very dense on the Agda and actively worked on to close the gap latest era descriptions and the old era definitions. The Haskell implementation of the ledger holds a list of <a href="https://github.com/IntersectMBO/cardano-ledger?tab=readme-ov-file#cardano-ledger">design documents and ledger specifications</a> for all eras.</p>
+<p>See <a href="ledger/./block-validation.html">Block Validation</a> for a description of the <code>Conway</code> era block validation rules.</p>
+<h2 id="block-and-transaction-format"><a class="header" href="#block-and-transaction-format">Block and transaction format</a></h2>
+<p>The <a href="https://github.com/search?q=repo%3AIntersectMBO%2Fcardano-ledger+path%3A.cddl&amp;type=code">.cddl files in cardano-ledger</a> define the wire-format of blocks and transactions for each era. These are self-contained for each
+era and are referenced in <a href="ledger/../codecs#cddl">other blueprint CDDL schemas</a>.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>TODO: make ledger cddls available through blueprint directly</p>
+</div>
+<h2 id="conformance-tests"><a class="header" href="#conformance-tests">Conformance tests</a></h2>
+<p>Despite the formal specification provides a precise definition for semantics, testing the behavior of ledger implementations against the specification and also the ledger implementations against each other is crucial. For this purpose, a conformance test suite with <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main/src/ledger/conformance-test-vectors">implementation-independent test vectors</a> can be used.</p>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -3379,7 +3592,7 @@ and Memory units.</p>
 }
 
 </style>
-<h1 id="ledger-rules"><a class="header" href="#ledger-rules">Ledger Rules</a></h1>
+<h1 id="ledger-rules-1"><a class="header" href="#ledger-rules-1">Ledger Rules</a></h1>
 <p>This section details the ledger rules used in Cardano and, especially, some of the potential “land mines” one could run into when implementing these rules.</p>
 <p>The ledger rules will be organized in a potentially unique way. Instead of grouping them based on inference rules defined in the <a href="https://intersectmbo.github.io/formal-ledger-specifications/cardano-ledger.pdf">Cardano Ledger Specification</a> or some arbitrary implementation of said specification, they are grouped based on their responsibility throughout the validation process. For example, “Witness Validation” contains several rules related to validating the transaction witness set.</p>
 <h2 id="what-is-a-land-mine"><a class="header" href="#what-is-a-land-mine">What is a “Land Mine”?</a></h2>
@@ -3640,7 +3853,7 @@ Author’s note: I only just thought of this case while writing up this informat
 <p>See also:</p>
 <ul>
 <li>Formal ledger specification: <a href="https://github.com/intersectmbo/cardano-ledger/releases/latest/download/alonzo-ledger.pdf">Alonzo, Figure 4, minfee</a> and <a href="https://intersectmbo.github.io/formal-ledger-specifications/conway-ledger.pdf#section.4">Conway, chapter 4</a></li>
-<li>Haskell implementation: <a href="https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138">getConwayMinFeeTxUtxo</a> and releated functions</li>
+<li>Haskell implementation: <a href="https://github.com/input-output-hk/cardano-ledger/blob/f0a0864eab00cd269befcdcd1931250dbb329f80/eras/conway/impl/src/Cardano/Ledger/Conway/UTxO.hs#L138">getConwayMinFeeTxUtxo</a> and related functions</li>
 </ul>
 <h2 id="inputs"><a class="header" href="#inputs">Inputs</a></h2>
 <ul>
@@ -3683,7 +3896,7 @@ TODO: Explain protocol parameters somewhere</p>
 <p>Next, calculate the untagged size of each <code>scriptRef</code> on each of the transaction inputs and reference inputs. Specifically, each <code>scriptRef</code> field is serialized as a cbor tag, an integer plutus version, and then the raw script bytes. We’re interested in the size of the raw script bytes only.</p>
 <p>Next, calculate the reference script fee. First, sum up the length in bytes of each of script reference into <code>scriptRefLengths</code>. The <code>minFeeReferenceScripts</code> parameter consists of a <code>base</code>, a <code>multiplier</code>, and a <code>range</code>. (Note that in conway, the multiplier and the range are hard coded, rather than protocol parameters, but the intention is to change this at the next hardfork.)</p>
 <p>To calculate the fee, starting from a <code>baseFee</code> of <code>minFeeReferenceScripts.base</code> and remaining bytes of <code>sum(scriptRefLengths)</code>, until remaining bytes is zero, add <code>baseFee * min(remainingBytes, minFeeReferenceScripts.range)</code>, scale <code>baseFee</code> by <code>minFeeReferenceScripts.multiplier</code>, and decrease <code>remainingBytes</code> by <code>min(remainingBytes, minFeeReferenceScripts.range)</code>. This calculation can result in rational values (as the multiplier can be rational), and so you should take the ceiling as a <em>last step</em>.</p>
-<p>Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol paramters (<code>prices.memory</code> and <code>prices.steps</code>), and add them up. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.</p>
+<p>Finally, to calculate the evaluation fee, for each redeemer, multiply the redeemer execution units budget (memory and steps) by the corresponding protocol parameters (<code>prices.memory</code> and <code>prices.steps</code>), and add them up. These are fractional parameters, so you may end with a fractional amount of lovelace, and you should take the ceiling.</p>
 <p>The final minimum fee is the base fee, plus the reference script fee, plus the evaluation fee.</p>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
 <p>Lets do a decently complex worked example, from mainnet transaction with id (body hash)</p>
@@ -3795,7 +4008,7 @@ TODO: Explain protocol parameters somewhere</p>
 </style>
 <h1 id="ledger-block-validation"><a class="header" href="#ledger-block-validation">Ledger: Block Validation</a></h1>
 <p>Block validation is the process of applying a set of ledger rules to a candidate block before adding it to the blockchain and updating the state of the ledger.
-Each <a href="ledger/../consensus/README.html#multi-era-considerations">era</a> has it’s own set of rules for block validation.</p>
+Each <a href="ledger/../consensus/multiera.html">era</a> has it’s own set of rules for block validation.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -3859,7 +4072,7 @@ We will break up the validation process into smaller sections to make it easier 
                 certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                     EDC --&gt; conwayDelegTransition
                         conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                            crcDoBlock --&gt; crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                            crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                             crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                         conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                             cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -3901,11 +4114,11 @@ We will break up the validation process into smaller sections to make it easier 
                         cudrDoBlock --&gt; cudrDRepState[(vsDReps)]
                     conwayGovCertTransition --&gt; |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                     conwayGovCertTransition --&gt; |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                        crcckDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                        cachkDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                            checkAndOverwriteCommitteMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
-                            checkAndOverwriteCommitteMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                            checkAndOverwriteCommitteMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
+                        crcckDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                        cachkDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                            checkAndOverwriteCommitteeMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
+                            checkAndOverwriteCommitteeMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                            checkAndOverwriteCommitteeMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
 </pre>
 <h3 id="erarule-gov"><a class="header" href="#erarule-gov">EraRule GOV</a></h3>
 <p>This EraRule is responsible for validating and updating the governance state.</p>
@@ -3929,7 +4142,7 @@ We will break up the validation process into smaller sections to make it easier 
                 pcDoBlock --&gt; checkPolicy(checkPolicy)
         govTransition --&gt; ancestryCheck(ancestryCheck)
         govTransition --&gt; unknownVoters(failOnNonEmpty unknownVoters)
-        govTransition --&gt; unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+        govTransition --&gt; unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
         govTransition --&gt; checkBootstrapVotes(checkBootstrapVotes)
         govTransition --&gt; checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
         govTransition --&gt; checkVotersAreValid(checkVotersAreValid)
@@ -3946,7 +4159,7 @@ EUC[EraRule UTXOW Conway]
         babbageUtxowTransition --&gt; hasExactSetOfRedeemers(hasExactSetOfRedeemers)
         babbageUtxowTransition --&gt; validateVerifiedWits(Shelley.validateVerifiedWits)
         babbageUtxowTransition --&gt; validateNeededWitnesses(validateNeededWitnesses)
-        babbageUtxowTransition --&gt; validateMetdata(Shelley.validateMetadata)
+        babbageUtxowTransition --&gt; validateMetadata(Shelley.validateMetadata)
         babbageUtxowTransition --&gt; validateScriptsWellFormed(validateScriptsWellFormed)
         babbageUtxowTransition --&gt; ppViewHashesMatch(ppViewHashesMatch)
         babbageUtxowTransition --&gt; EUTXOC[EraRule UTXO Conway]
@@ -3960,7 +4173,7 @@ EUC[EraRule UTXOW Conway]
                 utxoTransition --&gt; validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                 utxoTransition --&gt; validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                 utxoTransition --&gt; validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                 utxoTransition --&gt; validateWrongNetwork(Shelley.validateWrongNetwork)
                 utxoTransition --&gt; validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                 utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
@@ -4015,7 +4228,7 @@ EUC[EraRule UTXOW Conway]
                                             certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                                                 EDC --&gt; conwayDelegTransition
                                                     conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                                                        crcDoBlock --&gt; crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                                                        crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                                                         crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                                                     conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                                                         cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -4060,11 +4273,11 @@ EUC[EraRule UTXOW Conway]
                                                     cudrDoBlock --&gt; cudrDRepState[(vsDReps)]
                                                 conwayGovCertTransition --&gt; |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                                                 conwayGovCertTransition --&gt; |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                                                    crcckDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                                                    cachkDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                                                        checkAndOverwriteCommitteMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
-                                                        checkAndOverwriteCommitteMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                                                        checkAndOverwriteCommitteMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
+                                                    crcckDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                                                    cachkDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                                                        checkAndOverwriteCommitteeMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
+                                                        checkAndOverwriteCommitteeMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                                                        checkAndOverwriteCommitteeMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
                                 ltDoBlock --&gt; EGC[EraRule GOV Conway]
                                     EGC --&gt; govTransition
                                         govTransition --&gt; badHardFork(failOnJust badHardFork)
@@ -4084,7 +4297,7 @@ EUC[EraRule UTXOW Conway]
                                                 pcDoBlock --&gt; checkPolicy(checkPolicy)
                                         govTransition --&gt; ancestryCheck(ancestryCheck)
                                         govTransition --&gt; unknownVoters(failOnNonEmpty unknownVoters)
-                                        govTransition --&gt; unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+                                        govTransition --&gt; unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
                                         govTransition --&gt; checkBootstrapVotes(checkBootstrapVotes)
                                         govTransition --&gt; checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
                                         govTransition --&gt; checkVotersAreValid(checkVotersAreValid)
@@ -4099,7 +4312,7 @@ EUC[EraRule UTXOW Conway]
                                 babbageUtxowTransition --&gt; hasExactSetOfRedeemers(hasExactSetOfRedeemers)
                                 babbageUtxowTransition --&gt; validateVerifiedWits(Shelley.validateVerifiedWits)
                                 babbageUtxowTransition --&gt; validateNeededWitnesses(validateNeededWitnesses)
-                                babbageUtxowTransition --&gt; validateMetdata(Shelley.validateMetadata)
+                                babbageUtxowTransition --&gt; validateMetadata(Shelley.validateMetadata)
                                 babbageUtxowTransition --&gt; validateScriptsWellFormed(validateScriptsWellFormed)
                                 babbageUtxowTransition --&gt; ppViewHashesMatch(ppViewHashesMatch)
                                 babbageUtxowTransition --&gt; EUTXOC[EraRule UTXO Conway]
@@ -4113,7 +4326,7 @@ EUC[EraRule UTXOW Conway]
                                         utxoTransition --&gt; validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                                         utxoTransition --&gt; validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                                         utxoTransition --&gt; validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                                        utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                                        utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                                         utxoTransition --&gt; validateWrongNetwork(Shelley.validateWrongNetwork)
                                         utxoTransition --&gt; validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                                         utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
@@ -4201,78 +4414,6 @@ EUC[EraRule UTXOW Conway]
 }
 
 </style>
-<h1 id="ledger-cddl-specs"><a class="header" href="#ledger-cddl-specs">Ledger CDDL specs</a></h1>
-<p><code>cardano-ledger</code> provides CDDLs in their haskell packages, in the
-<code>eras/&lt;era&gt;/impl/cddl-files/&lt;era&gt;.cddl</code>. These are self-contained for each
-era. In our CDDL specs in the blueprint we will import them qualified via <code>cddlc</code>.</p>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<style>
-.mdbook-alerts {
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  border-left: 0.25em solid var(--mdbook-alerts-color);
-}
-
-.mdbook-alerts > *:first-child {
-  margin-top: 0;
-}
-
-.mdbook-alerts > *:last-child {
-  margin-bottom: 0;
-}
-
-.mdbook-alerts-title {
-  display: flex;
-  font-weight: 600;
-  align-items: center;
-  line-height: 1;
-  color: var(--mdbook-alerts-color);
-  text-transform: capitalize;
-}
-
-.mdbook-alerts-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  background-color: currentColor;
-  -webkit-mask: no-repeat center / 100%;
-  mask: no-repeat center / 100%;
-  -webkit-mask-image: var(--mdbook-alerts-icon);
-  mask-image: var(--mdbook-alerts-icon);
-}
-
-.mdbook-alerts-note {
-  --mdbook-alerts-color: rgb(9, 105, 218);
-  /* https://icon-sets.iconify.design/material-symbols/info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11q-.425 0-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8q0 .425.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-tip {
-  --mdbook-alerts-color: rgb(26, 127, 55);
-  /* https://icon-sets.iconify.design/material-symbols/lightbulb-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 22q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22m-3-3q-.425 0-.712-.288T8 18q0-.425.288-.712T9 17h6q.425 0 .713.288T16 18q0 .425-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2q3.125 0 5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-important {
-  --mdbook-alerts-color: rgb(130, 80, 223);
-  /* https://icon-sets.iconify.design/material-symbols/chat-info-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 7q.425 0 .713-.288T13 6q0-.425-.288-.712T12 5q-.425 0-.712.288T11 6q0 .425.288.713T12 7m0 8q.425 0 .713-.288T13 14v-4q0-.425-.288-.712T12 9q-.425 0-.712.288T11 10v4q0 .425.288.713T12 15m-6 3l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-warning {
-  --mdbook-alerts-color: rgb(154, 103, 0);
-  /* https://icon-sets.iconify.design/material-symbols/warning-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M2.725 21q-.275 0-.5-.137t-.35-.363q-.125-.225-.137-.488t.137-.512l9.25-16q.15-.25.388-.375T12 3q.25 0 .488.125t.387.375l9.25 16q.15.25.138.513t-.138.487q-.125.225-.35.363t-.5.137zm1.725-2h15.1L12 6zM12 18q.425 0 .713-.288T13 17q0-.425-.288-.712T12 16q-.425 0-.712.288T11 17q0 .425.288.713T12 18m0-3q.425 0 .713-.288T13 14v-3q0-.425-.288-.712T12 10q-.425 0-.712.288T11 11v3q0 .425.288.713T12 15m0-2.5"%2F%3E%3C%2Fsvg%3E');
-}
-
-.mdbook-alerts-caution {
-  --mdbook-alerts-color: rgb(207, 34, 46);
-  /* https://icon-sets.iconify.design/material-symbols/brightness-alert-outline-rounded/ */
-  --mdbook-alerts-icon: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="currentColor" d="M12 17q.425 0 .713-.288T13 16q0-.425-.288-.712T12 15q-.425 0-.712.288T11 16q0 .425.288.713T12 17m0-4q.425 0 .713-.288T13 12V8q0-.425-.288-.712T12 7q-.425 0-.712.288T11 8v4q0 .425.288.713T12 13m-3.35 7H6q-.825 0-1.412-.587T4 18v-2.65L2.075 13.4q-.275-.3-.425-.662T1.5 12q0-.375.15-.737t.425-.663L4 8.65V6q0-.825.588-1.412T6 4h2.65l1.95-1.925q.3-.275.663-.425T12 1.5q.375 0 .738.15t.662.425L15.35 4H18q.825 0 1.413.588T20 6v2.65l1.925 1.95q.275.3.425.663t.15.737q0 .375-.15.738t-.425.662L20 15.35V18q0 .825-.587 1.413T18 20h-2.65l-1.95 1.925q-.3.275-.662.425T12 22.5q-.375 0-.737-.15t-.663-.425zm.85-2l2.5 2.5l2.5-2.5H18v-3.5l2.5-2.5L18 9.5V6h-3.5L12 3.5L9.5 6H6v3.5L3.5 12L6 14.5V18zm2.5-6"%2F%3E%3C%2Fsvg%3E');
-}
-
-</style>
 <h1 id="plutus"><a class="header" href="#plutus">Plutus</a></h1>
 <p>Plutus is Cardano’s on-chain smart contract platform.
 Smart contracts can be written in a variety of languages, and compiled down to Untyped Plutus Core (UPLC), which is executed by validating nodes.
@@ -4284,7 +4425,7 @@ A production implementation should be carefully engineered to maximize performan
 There are two kinds of cost: each step the CEK machine takes (e.g., looking up a variable or processing a lambda abstraction) incurs a fixed charge; each call to a built- in function incurs a cost calculated by a costing function - a Haskell function that estimates resource usage based on the sizes of the arguments.
 These are derived empirically by benchmarking the implementation with representative inputs, then using the R statistical system to fit models (e.g., 𝛼 + 𝛽𝑥𝑦 for integer multiplication, where 𝑥 and 𝑦 are the numbers of machine words required to store the arguments).
 These functions are used for deterministic and efficient costing for script execution.</p>
-<h2 id="resources"><a class="header" href="#resources">Resources</a></h2>
+<h2 id="resources-4"><a class="header" href="#resources-4">Resources</a></h2>
 <ul>
 <li>
 <p><a href="https://plutus.cardano.intersectmbo.org/docs/">Plinth User Guide</a>: This up-to-date guide not only covers Plinth (a Haskell-based surface language) and its compilation to UPLC, but also explains many core concepts.
@@ -4708,82 +4849,79 @@ A builtin argument <code>𝜄</code> is either a term or a type argument.</p>
 <li>If the machine gets stuck (i.e., no rule applies) or arrives at state <code>⬥</code>, the evaluation terminates with a failure.</li>
 </ul>
 <div class="table-wrapper"><table><thead><tr><th style="text-align: center">Rule</th><th style="text-align: left">From State</th><th style="text-align: left">To State</th><th style="text-align: left">Condition</th></tr></thead><tbody>
-<tr><td style="text-align: center">1</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ 𝑥</code></td><td style="text-align: left"><code>𝑠 ⊲ 𝜌[𝑥]</code></td><td style="text-align: left">𝑥 is bound in 𝜌</td></tr>
-<tr><td style="text-align: center">2</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (con T 𝑐)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈con T 𝑐〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">3</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (lam 𝑥 𝑀)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">4</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (delay 𝑀)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈delay 𝑀 𝜌〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">5</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (force 𝑀)</code></td><td style="text-align: left"><code>(force _)⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">6</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ [𝑀 𝑁]</code></td><td style="text-align: left"><code>[_ (𝑁, 𝜌)]⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">7</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (constr 𝑖 𝑀⋅𝑀*)</code></td><td style="text-align: left"><code>(constr 𝑖 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">8</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (constr 𝑖 [])</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈constr 𝑖 []〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">9</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (case 𝑁 𝑀*)</code></td><td style="text-align: left"><code>(case _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑁</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">10</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (builtin 𝑏)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 [] 𝛼(𝑏)〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">11</td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (error)</code></td><td style="text-align: left"><code>⬥</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">12</td><td style="text-align: left"><code>[] ⊲ 𝑉</code></td><td style="text-align: left"><code>◻𝑉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">13</td><td style="text-align: left"><code>[_ (𝑀, 𝜌)]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>[𝑉 _]⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">14</td><td style="text-align: left"><code>[〈lam 𝑥 𝑀 𝜌〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">15</td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉</code></td><td style="text-align: left"><code>𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">16</td><td style="text-align: left"><code>[〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
-<tr><td style="text-align: center">17</td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
-<tr><td style="text-align: center">18</td><td style="text-align: left"><code>[〈builtin 𝑏 𝑉* [𝜄]〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
-<tr><td style="text-align: center">19</td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
-<tr><td style="text-align: center">20</td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈delay 𝑀 𝜌〉</code></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">21</td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 𝑉* 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a type argument</td></tr>
-<tr><td style="text-align: center">22</td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*)</code></td><td style="text-align: left"><code>𝜄</code> is a type argument</td></tr>
-<tr><td style="text-align: center">23</td><td style="text-align: left"><code>(constr 𝑖 𝑉* _ (𝑀⋅𝑀*, 𝜌))⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>(constr 𝑖 𝑉*⋅𝑉 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">24</td><td style="text-align: left"><code>(constr 𝑖 𝑉 _ ([], 𝜌))⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈constr 𝑖 𝑉*⋅𝑉 〉</code></td><td style="text-align: left"></td></tr>
-<tr><td style="text-align: center">25</td><td style="text-align: left"><code>(case _ (𝑀₀ … 𝑀ₙ , 𝜌))⋅𝑠 ⊲ 〈constr 𝑖 𝑉₁ … 𝑉ₘ〉</code></td><td style="text-align: left"><code>[_ 𝑉ₘ]⋅⋯⋅[_ 𝑉₁]⋅𝑠; 𝜌 ⊳ 𝑀𝑖</code></td><td style="text-align: left"><code>0 ≤ 𝑖 ≤ 𝑛</code></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#1">1</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ 𝑥</code></td><td style="text-align: left"><code>𝑠 ⊲ 𝜌[𝑥]</code></td><td style="text-align: left">𝑥 is bound in 𝜌</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#2">2</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (con T 𝑐)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈con T 𝑐〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#3">3</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (lam 𝑥 𝑀)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#4">4</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (delay 𝑀)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈delay 𝑀 𝜌〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#5">5</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (force 𝑀)</code></td><td style="text-align: left"><code>(force _)⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#6">6</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ [𝑀 𝑁]</code></td><td style="text-align: left"><code>[_ (𝑁, 𝜌)]⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#7">7</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (constr 𝑖 𝑀⋅𝑀*)</code></td><td style="text-align: left"><code>(constr 𝑖 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#8">8</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (constr 𝑖 [])</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈constr 𝑖 []〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#9">9</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (case 𝑁 𝑀*)</code></td><td style="text-align: left"><code>(case _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑁</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#10">10</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (builtin 𝑏)</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 [] 𝛼(𝑏)〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#11">11</a></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ (error)</code></td><td style="text-align: left"><code>⬥</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#12">12</a></td><td style="text-align: left"><code>[] ⊲ 𝑉</code></td><td style="text-align: left"><code>◻𝑉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#13">13</a></td><td style="text-align: left"><code>[_ (𝑀, 𝜌)]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>[𝑉 _]⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#14">14</a></td><td style="text-align: left"><code>[〈lam 𝑥 𝑀 𝜌〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#15">15</a></td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈lam 𝑥 𝑀 𝜌〉</code></td><td style="text-align: left"><code>𝑠; 𝜌[𝑥 ↦ 𝑉] ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#16">16</a></td><td style="text-align: left"><code>[〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#17">17</a></td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 (𝑉⋅𝑉*) 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#18">18</a></td><td style="text-align: left"><code>[〈builtin 𝑏 𝑉* [𝜄]〉 _]⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#19">19</a></td><td style="text-align: left"><code>[_ 𝑉]⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*⋅𝑉)</code></td><td style="text-align: left"><code>𝜄</code> is a term argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#20">20</a></td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈delay 𝑀 𝜌〉</code></td><td style="text-align: left"><code>𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#21">21</a></td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* (𝜄⋅𝜂)〉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈builtin 𝑏 𝑉* 𝜂〉</code></td><td style="text-align: left"><code>𝜄</code> is a type argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#22">22</a></td><td style="text-align: left"><code>(force _)⋅𝑠 ⊲ 〈builtin 𝑏 𝑉* [𝜄]〉</code></td><td style="text-align: left"><code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪 (𝑠, 𝑏, 𝑉*)</code></td><td style="text-align: left"><code>𝜄</code> is a type argument</td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#23">23</a></td><td style="text-align: left"><code>(constr 𝑖 𝑉* _ (𝑀⋅𝑀*, 𝜌))⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>(constr 𝑖 𝑉*⋅𝑉 _ (𝑀*, 𝜌))⋅𝑠; 𝜌 ⊳ 𝑀</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#24">24</a></td><td style="text-align: left"><code>(constr 𝑖 𝑉 _ ([], 𝜌))⋅𝑠 ⊲ 𝑉</code></td><td style="text-align: left"><code>𝑠 ⊲ 〈constr 𝑖 𝑉*⋅𝑉 〉</code></td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: center"><a href="plutus/cek.html#25">25</a></td><td style="text-align: left"><code>(case _ (𝑀₀ … 𝑀ₙ , 𝜌))⋅𝑠 ⊲ 〈constr 𝑖 𝑉₁ … 𝑉ₘ〉</code></td><td style="text-align: left"><code>[_ 𝑉ₘ]⋅⋯⋅[_ 𝑉₁]⋅𝑠; 𝜌 ⊳ 𝑀𝑖</code></td><td style="text-align: left"><code>0 ≤ 𝑖 ≤ 𝑛</code></td></tr>
 </tbody></table>
 </div>
 <p>In this table, <code>X*</code> denotes a list of <code>X</code>s.
 The symbol <code>⋅</code> denotes either the cons or snoc operator on lists.</p>
 <p>Explanation of the transition rules:</p>
-<ol>
-<li>To evaluate a single variable <code>𝑥</code>, it looks up its value in the environment <code>𝜌</code>, and returns the value if exists.</li>
-<li>A constant evaluates to itself, as it is already a value.</li>
-<li>A lambda abstraction evaluates to itself, as it is already a value.
-The environment is captured in the returned value, for later use in computing <code>𝑀</code>.</li>
-<li>A delayed computation evaluates to itself, as it is already a value.
-The environment is captured in the returned value, for later use in computing <code>𝑀</code>.</li>
-<li>To evaluate <code>(force 𝑀)</code>, it pushes a frame <code>(force _)</code> onto the stack, and evaluates <code>𝑀</code>.
-After <code>𝑀</code> is evaluated to a value, the forcing will continue (rules 20, 21 and 22) depending on what the value is.</li>
-<li>To evaluate an application <code>[𝑀 𝑁]</code>, the machine first evaluates the function <code>𝑀</code>, after pushing frame <code>[_ (𝑁, 𝜌)]</code> onto the stack.
-This ensures that once <code>𝑀</code> is evaluated, it will proceed to evaluate the argument <code>𝑁</code> using the same environment.</li>
-<li>To evaluate a constructor application, the machine pushes a frame onto the stack with a hole in place of the first argument.
+<p><a id="1" href="plutus/cek.html#1"><strong>1.</strong></a> To evaluate a single variable <code>𝑥</code>, it looks up its value in the environment <code>𝜌</code>, and returns the value if exists.</p>
+<p><a id="2" href="plutus/cek.html#2"><strong>2.</strong></a> A constant evaluates to itself, as it is already a value.</p>
+<p><a id="3" href="plutus/cek.html#3"><strong>3.</strong></a> A lambda abstraction evaluates to itself, as it is already a value. The
+environment is captured in the returned value, for later use in computing
+<code>𝑀</code>.</p>
+<p><a id="4" href="plutus/cek.html#4"><strong>4.</strong></a> A delayed computation evaluates to itself, as it is already a value. The environment is captured in the returned value, for later use in computing <code>𝑀</code>.</p>
+<p><a id="5" href="plutus/cek.html#5"><strong>5.</strong></a> To evaluate <code>(force 𝑀)</code>, it pushes a frame <code>(force _)</code> onto the stack, and evaluates <code>𝑀</code>.
+After <code>𝑀</code> is evaluated to a value, the forcing will continue (rules 20, 21 and 22) depending on what the value is.</p>
+<p><a id="6" href="plutus/cek.html#6"><strong>6.</strong></a> To evaluate an application <code>[𝑀 𝑁]</code>, the machine first evaluates the function <code>𝑀</code>, after pushing frame <code>[_ (𝑁, 𝜌)]</code> onto the stack. This ensures that once <code>𝑀</code> is evaluated, it will proceed to evaluate the argument <code>𝑁</code> using the same environment.</p>
+<p><a id="7" href="plutus/cek.html#7"><strong>7.</strong></a> To evaluate a constructor application, the machine pushes a frame onto the stack with a hole in place of the first argument.
 The frame also stores the remaining arguments along with the current environment.
-It then proceeds to evaluate the first argument <code>𝑀</code>.</li>
-<li>A nullary constructor evaluates to itself, as it is already a value.</li>
-<li>To evaluate a <code>case</code> expression, the machine pushes a frame onto the stack with a hole in place of the scrutinee.
+It then proceeds to evaluate the first argument <code>𝑀</code>.</p>
+<p><a id="8" href="plutus/cek.html#8"><strong>8.</strong></a> A nullary constructor evaluates to itself, as it is already a value.</p>
+<p><a id="9" href="plutus/cek.html#9"><strong>9.</strong></a> To evaluate a <code>case</code> expression, the machine pushes a frame onto the stack with a hole in place of the scrutinee.
 The frame also stores the branches, <code>𝑀*</code>, along with the current environment.
-It then proceeds to evaluate the scrutinee <code>𝑁</code>.</li>
-<li>A builtin function evaluates to itself as it is already a value.</li>
-<li>Evaluating <code>(error)</code> results in the machine terminating with a failure.</li>
-<li>When a value <code>𝑉</code> is returned to an empty stack, the machine terminates with success, yielding <code>𝑉</code> as final result.</li>
-<li>When a value <code>𝑉</code> is returned to a stack whose top frame represents an application with the hole in the function position, the frame is replaced with one where the function is <code>𝑉</code> and the hole is in the argument position.
-The machine then continues by evaluating the argument <code>𝑀</code> in the captured environment.</li>
-<li>When a value <code>𝑉</code> is returned to a stack whose top frame represents an application, where the hole is in the argument position and the function is a lambda abstraction, the machine pops the frame, extends the environment to bind <code>𝑥</code> to <code>𝑉</code>, and continues by evaluating <code>𝑀</code>.
-This corresponds to beta reduction.</li>
-<li>If the returned value is a lambda abstraction, and the top stack frame represents an application, where the hole is in the function position and the argument is a value, the machine proceeds in the same way as the previous rule.</li>
-<li>When a value <code>𝑉</code> is returned to a stack whose top frame represents an application where the hole is in the argument position, and the function is a builtin expecting at least two more arguments (since <code>𝜂</code> is a non-empty list, <code>𝜄⋅𝜂</code> contains at least two elements) and the first is a term argument, the machine pops the frame, and returns an updated <code>builtin</code> value.
-Because the builtin still requires at least one more argument, the builtin application cannot yet be evaluated and is therefore considered a value.</li>
-<li>If the returned value is a builtin application expecting at least two arguments, where the first is a term argument, and the top stack frame represents an application, where the hole is in the function position and the argument is a value, the machine proceeds in the same way as the previous rule.</li>
-<li>Like Rule 16, except that the builtin expects exactly one more argument, and it is term argument.
+It then proceeds to evaluate the scrutinee <code>𝑁</code>.</p>
+<p><a id="10" href="plutus/cek.html#10"><strong>10.</strong></a> A builtin function evaluates to itself as it is already a value.</p>
+<p><a id="11" href="plutus/cek.html#11"><strong>11.</strong></a> Evaluating <code>(error)</code> results in the machine terminating with a failure.</p>
+<p><a id="12" href="plutus/cek.html#12"><strong>12.</strong></a> When a value <code>𝑉</code> is returned to an empty stack, the machine terminates with success, yielding <code>𝑉</code> as final result.</p>
+<p><a id="13" href="plutus/cek.html#13"><strong>13.</strong></a> When a value <code>𝑉</code> is returned to a stack whose top frame represents an application with the hole in the function position, the frame is replaced with one where the function is <code>𝑉</code> and the hole is in the argument position.
+The machine then continues by evaluating the argument <code>𝑀</code> in the captured environment.</p>
+<p><a id="14" href="plutus/cek.html#14"><strong>14.</strong></a> When a value <code>𝑉</code> is returned to a stack whose top frame represents an application, where the hole is in the argument position and the function is a lambda abstraction, the machine pops the frame, extends the environment to bind <code>𝑥</code> to <code>𝑉</code>, and continues by evaluating <code>𝑀</code>.
+This corresponds to beta reduction.</p>
+<p><a id="15" href="plutus/cek.html#15"><strong>15.</strong></a> If the returned value is a lambda abstraction, and the top stack frame represents an application, where the hole is in the function position and the argument is a value, the machine proceeds in the same way as the previous rule.</p>
+<p><a id="16" href="plutus/cek.html#16"><strong>16.</strong></a> When a value <code>𝑉</code> is returned to a stack whose top frame represents an application where the hole is in the argument position, and the function is a builtin expecting at least two more arguments (since <code>𝜂</code> is a non-empty list, <code>𝜄⋅𝜂</code> contains at least two elements) and the first is a term argument, the machine pops the frame, and returns an updated <code>builtin</code> value.
+Because the builtin still requires at least one more argument, the builtin application cannot yet be evaluated and is therefore considered a value.</p>
+<p><a id="17" href="plutus/cek.html#17"><strong>17.</strong></a> If the returned value is a builtin application expecting at least two arguments, where the first is a term argument, and the top stack frame represents an application, where the hole is in the function position and the argument is a value, the machine proceeds in the same way as the previous rule.</p>
+<p><a id="18" href="plutus/cek.html#18"><strong>18.</strong></a> Like Rule 16, except that the builtin expects exactly one more argument, and it is term argument.
 In this case the builtin application is now saturated, so it is evaluated via <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code>.
-The mechanism of <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code> is described later.</li>
-<li>Like Rule 17, except that the builtin expects exactly one more argument, and it is term argument.
-The machine proceeds in the same way as the previous rule.</li>
-<li>If the returned value is a delayed computation, and the top stack frame is a <code>force</code> frame, then the <code>force</code> and <code>delay</code> cancel each other, and the machine continues by evaluating the <code>𝑀</code> in the captured environment.</li>
-<li>If the returned value is a builtin application expecting at least two arguments, where the first is a type argument, and the top stack frame is a <code>force</code> frame, the machine pops the frame, and returns an updated builtin application value, with the first argument removed.
+The mechanism of <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code> is described later.</p>
+<p><a id="19" href="plutus/cek.html#19"><strong>19.</strong></a> Like Rule 17, except that the builtin expects exactly one more argument, and it is term argument.
+The machine proceeds in the same way as the previous rule.</p>
+<p><a id="20" href="plutus/cek.html#20"><strong>20.</strong></a> If the returned value is a delayed computation, and the top stack frame is a <code>force</code> frame, then the <code>force</code> and <code>delay</code> cancel each other, and the machine continues by evaluating the <code>𝑀</code> in the captured environment.</p>
+<p><a id="21" href="plutus/cek.html#21"><strong>21.</strong></a> If the returned value is a builtin application expecting at least two arguments, where the first is a type argument, and the top stack frame is a <code>force</code> frame, the machine pops the frame, and returns an updated builtin application value, with the first argument removed.
 In Plutus, forcing corresponds to applying a type argument.
-A builtin application expecting a type argument must be forced before evaluation can continue.</li>
-<li>Like Rule 21, except that the builtin excepts exactly one more argument, and it is type argument.
-In this case the <code>force</code> makes the builtin application saturated, so it is evaluated via <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code>.</li>
-<li>When a value <code>𝑉</code> is returned to a stack whose top frame is a constructor application, with the hole in any argument position except the last (in other words, there is at least one more argument to be evaluated), the machine replaces the frame with one where the hole is moved to the next argument, and proceeds to evaluate the next argument <code>𝑀</code> in the captured environment.</li>
-<li>Like Rule 23, except that the hole is in the position of the last argument.
-In this case, all arguments have been evaluated, so the machine pops the frame and returns a <code>constr</code> value.</li>
-<li>If the returned value is a constructor application with index <code>𝑖</code>, and the top stack frame is a <code>case</code> frame, the machine will evaluate the <code>𝑖</code>th branch - <code>𝑀𝑖</code> - applied to arguments <code>𝑉ₘ … 𝑉₁</code> (it is important to note that arguments under <code>constr</code> are reversed when passing to a <code>case</code> branch - this is done for performance reasons).
-To do so, it pops the frame, and pushes <code>m</code> frames, each representing an application, with the top frame corresponding to <code>𝑉ₘ</code> (the first argument).</li>
-</ol>
+A builtin application expecting a type argument must be forced before evaluation can continue.</p>
+<p><a id="22" href="plutus/cek.html#22"><strong>22.</strong></a> Like Rule 21, except that the builtin excepts exactly one more argument, and it is type argument.
+In this case the <code>force</code> makes the builtin application saturated, so it is evaluated via <code>𝖤𝗏𝖺𝗅𝖢𝖤𝖪</code>.</p>
+<p><a id="23" href="plutus/cek.html#23"><strong>23.</strong></a> When a value <code>𝑉</code> is returned to a stack whose top frame is a constructor application, with the hole in any argument position except the last (in other words, there is at least one more argument to be evaluated), the machine replaces the frame with one where the hole is moved to the next argument, and proceeds to evaluate the next argument <code>𝑀</code> in the captured environment.</p>
+<p><a id="24" href="plutus/cek.html#24"><strong>24.</strong></a> Like Rule 23, except that the hole is in the position of the last argument.
+In this case, all arguments have been evaluated, so the machine pops the frame and returns a <code>constr</code> value.</p>
+<p><a id="25" href="plutus/cek.html#25"><strong>25.</strong></a> If the returned value is a constructor application with index <code>𝑖</code>, and the top stack frame is a <code>case</code> frame, the machine will evaluate the <code>𝑖</code>th branch - <code>𝑀𝑖</code> - applied to arguments <code>𝑉ₘ … 𝑉₁</code> (it is important to note that arguments under <code>constr</code> are reversed when passing to a <code>case</code> branch - this is done for performance reasons).
+To do so, it pops the frame, and pushes <code>m</code> frames, each representing an application, with the top frame corresponding to <code>𝑉ₘ</code> (the first argument).</p>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <style>
 .mdbook-alerts {
@@ -5533,9 +5671,9 @@ Poorly written documentation can confuse readers rather than clarify, and the mo
 the reader in mind, thinking what is the best way to pass on the
 knowledge you have given the current state of knowledge they have.
 This is a hard thing to do, but it is worth aiming for!</p>
-<p>People take in information in different ways.  Some like literate
+<p>People take in information in different ways. Some like literate
 prose, many like visual diagrams and pseudo-code, and a few like
-mathematical formulae.  If you can do all of these, so much the
+mathematical formulae. If you can do all of these, so much the
 better, but good diagrams are often the place to start.</p>
 <p>As a general rule, approach it with the same level of care and thoughtfulness as you would when writing a peer-reviewed paper for a top-tier conference or journal that you are eager to publish.
 More specifically, here are a few general tips.</p>
@@ -5597,7 +5735,7 @@ Thus documentation should be versioned and released like software packages, with
 <h2 id="language"><a class="header" href="#language">Language</a></h2>
 <p>Text should be written in American English, at the reading level of a
 competent software developer - which is often very high, but bear in mind
-that English may not be their first language.  Use technical language by all
+that English may not be their first language. Use technical language by all
 means, but there is no need to be egregiously erudite in your elucidation.</p>
 <p>It may not be necessary to talk about humans in much of this documentation,
 but if you do, please use gender-neutral pronouns - ‘they’ and ‘their’:</p>
@@ -5610,8 +5748,8 @@ but if you do, please use gender-neutral pronouns - ‘they’ and ‘their’:<
 </blockquote>
 <h3 id="normative-vs-declarative-style"><a class="header" href="#normative-vs-declarative-style">Normative vs declarative style</a></h3>
 <p>Some standards documentation is very SHOUTY about MUST, SHALL and so on.
-Even if it doesn’t SHOUT it can still be rather clumsy to read.  Instead,
-we want to use a <em>declarative</em> style.  We can express what an implementation
+Even if it doesn’t SHOUT it can still be rather clumsy to read. Instead,
+we want to use a <em>declarative</em> style. We can express what an implementation
 has to do conform to the specification as a simple descriptive fact - e.g.</p>
 <blockquote>
 <p>The tester discards widgets with broken flibbits.</p>
@@ -5620,7 +5758,7 @@ has to do conform to the specification as a simple descriptive fact - e.g.</p>
 <blockquote>
 <p>The tester SHALL discard widgets with broken flibbits.</p>
 </blockquote>
-<p>So in this style there is an implicit ‘must’.  If something is optional, this
+<p>So in this style there is an implicit ‘must’. If something is optional, this
 can be said explicitly:</p>
 <blockquote>
 <p>The package may use extra sproggles if required.</p>
@@ -6311,6 +6449,7 @@ limitations under the License.</p>
             window.setTimeout(window.print, 100);
         });
         </script>
+
 
     </div>
     </body>
