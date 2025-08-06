@@ -1,7 +1,7 @@
 # Summary
 
 - [Introduction](introduction/README.md)
-- [Optimise for the worst case](optimise-worst.md)
+- [Principles](principles/README.md)
 - [Network](network/README.md)
   - [Multiplexing](network/multiplexing.md)
   - [Mini-protocols](network/mini-protocols.md)

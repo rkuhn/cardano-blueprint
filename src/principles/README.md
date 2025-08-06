@@ -1,3 +1,7 @@
+# Principles
+
+This section contains general principles to apply when developing Cardano nodes.
+
 ## Optimise only for the worst case
 
 Algorithms often possess different performance characteristics in the best,
