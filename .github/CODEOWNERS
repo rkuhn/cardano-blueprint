@@ -3,7 +3,7 @@
 src/client/ @ch1bo
 src/codecs/ @jasegredo
 
-src/ledger/ @nc6
+src/ledger/ @nc6 @yHSJ
 
 src/consensus/ @jasegredo
 src/mempool/ @jasegredo
