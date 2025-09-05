@@ -15,19 +15,19 @@ case covered in the formal specs) and instead cover the general principles and
 details needed by all potential implementations.
 
 - Concepts
-  - Blocks
+  - [x] Blocks
     - The header/body split
   - Transactions
   - Eras
   - The structure of an epoch
   - Determinism
 - The ledger state transition
-  - How to read the specs
+  - [x] How to read the specs
     - Old-style semi-formal specs
     - New-style Agda specifications
-  - Validity
-    - Multi-phase validity
-    - Static vs dynamic checks
+  - [x] Validity
+    - [x] Multi-phase validity
+    - [x] Static vs dynamic checks
 - Ledger interfaces
   - To the consensus layer
     - Applying a block

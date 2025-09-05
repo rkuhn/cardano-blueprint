@@ -24,6 +24,7 @@
   - [Determinism](ledger/concepts/determinism.md)
   - [The State Transition Function](ledger/state-transition.md)
     - [Validity](ledger/state-transition/validity.md)
+    - [How to read the Ledger specs](ledger/state-transition/reading-specs.md)
   - [Transaction fee](ledger/transaction-fee.md)
   - [Block Validation](ledger/block-validation.md)
 - [Plutus](plutus/README.md)
