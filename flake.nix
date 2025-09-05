@@ -23,7 +23,6 @@
       rec {
         inherit inputs;
         legacyPackages = pkgs;
-
         defaultPackage = packages.mdbook;
         packages.mdbook = pkgs.stdenv.mkDerivation {
           name = "cardano-blueprint-book";
