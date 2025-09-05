@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Ledger - Cardano Blueprint</title>
+        <title>Validity - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex.js";
+            window.path_to_searchindex_js = "../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -106,7 +106,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -141,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/README.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/state-transition/validity.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -249,65 +249,120 @@
 }
 
 </style>
-<h1 id="ledger"><a class="header" href="#ledger">Ledger</a></h1>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>This blueprint is a work in progress. See [./plan.md] for the intended
-restructuring.</p>
-</div>
-<p>The Ledger is responsible for validating Blocks and represents the actual
-semantics of Cardano transactions. The format of blocks and transactions is
-defined in so-called <strong>eras</strong>: <code>Byron</code>, <code>Shelley</code>, <code>Allegra</code>, <code>Mary</code>, <code>Alonzo</code>,
-<code>Babbage</code> and <code>Conway</code>.</p>
-<p>This blueprint is currently more of an entrypoint to already existing
-implementation-independent descriptions of Cardano transactions and the ledger
-rules. While existing work covers a lot already, the <code>cardano-blueprint</code> may
-serve as an incubation or staging area for material to cover gaps.
-For starters, the <a href="https://aiken-lang.org/fundamentals/eutxo">EUTxO Crash Course</a>
-from Aiken is a very good introduction about Cardano transactions.
-See <a href="./transaction-fee.html">Transaction fee</a> for an informal write-up on how
-transaction fees are currently calculated.</p>
-<h2 id="ledger-rules"><a class="header" href="#ledger-rules">Ledger rules</a></h2>
-<p>The <a href="https://intersectmbo.github.io/formal-ledger-specifications/site/index.html">Formal Specification</a>
-is the source of truth for ledger semantics. While it is currently being
-made more accessible by interleaving explanations with Agda definitions, its
-very dense on the Agda and actively worked on to close the gap latest era
-descriptions and the old era definitions. The Haskell implementation of the
-ledger holds a list of <a href="https://github.com/IntersectMBO/cardano-ledger?tab=readme-ov-file#cardano-ledger">design documents and ledger specifications</a>
-for all eras. See <a href="./block-validation.html">Block Validation</a> for a description
-of the <code>Conway</code> era block validation rules.</p>
-<h2 id="block-and-transaction-format"><a class="header" href="#block-and-transaction-format">Block and transaction format</a></h2>
-<p>The <a href="https://github.com/search?q=repo%3AIntersectMBO%2Fcardano-ledger+path%3A.cddl&amp;type=code">.cddl files in cardano-ledger</a>
-define the wire-format of blocks and transactions for each era. These are
-self-contained for each era and are referenced in
-<a href="../codecs#cddl">other blueprint CDDL schemas</a>.</p>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>TODO: make ledger cddls available through blueprint directly</p>
-</div>
-<h2 id="conformance-tests"><a class="header" href="#conformance-tests">Conformance tests</a></h2>
-<p>Despite the formal specification provides a precise definition for semantics,
-testing the behavior of ledger implementations against the specification
-and also the ledger implementations against each other is crucial. For this
-purpose, a conformance test suite with <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main/src/ledger/conformance-test-vectors">implementation-independent test
-vectors</a>
-can be used.</p>
-
+<h1 id="transaction-validity"><a class="header" href="#transaction-validity">Transaction Validity</a></h1>
+<p>What does it mean for a transaction to be valid? The ledger specs define it
+quite simply: a transaction is valid if it may be applied to a valid ledger
+state to return another valid ledger state. We say that it is valid with regard
+to the initial ledger state.</p>
+<p>More prosaically, for a transaction to be valid with regards to a ledger state
+entails the things we would expect: its inputs must exist, the spender must have
+the right to spend those inputs, the transaction must balance etc. In the
+ledger specifications, these are all written as <em>predicates</em> - assertions that
+one thing equals another, for example. A failing predicate means that the
+transition is invalid and hence that the transaction is invalid with regard
+to that ledger state.</p>
+<h2 id="multi-phase-validity"><a class="header" href="#multi-phase-validity">Multi-phase Validity</a></h2>
+<p>Invalid transactions do not end up on the chain. Consequently, invalid
+transactions do not pay fees. A trivial attack on a block producing node would
+be to bombard it with invalid transactions. The node must verify that each
+transaction is invalid, but gains no benefit for performing this work.</p>
+<p>In order that this not become an asymmetric resource attack, the work which
+must be done to validate a transaction needs be bounded. The introduction of
+Plutus in the Alonzo era, however, complicated this situation. Plutus scripts
+must necessarily be capable of performing a significant amount of work. Should
+this work result in the transaction being deemed invalid, that work would be
+uncompensated - an attacker could use relatively small amounts of their own
+resource (crafting a looping Plutus script is, after all, relatively easy) to
+force significantly larger resource expenditure from the network.</p>
+<p>In order to combat this, Alonzo introduced the concept of 2-phase validity:</p>
+<ol>
+<li>The first phase involves the regular checks of things such as transaction
+size, fee suitability, input validity etc. These checks are assumed to have
+bounded work. A failure in phase 1 indicates that the transaction will
+not be placed on chain.</li>
+<li>Phase 2 checks are only run if phase 1 succeeds. Phase 2 checks involve
+running Plutus scripts and validating that inputs locked by those scripts
+can be spent. A transaction failing a phase 2 check can still be put on
+chain. In this case, a special input called the ‘collateral’ is spent and
+donated to the fee pot. The collateral must be locked by a phase-1
+verifiable input - i.e. an input locked by a VKey or native script.</li>
+</ol>
+<p>An important consideration is that phase-2 checks are <em>static</em> (see below).
+Phase-2 checks are run always in the context only of the transaction and its
+resolved inputs (which, since we have a UTxO system, are determinstic if they
+exist). As such, a diligent transaction submitter should have no risk of their
+collateral being taken - they can validate that their script passes before
+submitting the transaction and then be assured that it will either pass when
+the transaction is included, or that the transaction will fail during phase 1
+(for example, if an input has been spent).<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup></p>
+<h2 id="static-vs-dynamic-checks"><a class="header" href="#static-vs-dynamic-checks">Static vs Dynamic Checks</a></h2>
+<p>Since transaction validity is defined with regard to a ledger state, a change
+to the ledger state may result in previously valid transactions now becoming
+invalid. For example, the time may have moved past the transaction’s validity
+window, or one of the inputs may have been spent.</p>
+<p>Consequently, as the ledger state evolves due to new blocks being accepted,
+nodes need to revalidate transactions in their mempool against the new state.
+However, not everything needs to be revalidated. Cryptographic signatures, for
+example, are guaranteed to remain valid regardless of the ledger state.</p>
+<p>Formally, we call a check <em>static</em> if it can be evaluated with regard only to
+the contents of the transaction and its resolved inputs. Examples
+(non-exhaustive) of static checks include:</p>
+<ul>
+<li>Cryptographic signature checks</li>
+<li>Native (multisig/timelock) scripts</li>
+<li>Phase 2 checks (Plutus scripts)</li>
+</ul>
+<p><em>Dynamic checks</em>, on the other hand, require access to the UTxO or other aspects
+of the ledger state to compute. As such, they need to be re-evaluated each time
+the ledger state is updated. Obvious examples of dynamic checks include
+verifying that inputs exist, checking that the transaction still sits within its
+validity window, and validating block transaction size against the protocol
+parameters.</p>
+<h1 id="block-validity"><a class="header" href="#block-validity">Block Validity</a></h1>
+<blockquote>
+<p>This section is currently a stub</p>
+</blockquote>
+<h1 id="relevance-for-the-node-developer"><a class="header" href="#relevance-for-the-node-developer">Relevance for the node developer</a></h1>
+<p>The above is mostly relevant for node developers in that it is useful to be able
+to run the ledger transitions with fine-grained control over which checks are
+computed.</p>
+<p>There are four main scenarios which come into consideration:</p>
+<ol>
+<li>Validating a transaction as it enters the mempool. In this case all checks
+must be computed.</li>
+<li>Re-validating a transaction after a new block has been adopted. In this case,
+we care only about re-running <em>dynamic</em> checks.</li>
+<li>Validating a new block body downloaded from a peer. In this case all checks
+must be computed.</li>
+<li>Re-applying a block from our local storage in order to reconstruct the ledger
+state. Since local blocks are assumed to be trusted, we need run <em>no</em> checks
+here and only apply the transition.</li>
+</ol>
+<p>Node developers should bear these scenarios in mind when considering how to
+structure their node transition function.</p>
+<hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p>Note that there is a small addendum to this story. While theoretically
+anyone may validate their own Plutus scripts, many users do not run their own
+node and as such trust a third party to validate those scripts on their behalf.
+These users were concerned about accidentally losing collateral. Since
+collateral must be a single address, users in such a situation either had to
+assign precisely the ‘minCollateral’ to an address or put up another UTxO as
+collateral and risk losing more than the minimum. To assuage the fears of such
+folks, Babbage introduced a ‘collateral return address’ to which collateral in
+excess of the minimum required would be returned in the case of a failing
+script. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../mempool/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../ledger/state-transition.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../ledger/concepts/blocks.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../ledger/transaction-fee.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -317,11 +372,11 @@ can be used.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../mempool/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../ledger/state-transition.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../ledger/concepts/blocks.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../ledger/transaction-fee.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -336,17 +391,17 @@ can be used.</p>
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../.mdbook/mermaid.min.js"></script>
-        <script src="../.mdbook/mermaid-init.js"></script>
+        <script src="../../.mdbook/mermaid.min.js"></script>
+        <script src="../../.mdbook/mermaid-init.js"></script>
 
 
 
