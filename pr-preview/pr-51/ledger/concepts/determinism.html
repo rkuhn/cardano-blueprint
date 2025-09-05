@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Blocks - Cardano Blueprint</title>
+        <title>Determinism - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex.js";
+            window.path_to_searchindex_js = "../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -106,7 +106,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -141,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/concepts/blocks.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/concepts/determinism.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -249,17 +249,50 @@
 }
 
 </style>
-<h1 id="blocks"><a class="header" href="#blocks">Blocks</a></h1>
+<h1 id="determinism"><a class="header" href="#determinism">Determinism</a></h1>
+<p>An important principle that occurs in a few places throughout the Cardano ledger
+is that of determinism. Perhaps one way to summarise is would be to say: “the
+transaction is all you need” - that is, when trying to compute the results of
+a transaction, you need only look at the transaction itself rather than
+computing with the full ledger state.</p>
+<p>There are two important instantiations of this principle:</p>
+<h2 id="transaction-determinism"><a class="header" href="#transaction-determinism">Transaction Determinism</a></h2>
+<p>This instance tells us that, given a transaction is valid, its outputs are
+determined fully by the transaction itself. It may be necessary to look at
+certain parts of the ledger state to determine whether it is valid - for
+example, to check that the inputs have not been spent - but assuming it is
+valid, the outputs created will be exactly as described in the transaction.</p>
+<h2 id="script-determinism"><a class="header" href="#script-determinism">Script determinism</a></h2>
+<p>This instance tells us that, assuming a transaction passes phase 1 validation,
+the validity of a script is determined only by data contained in the transaction
+and in the transaction outputs that it spends or references.</p>
+<h2 id="implications-for-node-implementors"><a class="header" href="#implications-for-node-implementors">Implications for Node Implementors</a></h2>
+<p>These properties allow node implementors to safely make certain assumptions
+which can speed up transaction and block processing.</p>
+<ol>
+<li>When processing historical blocks, nodes need only consider (or even
+deserialise) <a href="./blocks.html">transaction bodies</a>, since the rest of the
+block payload can only impact the block <em>validity</em>, which is already known
+for historical blocks.</li>
+<li>Many of the more expensive checks of transaction validity need only be
+carried out once. In particular, the cryptographic verification and script
+execution need only be carried out once, when the transaction first enters
+the mempool. Subsequently it is required only to check that the inputs still
+exist.</li>
+</ol>
+<p>To take advantage of these properties, ledger implementers must distinguish
+between these checks in the ledger in such a way as to allow transactions to be
+(re-)processed without repeating expensive computation.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../ledger/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../ledger/concepts/blocks.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../concepts/determinism.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../ledger/state-transition.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -269,11 +302,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../ledger/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../ledger/concepts/blocks.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../concepts/determinism.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../ledger/state-transition.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -288,17 +321,17 @@
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../.mdbook/mermaid.min.js"></script>
-        <script src="../.mdbook/mermaid-init.js"></script>
+        <script src="../../.mdbook/mermaid.min.js"></script>
+        <script src="../../.mdbook/mermaid-init.js"></script>
 
 
 

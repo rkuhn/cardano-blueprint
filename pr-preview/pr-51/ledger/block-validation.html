@@ -315,7 +315,7 @@ We will break up the validation process into smaller sections to make it easier 
                 certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                     EDC --&gt; conwayDelegTransition
                         conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                            crcDoBlock --&gt; crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                            crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                             crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                         conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                             cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -357,11 +357,11 @@ We will break up the validation process into smaller sections to make it easier 
                         cudrDoBlock --&gt; cudrDRepState[(vsDReps)]
                     conwayGovCertTransition --&gt; |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                     conwayGovCertTransition --&gt; |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                        crcckDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                        cachkDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                            checkAndOverwriteCommitteMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
-                            checkAndOverwriteCommitteMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                            checkAndOverwriteCommitteMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
+                        crcckDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                        cachkDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                            checkAndOverwriteCommitteeMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
+                            checkAndOverwriteCommitteeMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                            checkAndOverwriteCommitteeMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
 </pre>
 <h3 id="erarule-gov"><a class="header" href="#erarule-gov">EraRule GOV</a></h3>
 <p>This EraRule is responsible for validating and updating the governance state.</p>
@@ -385,7 +385,7 @@ We will break up the validation process into smaller sections to make it easier 
                 pcDoBlock --&gt; checkPolicy(checkPolicy)
         govTransition --&gt; ancestryCheck(ancestryCheck)
         govTransition --&gt; unknownVoters(failOnNonEmpty unknownVoters)
-        govTransition --&gt; unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+        govTransition --&gt; unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
         govTransition --&gt; checkBootstrapVotes(checkBootstrapVotes)
         govTransition --&gt; checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
         govTransition --&gt; checkVotersAreValid(checkVotersAreValid)
@@ -402,7 +402,7 @@ EUC[EraRule UTXOW Conway]
         babbageUtxowTransition --&gt; hasExactSetOfRedeemers(hasExactSetOfRedeemers)
         babbageUtxowTransition --&gt; validateVerifiedWits(Shelley.validateVerifiedWits)
         babbageUtxowTransition --&gt; validateNeededWitnesses(validateNeededWitnesses)
-        babbageUtxowTransition --&gt; validateMetdata(Shelley.validateMetadata)
+        babbageUtxowTransition --&gt; validateMetadata(Shelley.validateMetadata)
         babbageUtxowTransition --&gt; validateScriptsWellFormed(validateScriptsWellFormed)
         babbageUtxowTransition --&gt; ppViewHashesMatch(ppViewHashesMatch)
         babbageUtxowTransition --&gt; EUTXOC[EraRule UTXO Conway]
@@ -416,7 +416,7 @@ EUC[EraRule UTXOW Conway]
                 utxoTransition --&gt; validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                 utxoTransition --&gt; validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                 utxoTransition --&gt; validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                 utxoTransition --&gt; validateWrongNetwork(Shelley.validateWrongNetwork)
                 utxoTransition --&gt; validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                 utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)
@@ -471,7 +471,7 @@ EUC[EraRule UTXOW Conway]
                                             certTransition --&gt; |ConwayTxCertDeleg| EDC[EraRule DELEG Conway]
                                                 EDC --&gt; conwayDelegTransition
                                                     conwayDelegTransition --&gt; |ConwayRegCert| crcDoBlock[do]
-                                                        crcDoBlock --&gt; crcCheckDepositAgaintPParams(checkDespoitAgainstPParams)
+                                                        crcDoBlock --&gt; crcCheckDepositAgainstPParams(checkDepositAgainstPParams)
                                                         crcDoBlock --&gt; crcCheckStakeKeyNotRegistered(checkStakeKeyNotRegistered)
                                                     conwayDelegTransition --&gt; |ConwayUnregCert| cucDoBlock[do]
                                                         cucDoBlock --&gt; checkInvalidRefund(checkInvalidRefund)
@@ -516,11 +516,11 @@ EUC[EraRule UTXOW Conway]
                                                     cudrDoBlock --&gt; cudrDRepState[(vsDReps)]
                                                 conwayGovCertTransition --&gt; |ConwayResignCommitteeColdKey| crcckDoBlock[do]
                                                 conwayGovCertTransition --&gt; |ConwayAuthCommitteeHotKey| cachkDoBlock[do]
-                                                    crcckDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                                                    cachkDoBlock --&gt; checkAndOverwriteCommitteMemberState
-                                                        checkAndOverwriteCommitteMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
-                                                        checkAndOverwriteCommitteMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
-                                                        checkAndOverwriteCommitteMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
+                                                    crcckDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                                                    cachkDoBlock --&gt; checkAndOverwriteCommitteeMemberState
+                                                        checkAndOverwriteCommitteeMemberState --&gt; coldCredResigned(failOnJust coldCredResigned)
+                                                        checkAndOverwriteCommitteeMemberState --&gt; isCurrentMember(isCurrentMember OR isPotentialFutureMember)
+                                                        checkAndOverwriteCommitteeMemberState --&gt; vsCommitteeState[(vsCommitteeState)]
                                 ltDoBlock --&gt; EGC[EraRule GOV Conway]
                                     EGC --&gt; govTransition
                                         govTransition --&gt; badHardFork(failOnJust badHardFork)
@@ -540,7 +540,7 @@ EUC[EraRule UTXOW Conway]
                                                 pcDoBlock --&gt; checkPolicy(checkPolicy)
                                         govTransition --&gt; ancestryCheck(ancestryCheck)
                                         govTransition --&gt; unknownVoters(failOnNonEmpty unknownVoters)
-                                        govTransition --&gt; unknwonGovActionIds(failOnNonEmpty unknownGovActionIds)
+                                        govTransition --&gt; unknownGovActionIds(failOnNonEmpty unknownGovActionIds)
                                         govTransition --&gt; checkBootstrapVotes(checkBootstrapVotes)
                                         govTransition --&gt; checkVotesAreNotForExpiredActions(checkVotesAreNotForExpiredActions)
                                         govTransition --&gt; checkVotersAreValid(checkVotersAreValid)
@@ -555,7 +555,7 @@ EUC[EraRule UTXOW Conway]
                                 babbageUtxowTransition --&gt; hasExactSetOfRedeemers(hasExactSetOfRedeemers)
                                 babbageUtxowTransition --&gt; validateVerifiedWits(Shelley.validateVerifiedWits)
                                 babbageUtxowTransition --&gt; validateNeededWitnesses(validateNeededWitnesses)
-                                babbageUtxowTransition --&gt; validateMetdata(Shelley.validateMetadata)
+                                babbageUtxowTransition --&gt; validateMetadata(Shelley.validateMetadata)
                                 babbageUtxowTransition --&gt; validateScriptsWellFormed(validateScriptsWellFormed)
                                 babbageUtxowTransition --&gt; ppViewHashesMatch(ppViewHashesMatch)
                                 babbageUtxowTransition --&gt; EUTXOC[EraRule UTXO Conway]
@@ -569,7 +569,7 @@ EUC[EraRule UTXOW Conway]
                                         utxoTransition --&gt; validateValueNotConservedUTxO(Shelley.validateValueNotConservedUTxO)
                                         utxoTransition --&gt; validateOutputTooSmallUTxO(validateOutputTooSmallUTxO)
                                         utxoTransition --&gt; validateOutputTooBigUTxO(Alonzo.validateOutputTooBigUTxO)
-                                        utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOuputBootAddrAttrsTooBig)
+                                        utxoTransition --&gt; validateOutputBootAddrAttrsTooBig(Shelley.validateOutputBootAddrAttrsTooBig)
                                         utxoTransition --&gt; validateWrongNetwork(Shelley.validateWrongNetwork)
                                         utxoTransition --&gt; validateWrongNetworkWithdrawal(Shelley.validateWrongNetworkWithdrawal)
                                         utxoTransition --&gt; validateWrongNetworkInTxBody(Alonzo.validateWrongNetworkInTxBody)

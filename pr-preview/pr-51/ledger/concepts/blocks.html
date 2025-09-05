@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>The State Transition Function - Cardano Blueprint</title>
+        <title>Blocks - Cardano Blueprint</title>
 
 
         <!-- Custom HTML head -->
@@ -12,34 +12,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "";
+            const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex.js";
+            window.path_to_searchindex_js = "../../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -106,7 +106,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -141,13 +141,13 @@
                     <h1 class="menu-title">Cardano Blueprint</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         <a href="https://github.com/cardano-scaling/cardano-blueprint/tree/main" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/state-transition.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                        <a href="https://github.com/cardano-scaling/cardano-blueprint/edit/main/src/ledger/concepts/blocks.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -249,17 +249,82 @@
 }
 
 </style>
-<h1 id="the-state-transition-function"><a class="header" href="#the-state-transition-function">The State Transition Function</a></h1>
+<h1 id="ledger-blocks"><a class="header" href="#ledger-blocks">Ledger: Blocks</a></h1>
+<p>Blocks are a fundamental component of all blockchains and represent one of two
+basic units of exchange between nodes (the other being <a href="./transactions.html">transactions</a>).</p>
+<p>A block can itself be broken down into multiple parts:</p>
+<pre class="mermaid">
+block-beta
+block
+  columns 1
+  H[&quot;Header&quot;]
+  block
+    columns 2
+    BB[&quot;Transactions&quot;]
+    BW[&quot;Witnesses&quot;]
+    BA[&quot;Auxiliary Data&quot;]
+    BV[&quot;Transaction Validity&quot;]
+  end
+end
+
+</pre>
+<p>See also the <a href="https://github.com/IntersectMBO/cardano-ledger/blob/master/eras/conway/impl/cddl-files/conway.cddl#L8">Block CDDL</a>
+for the Conway era (the latest era at the time of writing).</p>
+<h2 id="the-headerbody-split"><a class="header" href="#the-headerbody-split">The header/body split</a></h2>
+<p>The most important distinction in the above diagram is that there is a split
+between the header of the block and the body. The general guiding principle
+behind this is the following:</p>
+<ul>
+<li>The <em>header</em> contains the parts of the block relevant to the consensus
+protocol.</li>
+<li>The <em>body</em> contains the parts of the block relevant to the ledger.</li>
+</ul>
+<p>The full details and implications of this split are covered in
+<a href="../constraints/header-body-split.html">Implications of the Header/Body Split</a>.
+For now, we can assume that the contents of the header are not important for
+the ledger processing.</p>
+<h2 id="the-block-body"><a class="header" href="#the-block-body">The block body</a></h2>
+<p>The block body itself is split into four parts. This division is not conceptually
+necessary but is helpful for efficient processing:</p>
+<ol>
+<li>
+<p>The ‘Transactions’ section contains the bodies of all transactions. This is
+the only part of the block body necessary to compute the resulting ledger
+state (see <a href="../state-transition.html">The ledger state transition</a>) - that is,
+provided that the block is <em>valid</em> with regard to some <em>ledger state</em>, the
+resulting new state can be computed using only the data in this section.</p>
+</li>
+<li>
+<p>The ‘Witnesses’ section contains the cryptographic witnessing necessary to
+evaluate the <em>validity</em> of the transactions contained in the block. For
+more details on <em>validity</em>, please see the <a href="../state-transition/validity.html">Validity</a>
+section.</p>
+</li>
+<li>
+<p>The ‘AuxData’ section contains “auxiliary data” which is not processed
+as part of the ledger state. It instead contains data which may be of use
+to either users directly or other software interfacing with the chain. In
+Shelley, this was limited to “metadata’, which were indeed simply binary
+blobs. In the Mary and Alonzo eras slightly more structure was provided to
+allow including native and Plutus scripts respectively.</p>
+</li>
+<li>
+<p>The transaction validity contains a list of transactions in this block which
+are <a href="../state-transition/validity.html">phase-2 invalid</a>. This is held
+separately since this map is provided, effectively, by the node which
+created the block, rather than by the creators of the transactions.</p>
+</li>
+</ol>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="concepts/determinism.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../ledger/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="state-transition/validity.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../ledger/concepts/determinism.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -269,11 +334,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="concepts/determinism.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../ledger/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="state-transition/validity.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../ledger/concepts/determinism.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -288,17 +353,17 @@
         </script>
 
 
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src=".mdbook/mermaid.min.js"></script>
-        <script src=".mdbook/mermaid-init.js"></script>
+        <script src="../../.mdbook/mermaid.min.js"></script>
+        <script src="../../.mdbook/mermaid-init.js"></script>
 
 
 
