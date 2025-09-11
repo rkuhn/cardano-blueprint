@@ -219,7 +219,7 @@ layer has four primary responsibilities:
 
 - [Technical report: Data Diffusion and Network][network-design]: Original design document of the peer-to-peer network protocols and diffusion semantics
 - [Technical report: Cardano Consensus and Storage Layer](https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf): Documentation of the Haskell implementation of consensus components
-- [Website: ouroboros-consensus > For Developers](https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers): Collection of developer articles on the Haskell implementation of consensus components
+- [Website: ouroboros-consensus](https://ouroboros-consensus.cardano.intersectmbo.org): Collection of developer articles on the Haskell implementation of consensus components
 
 [bft]: https://iohk.io/en/research/library/papers/ouroboros-bft-a-simple-byzantine-fault-tolerant-consensus-protocol/
 [classic]: https://iohk.io/en/research/library/papers/ouroboros-a-provably-secure-proof-of-stake-blockchain-protocol/
