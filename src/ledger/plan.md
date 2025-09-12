@@ -16,7 +16,7 @@ details needed by all potential implementations.
 
 - Concepts
   - [x] Blocks
-    - The header/body split
+    - [x] The header/body split
   - Transactions
   - Eras
   - The structure of an epoch
@@ -44,6 +44,7 @@ details needed by all potential implementations.
 - Understanding parts of the transition
   - Non-integral math
   - Transaction fee calculation
+  - Snapshots
   - Reward calculation
 - Ledger serialisation
   - Transaction and block formats
@@ -53,5 +54,4 @@ details needed by all potential implementations.
 - Constraints on the ledger
   - Computational concerns
     - Avoiding spikes
-  - Implications of the header/body split
   - Rollbacks and storage
