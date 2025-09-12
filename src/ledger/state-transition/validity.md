@@ -1,3 +1,7 @@
+# Block Validity
+
+> This section is currently a stub
+
 # Transaction Validity
 
 What does it mean for a transaction to be valid? The ledger specs define it
@@ -51,7 +55,7 @@ submitting the transaction and then be assured that it will either pass when
 the transaction is included, or that the transaction will fail during phase 1
 (for example, if an input has been spent).[^1]
 
-## Static vs Dynamic Checks
+# Static vs Dynamic Checks
 
 Since transaction validity is defined with regard to a ledger state, a change
 to the ledger state may result in previously valid transactions now becoming
@@ -78,11 +82,7 @@ verifying that inputs exist, checking that the transaction still sits within its
 validity window, and validating block transaction size against the protocol
 parameters.
 
-# Block Validity
-
-> This section is currently a stub
-
-# Relevance for the node developer
+## Relevance for the node developer
 
 The above is mostly relevant for node developers in that it is useful to be able
 to run the ledger transitions with fine-grained control over which checks are

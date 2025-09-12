@@ -87,4 +87,4 @@ best selection).
 ## Resources
 
 - [Technical report: Cardano Consensus and Storage Layer](https://ouroboros-consensus.cardano.intersectmbo.org/pdfs/report.pdf): Documentation of the Haskell implementation of consensus components
-- [Website: ouroboros-consensus > For Developers](https://ouroboros-consensus.cardano.intersectmbo.org/docs/for-developers): Collection of developer articles on the Haskell implementation of consensus components
+- [Website: ouroboros-consensus](https://ouroboros-consensus.cardano.intersectmbo.org): Collection of developer articles on the Haskell implementation of consensus components
