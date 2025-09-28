@@ -10,12 +10,13 @@
     - [BlockFetch](network/node-to-node/blockfetch/README.md)
     - [TxSubmission2](network/node-to-node/txsubmission2/README.md)
     - [KeepAlive](network/node-to-node/keep-alive/README.md)
-    - [PeerSharing](<>)
+    - [PeerSharing](network/node-to-node/peer-sharing/README.md)
 - [Consensus](consensus/README.md)
   - [Chain validity](consensus/chainvalid.md)
   - [Chain selection](consensus/chainsel.md)
   - [Forging new blocks](consensus/forging.md)
   - [Multi-era considerations](consensus/multiera.md)
+  - [Peer Selection](consensus/peersel.md)
 - [Storage](storage/README.md)
   - [`cardano-node`'s ChainDB](storage/cardano-node-chaindb/README.md)
 - [Mempool](mempool/README.md)
@@ -40,6 +41,7 @@
     - [TxMonitor](<>)
     - [LocalChainSync](<>)
   - [UTxO-RPC](client/utxo-rpc/README.md)
+- [Observability](observability/README.md)
 - [Codec basics](codecs/README.md)
 
 ______________________________________________________________________
