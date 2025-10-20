@@ -5,8 +5,9 @@ excludes = []
 includes = ["*.md"]
 options = ["--extensions", "gfm", "--extensions", "footnote", "--extensions", "myst"]
 
-[formatter.typos]
-command = "typos"
-excludes = []
-includes = ["*.md"]
-options = ["--write-changes"]
+# TODO: figure out how to exclude certain phrases and disable on code blocks
+# [formatter.typos]
+# command = "typos"
+# excludes = []
+# includes = ["*.md"]
+# options = ["--write-changes"]
