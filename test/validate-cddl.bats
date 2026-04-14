@@ -47,9 +47,22 @@ LOCAL_MODULES=(
   validate_cddl src/network/node-to-node/txsubmission2/messages.cddl
 }
 
+@test "network/node-to-node/leios-notify/messages.cddl" {
+  validate_cddl src/network/node-to-node/leios-notify/messages.cddl
+}
+
+@test "network/node-to-node/leios-fetch/messages.cddl" {
+  validate_cddl src/network/node-to-node/leios-fetch/messages.cddl
+}
+
+@test "network/node-to-node/leios-votes/messages.cddl" {
+  validate_cddl src/network/node-to-node/leios-votes/messages.cddl
+}
+
 @test "client/node-to-client/state-query/messages.cddl" {
   validate_cddl src/client/node-to-client/state-query/messages.cddl
 }
+
 
 setup_file() {
   INCLUDE_DIR="$(mktemp -d)"

@@ -65,11 +65,3 @@ The messages depicted in the state machine follow this CDDL specification:
 A `vote` carries the slot-based election identifier, a persistent voter ID,
 a BLS eligibility signature proving the voter was elected, the hash of the EB
 being endorsed, and a BLS vote signature over that EB.
-
-> [!NOTE]
->
-> `MsgClientDone` (`[1]`) and `MsgRequestNextVote` (`[1, 0]`) share tag `1`
-> and are disambiguated by array length. The `persistent_voter_id` semantics
-> and the vote aggregation scheme are still being designed. See
-> [CIP-0164](https://github.com/cardano-foundation/CIPs/pull/1167) for
-> rationale and ongoing discussion.
