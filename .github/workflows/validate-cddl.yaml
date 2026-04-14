@@ -1,0 +1,28 @@
+name: Validate CDDL specifications
+
+on:
+  pull_request:
+  push:
+    branches:
+    - main
+
+jobs:
+  validate-cddl:
+    name: Validate CDDL
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+            log-lines = 1000
+
+      - name: Enter nix shell
+        uses: nicknovitski/nix-develop@v1
+
+      - name: Validate CDDL
+        run: bash .github/workflows/validate-cddl.sh

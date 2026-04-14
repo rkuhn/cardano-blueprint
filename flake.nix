@@ -19,6 +19,11 @@
           python3Packages.mdformat-myst # for latex math
           typos
         ];
+
+        cddlPkgs = with pkgs; [
+          cddl
+          cddlc
+        ];
       in
       rec {
         inherit inputs;
@@ -42,7 +47,7 @@
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [ packages.mdbook ];
-          buildInputs = formattingPkgs;
+          buildInputs = formattingPkgs ++ cddlPkgs;
         };
       }
     );
