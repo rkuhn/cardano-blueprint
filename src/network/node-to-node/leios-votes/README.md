@@ -22,25 +22,28 @@ delivers one vote at a time.
 ## State machine
 
 ```mermaid
-stateDiagram
-   direction LR
-   [*] --> StIdle
-   StIdle --> [*]: MsgClientDone
-   StIdle --> StBusy: MsgRequestNextVote
-   StBusy --> StIdle: MsgLeiosVote
+graph LR
+   classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+   classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+   linkStyle default stroke:gray
 
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StIdle initiator
-    class StBusy responder
+   StDone(((StDone)))
+
+   i(( )) --> StIdle
+   StIdle --MsgClientDone--> StDone
+   StIdle --MsgRequestNextVote--> StBusy
+   StBusy --MsgLeiosVote--> StIdle
+
+   class StIdle client
+   class StBusy server
 ```
 
 ### State agencies
 
-| State  | Agency                                                              |
-| :----- | :------------------------------------------------------------------ |
-| StIdle | <span style="color:#080">Initiator</span>                           |
-| StBusy | <span style="color:#008;text-decoration:underline">Responder</span> |
+| State  | Agency                                          |
+| :----- | :---------------------------------------------- |
+| StIdle | <span class="agency-initiator">Initiator</span> |
+| StBusy | <span class="agency-responder">Responder</span> |
 
 ### State transitions
 
@@ -61,7 +64,7 @@ The messages depicted in the state machine follow this CDDL specification:
 
 A `vote` carries the slot-based election identifier, a persistent voter ID,
 a BLS eligibility signature proving the voter was elected, the hash of the EB
-being endorsed, and a BLS vote signature over that EB:
+being endorsed, and a BLS vote signature over that EB.
 
 > [!NOTE]
 >

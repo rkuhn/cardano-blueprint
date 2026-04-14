@@ -21,39 +21,41 @@ the data.
 ## State machine
 
 ```mermaid
-stateDiagram
-   direction LR
-   [*] --> StIdle
-   StIdle --> [*]: MsgClientDone
-   StIdle --> StBusyBlock: MsgLeiosBlockRequest
-   StIdle --> StBusyTxs: MsgLeiosBlockTxsRequest
-   StBusyBlock --> StIdle: MsgLeiosBlock
-   StBusyTxs --> StIdle: MsgLeiosBlockTxs
+graph LR
+   classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+   classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+   linkStyle default stroke:gray
 
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StIdle initiator
-    class StBusyBlock responder
-    class StBusyTxs responder
+   StDone(((StDone)))
+
+   i(( )) --> StIdle
+   StIdle --MsgClientDone--> StDone
+   StIdle --MsgLeiosBlockRequest--> StBusyBlock
+   StIdle --MsgLeiosBlockTxsRequest--> StBusyTxs
+   StBusyBlock --MsgLeiosBlock--> StIdle
+   StBusyTxs --MsgLeiosBlockTxs--> StIdle
+
+   class StIdle client
+   class StBusyBlock,StBusyTxs server
 ```
 
 ### State agencies
 
-| State        | Agency                                                              |
-| :----------- | :------------------------------------------------------------------ |
-| StIdle       | <span style="color:#080">Initiator</span>                           |
-| StBusyBlock  | <span style="color:#008;text-decoration:underline">Responder</span> |
-| StBusyTxs   | <span style="color:#008;text-decoration:underline">Responder</span> |
+| State       | Agency                                          |
+| :---------- | :---------------------------------------------- |
+| StIdle      | <span class="agency-initiator">Initiator</span> |
+| StBusyBlock | <span class="agency-responder">Responder</span> |
+| StBusyTxs   | <span class="agency-responder">Responder</span> |
 
 ### State transitions
 
-| From state   | Message                  | Parameters                       | To state     |
-| :----------- | :----------------------- | -------------------------------- | :----------- |
-| StIdle       | MsgClientDone            |                                  | End          |
-| StIdle       | MsgLeiosBlockRequest     | `point`                          | StBusyBlock  |
-| StIdle       | MsgLeiosBlockTxsRequest  | `point`, `bitmaps`               | StBusyTxs   |
-| StBusyBlock  | MsgLeiosBlock            | `endorser_block`                 | StIdle       |
-| StBusyTxs   | MsgLeiosBlockTxs         | `point`, `bitmaps`, `txList`     | StIdle       |
+| From state  | Message                 | Parameters                   | To state    |
+| :---------- | :---------------------- | ---------------------------- | :---------- |
+| StIdle      | MsgClientDone           |                              | End         |
+| StIdle      | MsgLeiosBlockRequest    | `point`                      | StBusyBlock |
+| StIdle      | MsgLeiosBlockTxsRequest | `point`, `bitmaps`           | StBusyTxs   |
+| StBusyBlock | MsgLeiosBlock           | `endorser_block`             | StIdle      |
+| StBusyTxs   | MsgLeiosBlockTxs        | `point`, `bitmaps`, `txList` | StIdle      |
 
 ## Codecs
 

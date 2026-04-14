@@ -33,31 +33,33 @@ with the addition of an indicator of which side has agency. This one is for the
 minimal example mini-protocol, [Ping Pong](<>):
 
 ```mermaid
-stateDiagram
+graph LR
+    classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+    classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+    classDef init fill:black,stroke:black;
 
-    [*] --> StIdle
-    StIdle --> StBusy: MsgPing
-    StBusy --> StIdle: MsgPong
-    StIdle --> [*]: MsgDone
+   linkStyle default stroke:gray
 
-    direction LR
+   StDone(((StDone)))
 
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StIdle initiator
-    class StBusy responder
+    i(( )) --> StIdle
+    StIdle --MsgPing--> StBusy
+    StBusy --MsgPong--> StIdle
+    StIdle --MsgDone--> StDone
+
+    class StIdle client
+    class StBusy server
 ```
 
 It has been the convention to mark states where the initiator has agency
-in green and the responder in blue, as here, but we also underline it for
-responder agency in case colours aren't clear.
+in green and the responder in blue, as here.
 
 As a double check, we can show the agency for each state as a table as well:
 
-| State  | Agency                                                              |
-| :----- | :------------------------------------------------------------------ |
-| StIdle | <span style="color:#080">Initiator</span>                           |
-| StBusy | <span style="color:#008;text-decoration:underline">Responder</span> |
+| State  | Agency                                          |
+| :----- | :---------------------------------------------- |
+| StIdle | <span class="agency-initiator">Initiator</span> |
+| StBusy | <span class="agency-responder">Responder</span> |
 
 By convention state names have an `St` prefix, while messages
 have `Msg`, to avoid confusion.

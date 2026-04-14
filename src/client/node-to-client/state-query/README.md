@@ -9,17 +9,24 @@
   <summary> Full mini-protocol state diagram</summary>
 
 ```mermaid
-stateDiagram
-    direction LR
-    [*] --> StIdle
-    StIdle --> [*]: MsgDone
-    StIdle --> Acquiring: MsgAcquire
-    Acquiring --> Acquired: MsgAcquired
-    Acquired --> Querying: MsgQuery
-    Querying --> Acquired: MsgResult
-    Acquired --> Acquiring: MsgReAcquire
-    Acquiring --> StIdle: MsgFailure
-    Acquired --> StIdle: MsgRelease
+graph LR
+    classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+    classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+
+    StDone(((StDone)))
+
+    i(( )) --> StIdle
+    StIdle --MsgDone--> StDone
+    StIdle --MsgAcquire--> Acquiring
+    Acquiring --MsgAcquired--> Acquired
+    Acquiring --MsgFailure--> StIdle
+    Acquired --MsgQuery--> Querying
+    Querying --MsgResult--> Acquired
+    Acquired --MsgReAcquire--> Acquiring
+    Acquired --MsgRelease--> StIdle
+
+    class StIdle,Acquired client
+    class Acquiring,Querying server
 ```
 
 See also definition in [network spec](https://ouroboros-network.cardano.intersectmbo.org/pdfs/network-spec/network-spec.pdf#section.3.13).

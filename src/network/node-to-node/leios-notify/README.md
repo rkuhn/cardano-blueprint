@@ -24,42 +24,45 @@ push announcements to downstream peers with minimal latency.
 
 > [!WARNING]
 >
-> TODO: Add more detail about admitted pipeline depth and other punishable requirements 
+> TODO: Add more detail about admitted pipeline depth and other punishable requirements
 
 ## State machine
 
 ```mermaid
-stateDiagram
-   direction LR
-   [*] --> StIdle
-   StIdle --> [*]: MsgClientDone
-   StIdle --> StBusy: MsgRequestNext
-   StBusy --> StIdle: MsgBlockAnnouncement
-   StBusy --> StIdle: MsgBlockOffer
-   StBusy --> StIdle: MsgBlockTxsOffer
+graph LR
+   classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+   classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+   linkStyle default stroke:gray
 
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StIdle initiator
-    class StBusy responder
+   StDone(((StDone)))
+
+   i(( )) --> StIdle
+   StIdle --MsgClientDone--> StDone
+   StIdle --MsgRequestNext--> StBusy
+   StBusy --MsgBlockAnnouncement--> StIdle
+   StBusy --MsgBlockOffer--> StIdle
+   StBusy --MsgBlockTxsOffer--> StIdle
+
+   class StIdle client
+   class StBusy server
 ```
 
 ### State agencies
 
-| State  | Agency                                                              |
-| :----- | :------------------------------------------------------------------ |
-| StIdle | <span style="color:#080">Initiator</span>                           |
-| StBusy | <span style="color:#008;text-decoration:underline">Responder</span> |
+| State  | Agency                                          |
+| :----- | :---------------------------------------------- |
+| StIdle | <span class="agency-initiator">Initiator</span> |
+| StBusy | <span class="agency-responder">Responder</span> |
 
 ### State transitions
 
-| From state | Message              | Parameters              | To state |
-| :--------- | :------------------- | ----------------------- | :------- |
-| StIdle     | MsgClientDone        |                         | End      |
-| StIdle     | MsgRequestNext       |                         | StBusy   |
-| StBusy     | MsgBlockAnnouncement | `announcement`          | StIdle   |
-| StBusy     | MsgBlockOffer        | `point`, `size`         | StIdle   |
-| StBusy     | MsgBlockTxsOffer     | `point`                 | StIdle   |
+| From state | Message              | Parameters      | To state |
+| :--------- | :------------------- | --------------- | :------- |
+| StIdle     | MsgClientDone        |                 | End      |
+| StIdle     | MsgRequestNext       |                 | StBusy   |
+| StBusy     | MsgBlockAnnouncement | `announcement`  | StIdle   |
+| StBusy     | MsgBlockOffer        | `point`, `size` | StIdle   |
+| StBusy     | MsgBlockTxsOffer     | `point`         | StIdle   |
 
 ## Codecs
 
@@ -69,3 +72,12 @@ The messages depicted in the state machine follow this CDDL specification:
 ;; messages.cddl
 {{#include messages.cddl}}
 ```
+
+> [!NOTE]
+>
+> The CBOR tags in this specification are provisional. In particular,
+> `MsgRequestNext` and `MsgBlockAnnouncement` share array tag `[1, ...]` and
+> are disambiguated by the second field (`0` vs. an announcement value).
+> `announcement` and several other types remain underspecified (`any`) pending
+> further protocol design. See [CIP-0164](https://github.com/cardano-foundation/CIPs/pull/1167)
+> for rationale and ongoing discussion.

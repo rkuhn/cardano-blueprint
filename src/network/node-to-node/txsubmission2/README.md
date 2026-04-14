@@ -41,36 +41,35 @@ misbehaviour are (not exclusively):
 The state machine for TxSubmission2 is as follows:
 
 ```mermaid
-stateDiagram
-   direction LR
-   [*] --> StInit
-   StInit --> StIdle: MsgInit
-   StIdle --> StTxs: MsgRequestTxs
-   StTxs --> StIdle: MsgReplyTxs
-   StIdle --> StTxIdsNonBlocking: MsgRequestTxIdsNonBlocking
-   StTxIdsNonBlocking --> StIdle: MsgReplyTxIds
-   StIdle --> StTxIdsBlocking: MsgRequestTxIdsBlocking
-   StTxIdsBlocking --> StIdle: MsgReplyTxIds
-   StTxIdsBlocking --> [*]: MsgDone
+graph LR
+   classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+   classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
 
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StIdle responder
-    class StInit initiator
-    class StTxs initiator
-    class StTxIdsBlocking initiator
-    class StTxIdsNonBlocking initiator
+   StDone(((StDone)))
+
+   i(( )) --> StInit
+   StInit --MsgInit--> StIdle
+   StIdle --MsgRequestTxs--> StTxs
+   StTxs --MsgReplyTxs--> StIdle
+   StIdle --MsgRequestTxIdsNonBlocking--> StTxIdsNonBlocking
+   StTxIdsNonBlocking --MsgReplyTxIds--> StIdle
+   StIdle --MsgRequestTxIdsBlocking--> StTxIdsBlocking
+   StTxIdsBlocking --MsgReplyTxIds--> StIdle
+   StTxIdsBlocking --MsgDone--> StDone
+
+   class StInit,StTxs,StTxIdsBlocking,StTxIdsNonBlocking client
+   class StIdle server
 ```
 
 ### State agencies
 
-| State              | Agency                                                              |
-| :----------------- | :------------------------------------------------------------------ |
-| StInit             | <span style="color:#080">Initiator</span>                           |
-| StIdle             | <span style="color:#008;text-decoration:underline">Responder</span> |
-| StTxs              | <span style="color:#080">Initiator</span>                           |
-| StTxIdsBlocking    | <span style="color:#080">Initiator</span>                           |
-| StTxIdsNonBlocking | <span style="color:#080">Initiator</span>                           |
+| State              | Agency                                          |
+| :----------------- | :---------------------------------------------- |
+| StInit             | <span class="agency-initiator">Initiator</span> |
+| StIdle             | <span class="agency-responder">Responder</span> |
+| StTxs              | <span class="agency-initiator">Initiator</span> |
+| StTxIdsBlocking    | <span class="agency-initiator">Initiator</span> |
+| StTxIdsNonBlocking | <span class="agency-initiator">Initiator</span> |
 
 ### State transitions
 
