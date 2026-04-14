@@ -11,6 +11,20 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
+        # mdbook-katex 0.9.x uses a fork of mdbook 0.4 and is incompatible with mdbook 0.5+.
+        # Build 0.10.0-alpha which adds mdbook 0.5 support.
+        mdbook-katex = pkgs.rustPlatform.buildRustPackage {
+          pname = "mdbook-katex";
+          version = "0.10.0-alpha";
+          src = pkgs.fetchFromGitHub {
+            owner = "lzanini";
+            repo = "mdbook-katex";
+            tag = "v0.10.0-alpha";
+            hash = "sha256-etKoOLYxvUste3Ay+0Y5PGi1Lh6K/+0qz8ndc6XcQls=";
+          };
+          cargoHash = "sha256-LUHVGEvE22ITlmpuI+8qGBPTa7q8YssiLSfQnvGM4hw=";
+        };
+
         formattingPkgs = with pkgs; [
           treefmt
           mdformat
@@ -36,9 +50,8 @@
           buildInputs = with pkgs; [
             mdbook
             mdbook-mermaid
-            mdbook-katex
             mdbook-toc
-          ];
+          ] ++ [ mdbook-katex ];
           phases = [ "unpackPhase" "buildPhase" ];
           buildPhase = ''
             mdbook build -d $out

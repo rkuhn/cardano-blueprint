@@ -1,16 +1,12 @@
 [book]
 authors = ["Sebastian Nagel", "Paul Clark"]
+description = "Implementation-independent specifications of the Cardano protocol"
 language = "en"
-multilingual = false
 src = "src"
 title = "Cardano Blueprint"
 
 [build]
 build-dir = "out"
-
-[preprocessor]
-
-[preprocessor.alerts]
 
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
@@ -21,8 +17,6 @@ renderer = ["html"]
 
 [preprocessor.katex]
 after = ["links"]
-
-[output]
 
 [output.html]
 additional-js = [".mdbook/mermaid.min.js", ".mdbook/mermaid-init.js"]
