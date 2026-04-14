@@ -24,7 +24,7 @@ LOCAL_MODULES=(
   src/network/node-to-node/blockfetch/block.cddl
   src/network/node-to-node/chainsync/header.cddl
   src/network/node-to-node/txsubmission2/tx.cddl
-  src/network/node-to-node/txsubmission2/txId.cddl
+  src/network/node-to-node/txsubmission2/txid.cddl
 )
 
 @test "network/node-to-node/blockfetch/messages.cddl" {
@@ -66,8 +66,7 @@ setup_file() {
   done
   curl -sSfL "$LEDGER_RAW/eras/byron/ledger/impl/cddl-spec/byron.cddl" -o "$INCLUDE_DIR/byron.cddl"
 
-  export CDDL_INCLUDE_PATH="$INCLUDE_DIR"
-  echo "# CDDL_INCLUDE_PATH=$CDDL_INCLUDE_PATH" >&3
+  echo "# INCLUDE_DIR=$INCLUDE_DIR" >&3
 }
 
 teardown_file() {
@@ -80,10 +79,8 @@ validate_cddl() {
   local rel="$1"
   local file="$REPO_ROOT/$rel"
 
-  run bash -c "cddlc -u -2 -t cddl '$file' 2>&1"
+  run bash -c "CDDL_INCLUDE_PATH='$INCLUDE_DIR' cddlc -u -2 -t cddl '$file' 2>&1"
   echo "$output"
-  echo ""
-  echo "Reproduce: CDDL_INCLUDE_PATH=$CDDL_INCLUDE_PATH cddlc -u -2 -t cddl $file"
   [ "$status" -eq 0 ]
   [[ "$output" != *"*** undefined"* ]]
 }

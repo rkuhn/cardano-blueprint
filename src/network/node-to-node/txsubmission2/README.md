@@ -100,7 +100,7 @@ a transaction ID:
 
 ```cddl
 ;; txid.cddl
-{{#include txId.cddl}}
+{{#include txid.cddl}}
 ```
 
 A transaction as transmitted in `TxSubmission2` is a tag-encoded
