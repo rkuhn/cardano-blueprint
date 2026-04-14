@@ -9,7 +9,7 @@ This directory contains automated tests for the specifications in this repositor
 Each test validates one `messages.cddl` entry-point file by:
 
 1. Using `cddlc` to resolve all `; # import`/`; # include` module directives and merge the imported files into a single flat CDDL document.
-2. Checking that the merged output contains no undefined type references (reported by `cddlc -u` as `*** undefined: …` comments).
+1. Checking that the merged output contains no undefined type references (reported by `cddlc -u` as `*** undefined: …` comments).
 
 Because the era-specific CDDL files (Byron, Shelley, …, Conway) live in [cardano-ledger](https://github.com/IntersectMBO/cardano-ledger) rather than this repository, the test suite downloads them at runtime.
 

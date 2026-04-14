@@ -139,4 +139,3 @@ Last but not least and probably the best way to contribute: Share the love for b
 
 [gfm]: https://github.github.com/gfm/
 [mdbook]: https://rust-lang.github.io/mdBook/index.html
-[nix]: https://nixos.org/download.html
