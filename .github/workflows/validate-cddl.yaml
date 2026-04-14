@@ -25,4 +25,4 @@ jobs:
         uses: nicknovitski/nix-develop@v1
 
       - name: Validate CDDL
-        run: bash .github/workflows/validate-cddl.sh
+        run: bats .github/workflows/validate-cddl.bats

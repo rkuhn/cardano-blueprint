@@ -21,6 +21,7 @@
         ];
 
         cddlPkgs = with pkgs; [
+          bats
           cddl
           cddlc
         ];
@@ -36,7 +37,6 @@
             mdbook
             mdbook-mermaid
             mdbook-katex
-            mdbook-alerts
             mdbook-toc
           ];
           phases = [ "unpackPhase" "buildPhase" ];
