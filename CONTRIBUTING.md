@@ -63,7 +63,8 @@ The Cardano Blueprint aims to be a community effort and we would love to have yo
 ## Building the book
 
 The blueprints are written using markdown and can be viewed [directly in
-Github](./src/introduction/README.md) or built into [the HTML
+Github](https://github.com/cardano-scaling/cardano-blueprint/tree/main/src/introduction)
+or built into [the HTML
 site](https://cardano-scaling.github.io/cardano-blueprint) using [mdbook].
 
 ### With nix
@@ -107,11 +108,19 @@ enforced in CI. With `nix develop` active:
 treefmt
 ```
 
+<!-- markdown-link-check-disable -->
+
 See `formattingPkgs` in [`flake.nix`](./flake.nix) for the full list of tools.
+
+<!-- markdown-link-check-enable -->
 
 ## Running tests
 
+<!-- markdown-link-check-disable -->
+
 The repository includes a test suite under [`test/`](test/README.md) that validates the CDDL specifications for consistency. With `nix develop` active, run:
+
+<!-- markdown-link-check-enable -->
 
 ```shell
 bats test/validate-cddl.bats
