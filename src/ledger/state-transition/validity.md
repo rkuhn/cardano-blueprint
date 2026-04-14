@@ -36,15 +36,15 @@ force significantly larger resource expenditure from the network.
 In order to combat this, Alonzo introduced the concept of 2-phase validity:
 
 1. The first phase involves the regular checks of things such as transaction
-    size, fee suitability, input validity etc. These checks are assumed to have
-    bounded work. A failure in phase 1 indicates that the transaction will
-    not be placed on chain.
-2. Phase 2 checks are only run if phase 1 succeeds. Phase 2 checks involve
-    running Plutus scripts and validating that inputs locked by those scripts
-    can be spent. A transaction failing a phase 2 check can still be put on
-    chain. In this case, a special input called the 'collateral' is spent and
-    donated to the fee pot. The collateral must be locked by a phase-1
-    verifiable input - i.e. an input locked by a VKey or native script.
+   size, fee suitability, input validity etc. These checks are assumed to have
+   bounded work. A failure in phase 1 indicates that the transaction will
+   not be placed on chain.
+1. Phase 2 checks are only run if phase 1 succeeds. Phase 2 checks involve
+   running Plutus scripts and validating that inputs locked by those scripts
+   can be spent. A transaction failing a phase 2 check can still be put on
+   chain. In this case, a special input called the 'collateral' is spent and
+   donated to the fee pot. The collateral must be locked by a phase-1
+   verifiable input - i.e. an input locked by a VKey or native script.
 
 An important consideration is that phase-2 checks are _static_ (see below).
 Phase-2 checks are run always in the context only of the transaction and its
@@ -91,25 +91,25 @@ computed.
 There are four main scenarios which come into consideration:
 
 1. Validating a transaction as it enters the mempool. In this case all checks
-  must be computed.
-2. Re-validating a transaction after a new block has been adopted. In this case,
-  we care only about re-running _dynamic_ checks.
-3. Validating a new block body downloaded from a peer. In this case all checks
-  must be computed.
-4. Re-applying a block from our local storage in order to reconstruct the ledger
-  state. Since local blocks are assumed to be trusted, we need run _no_ checks
-  here and only apply the transition.
+   must be computed.
+1. Re-validating a transaction after a new block has been adopted. In this case,
+   we care only about re-running _dynamic_ checks.
+1. Validating a new block body downloaded from a peer. In this case all checks
+   must be computed.
+1. Re-applying a block from our local storage in order to reconstruct the ledger
+   state. Since local blocks are assumed to be trusted, we need run _no_ checks
+   here and only apply the transition.
 
 Node developers should bear these scenarios in mind when considering how to
 structure their node transition function.
 
 [^1]: Note that there is a small addendum to this story. While theoretically
-anyone may validate their own Plutus scripts, many users do not run their own
-node and as such trust a third party to validate those scripts on their behalf.
-These users were concerned about accidentally losing collateral. Since
-collateral must be a single address, users in such a situation either had to
-assign precisely the 'minCollateral' to an address or put up another UTxO as
-collateral and risk losing more than the minimum. To assuage the fears of such
-folks, Babbage introduced a 'collateral return address' to which collateral in
-excess of the minimum required would be returned in the case of a failing
-script.
+    anyone may validate their own Plutus scripts, many users do not run their own
+    node and as such trust a third party to validate those scripts on their behalf.
+    These users were concerned about accidentally losing collateral. Since
+    collateral must be a single address, users in such a situation either had to
+    assign precisely the 'minCollateral' to an address or put up another UTxO as
+    collateral and risk losing more than the minimum. To assuage the fears of such
+    folks, Babbage introduced a 'collateral return address' to which collateral in
+    excess of the minimum required would be returned in the case of a failing
+    script.

@@ -21,7 +21,7 @@ as having three parts:
     updated. Since the ledger is concerned only with the
     [block body](./concepts/blocks.md), that is the part which drives the state
     transition.
-    
+
   - A *transaction*. This is needed to validate transactions when they enter
     the mempool, before including them into a block.
 

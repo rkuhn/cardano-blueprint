@@ -31,7 +31,7 @@ which can speed up transaction and block processing.
    deserialise) [transaction bodies](./blocks.md), since the rest of the
    block payload can only impact the block _validity_, which is already known
    for historical blocks.
-2. Many of the more expensive checks of transaction validity need only be
+1. Many of the more expensive checks of transaction validity need only be
    carried out once. In particular, the cryptographic verification and script
    execution need only be carried out once, when the transaction first enters
    the mempool. Subsequently it is required only to check that the inputs still
