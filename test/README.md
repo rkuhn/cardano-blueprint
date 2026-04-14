@@ -18,7 +18,7 @@ Because the era-specific CDDL files (Byron, Shelley, …, Conway) live in [carda
 With `bats` and `cddlc` available (e.g. via `nix develop`):
 
 ```shell
-bats test/validate-cddl.bats
+bats test
 ```
 
 When a test fails the output includes a ready-to-run `cddlc` invocation so you can inspect the merged CDDL directly:
