@@ -11,7 +11,7 @@
 # Run with: bats .github/workflows/validate-cddl.bats
 # Requirements: bats, cddlc, curl
 
-REPO_ROOT="$(cd "$(dirname "$BATS_TEST_FILENAME")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$BATS_TEST_FILENAME")/.." && pwd)"
 LEDGER_RAW="https://raw.githubusercontent.com/IntersectMBO/cardano-ledger/master"
 
 # Include paths for cddlc to resolve ';# import/include MODULE as PREFIX' pragmas.

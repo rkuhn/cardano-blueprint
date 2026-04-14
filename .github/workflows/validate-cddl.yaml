@@ -1,4 +1,4 @@
-name: Validate CDDL specifications
+name: CDDL tests
 
 on:
   pull_request:
@@ -24,5 +24,5 @@ jobs:
       - name: Enter nix shell
         uses: nicknovitski/nix-develop@v1
 
-      - name: Validate CDDL
-        run: bats .github/workflows/validate-cddl.bats
+      - name: CDDL tests
+        run: bats test/validate-cddl.bats
