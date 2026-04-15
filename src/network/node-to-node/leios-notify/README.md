@@ -38,10 +38,11 @@ graph LR
 
    i(( )) --> StIdle
    StIdle --MsgClientDone--> StDone
-   StIdle --MsgRequestNext--> StBusy
-   StBusy --MsgBlockAnnouncement--> StIdle
-   StBusy --MsgBlockOffer--> StIdle
-   StBusy --MsgBlockTxsOffer--> StIdle
+   StIdle --MsgLeiosNotificationRequestNext--> StBusy
+   StBusy --MsgLeiosBlockAnnouncement--> StIdle
+   StBusy --MsgLeiosBlockOffer--> StIdle
+   StBusy --MsgLeiosBlockTxsOffer--> StIdle
+   StBusy --MsgLeiosVotesOffer--> StIdle
 
    class StIdle client
    class StBusy server
@@ -56,13 +57,14 @@ graph LR
 
 ### State transitions
 
-| From state | Message              | Parameters      | To state |
-| :--------- | :------------------- | --------------- | :------- |
-| StIdle     | MsgClientDone        |                 | End      |
-| StIdle     | MsgRequestNext       |                 | StBusy   |
-| StBusy     | MsgBlockAnnouncement | `announcement`  | StIdle   |
-| StBusy     | MsgBlockOffer        | `point`, `size` | StIdle   |
-| StBusy     | MsgBlockTxsOffer     | `point`         | StIdle   |
+| From state | Message                         | Parameters             | To state |
+|:-----------|:--------------------------------|------------------------|:---------|
+| StIdle     | MsgClientDone                   |                        | End      |
+| StIdle     | MsgLeiosNotificationRequestNext |                        | StBusy   |
+| StBusy     | MsgLeiosBlockAnnouncement       | `announcement`         | StIdle   |
+| StBusy     | MsgLeiosBlockOffer              | `point`, `size`        | StIdle   |
+| StBusy     | MsgLeiosBlockTxsOffer           | `point`                | StIdle   |
+| StBusy     | MsgLeiosVotesOffer              | `[1* (slot, voterId)]` | StIdle   |
 
 ## Codecs
 
@@ -75,9 +77,6 @@ The messages depicted in the state machine follow this CDDL specification:
 
 > [!NOTE]
 >
-> The CBOR tags in this specification are provisional. In particular,
-> `MsgRequestNext` and `MsgBlockAnnouncement` share array tag `[1, ...]` and
-> are disambiguated by the second field (`0` vs. an announcement value).
-> `announcement` and several other types remain underspecified (`any`) pending
+> The CBOR tags in this specification are provisional. Several types remain underspecified (`any`) pending
 > further protocol design. See [CIP-0164](https://github.com/cardano-foundation/CIPs/pull/1167)
 > for rationale and ongoing discussion.

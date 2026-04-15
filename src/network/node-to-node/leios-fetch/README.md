@@ -29,33 +29,48 @@ graph LR
    StDone(((StDone)))
 
    i(( )) --> StIdle
-   StIdle --MsgClientDone--> StDone
-   StIdle --MsgLeiosBlockRequest--> StBusyBlock
-   StIdle --MsgLeiosBlockTxsRequest--> StBusyTxs
-   StBusyBlock --MsgLeiosBlock--> StIdle
-   StBusyTxs --MsgLeiosBlockTxs--> StIdle
+   StIdle --MsgDone--> StDone
+   StIdle --MsgLeiosBlockRequest--> StBlock
+   StBlock --MsgLeiosBlock--> StIdle
+
+   StIdle --MsgLeiosBlockTxsRequest--> StBlockTxs
+   StBlockTxs --MsgLeiosBlockTxs--> StIdle
+
+   StIdle --MsgLeiosVotesRequest--> StVotes
+   StVotes --MsgLeiosVotes-->StIdle
+
+   StIdle --MsgLeiosBlockRangeRequest--> StBlockRange
+   StBlockRange --MsgLeiosNextBlockAndTxsInRange--> StBlockRange
+   StBlockRange --MsgLeiosLastBlockAndTxsInRange--> StIdle
 
    class StIdle client
-   class StBusyBlock,StBusyTxs server
+   class StBlock,StBlockTxs,StVotes,StBlockRange server
 ```
 
 ### State agencies
 
-| State       | Agency                                          |
-| :---------- | :---------------------------------------------- |
-| StIdle      | <span class="agency-initiator">Initiator</span> |
-| StBusyBlock | <span class="agency-responder">Responder</span> |
-| StBusyTxs   | <span class="agency-responder">Responder</span> |
+| State        | Agency                                          |
+|:-------------|:------------------------------------------------|
+| StIdle       | <span class="agency-initiator">Initiator</span> |
+| StBlock      | <span class="agency-responder">Responder</span> |
+| StBlockTxs   | <span class="agency-responder">Responder</span> |
+| StVotes      | <span class="agency-responder">Responder</span> |
+| StBlockRange | <span class="agency-responder">Responder</span> |
 
 ### State transitions
 
-| From state  | Message                 | Parameters                   | To state    |
-| :---------- | :---------------------- | ---------------------------- | :---------- |
-| StIdle      | MsgClientDone           |                              | End         |
-| StIdle      | MsgLeiosBlockRequest    | `point`                      | StBusyBlock |
-| StIdle      | MsgLeiosBlockTxsRequest | `point`, `bitmaps`           | StBusyTxs   |
-| StBusyBlock | MsgLeiosBlock           | `endorser_block`             | StIdle      |
-| StBusyTxs   | MsgLeiosBlockTxs        | `point`, `bitmaps`, `txList` | StIdle      |
+| From state   | Message                        | Parameters                                         | To state     |
+|:-------------|:-------------------------------|----------------------------------------------------|:-------------|
+| StIdle       | MsgClientDone                  |                                                    | End          |
+| StIdle       | MsgLeiosBlockRequest           | `point`                                            | StBlock      |
+| StIdle       | MsgLeiosBlockTxsRequest        | `point`, `bitmaps`                                 | StBlockTxs   |
+| StIdle       | MsgLeiosVotesRequest           | `[1* (slot, voter_id)]`                            | StVotes      |
+| StIdle       | MsgLeiosBlockRangeRequest      | `start_slot`, `end_slot`, `start_hash`, `end_hash` | StBlockRange |
+| StBlock      | MsgLeiosBlock                  | `endorser_block`                                   | StIdle       |
+| StBlockTxs   | MsgLeiosBlockTxs               | `point`, `bitmaps`, `tx_list`                      | StIdle       |
+| StVotes      | MsgLeiosVotes                  | `[1* vote]`                                        | StIdle       |
+| StBlockRange | MsgLeiosNextBlockAndTxsInRange | `endorser_block`, `tx_list`                        | StBlockRange |
+| StBlockRange | MsgLeiosLastBlockAndTxsInRange | `endorser_block`, `tx_list`                        | StIdle       |
 
 ## Codecs
 
