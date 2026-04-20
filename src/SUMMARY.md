@@ -13,7 +13,6 @@
     - [PeerSharing](<>)
     - [LeiosNotify (proposed)](network/node-to-node/leios-notify/README.md)
     - [LeiosFetch (proposed)](network/node-to-node/leios-fetch/README.md)
-    - [LeiosVotes (proposed)](network/node-to-node/leios-votes/README.md)
 - [Consensus](consensus/README.md)
   - [Chain validity](consensus/chainvalid.md)
   - [Chain selection](consensus/chainsel.md)
