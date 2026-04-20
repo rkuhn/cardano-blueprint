@@ -50,7 +50,7 @@ graph LR
 ### State agencies
 
 | State        | Agency                                          |
-|:-------------|:------------------------------------------------|
+| :----------- | :---------------------------------------------- |
 | StIdle       | <span class="agency-initiator">Initiator</span> |
 | StBlock      | <span class="agency-responder">Responder</span> |
 | StBlockTxs   | <span class="agency-responder">Responder</span> |
@@ -60,7 +60,7 @@ graph LR
 ### State transitions
 
 | From state   | Message                        | Parameters                                         | To state     |
-|:-------------|:-------------------------------|----------------------------------------------------|:-------------|
+| :----------- | :----------------------------- | -------------------------------------------------- | :----------- |
 | StIdle       | MsgClientDone                  |                                                    | End          |
 | StIdle       | MsgLeiosBlockRequest           | `point`                                            | StBlock      |
 | StIdle       | MsgLeiosBlockTxsRequest        | `point`, `bitmaps`                                 | StBlockTxs   |

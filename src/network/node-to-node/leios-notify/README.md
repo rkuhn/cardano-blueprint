@@ -58,7 +58,7 @@ graph LR
 ### State transitions
 
 | From state | Message                         | Parameters             | To state |
-|:-----------|:--------------------------------|------------------------|:---------|
+| :--------- | :------------------------------ | ---------------------- | :------- |
 | StIdle     | MsgClientDone                   |                        | End      |
 | StIdle     | MsgLeiosNotificationRequestNext |                        | StBusy   |
 | StBusy     | MsgLeiosBlockAnnouncement       | `announcement`         | StIdle   |
