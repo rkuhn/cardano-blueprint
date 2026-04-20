@@ -60,6 +60,74 @@ The project is currently situated in the `cardano-scaling` organization, to whic
 
 The Cardano Blueprint aims to be a community effort and we would love to have you become a regular visitor and maybe even reviewer of new contributions! 🤝
 
+## Building the book
+
+The blueprints are written using markdown and can be viewed [directly in
+Github](https://github.com/cardano-scaling/cardano-blueprint/tree/main/src/introduction)
+or built into [the HTML
+site](https://cardano-scaling.github.io/cardano-blueprint) using [mdbook].
+
+### With nix
+
+```shell
+nix build -o out
+```
+
+### With cargo
+
+You can install [mdbook] and the plugins we use with `cargo`:
+
+```shell
+cargo install mdbook mdbook-katex mdbook-mermaid mdbook-toc
+```
+
+Then build with:
+
+```shell
+mdbook build
+```
+
+## Editing
+
+With [mdbook] installed or inside a `nix develop` shell, you can live-preview
+the result with:
+
+```shell
+mdbook serve --open
+```
+
+See the [mdbook manual][mdbook] or [GitHub flavored markdown][gfm] for more
+information on what is available.
+
+### Formatting & spell checking
+
+We use `treefmt` which runs formatting and spell checking tools. This is also
+enforced in CI. With `nix develop` active:
+
+```shell
+treefmt
+```
+
+<!-- markdown-link-check-disable -->
+
+See `formattingPkgs` in [`flake.nix`](./flake.nix) for the full list of tools.
+
+<!-- markdown-link-check-enable -->
+
+## Running tests
+
+<!-- markdown-link-check-disable -->
+
+The repository includes a test suite under [`test/`](test/README.md) that validates the CDDL specifications for consistency. With `nix develop` active, run:
+
+<!-- markdown-link-check-enable -->
+
+```shell
+bats test/validate-cddl.bats
+```
+
+These tests also run automatically in CI on every pull request and push to `main`.
+
 ## Publishing
 
 Any changes to the `main` branch are automatically published to the live version of the blueprints hosted [via Github Pages](https://cardano-scaling.github.io/cardano-blueprint/). If you have made changes and they are not propagated to the live version, please check the build status on [GitHub Actions](https://github.com/cardano-scaling/cardano-blueprint/actions), or make sure you fully reload the webpage (Ctrl+Shift+R on firefox).
@@ -77,3 +145,6 @@ Besides the many ways to engage through issues and discussions, we also use text
 There is a weekly [office hours event](https://discord.gg/xvmdpdsM?event=1346780137806626816) to which anyone is welcome and we are looking forward to see you there!
 
 Last but not least and probably the best way to contribute: Share the love for blueprints! 📘📐💙
+
+[gfm]: https://github.github.com/gfm/
+[mdbook]: https://rust-lang.github.io/mdBook/index.html
