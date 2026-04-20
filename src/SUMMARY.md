@@ -11,6 +11,8 @@
     - [TxSubmission2](network/node-to-node/txsubmission2/README.md)
     - [KeepAlive](network/node-to-node/keep-alive/README.md)
     - [PeerSharing](<>)
+    - [LeiosNotify (proposed)](network/node-to-node/leios-notify/README.md)
+    - [LeiosFetch (proposed)](network/node-to-node/leios-fetch/README.md)
 - [Consensus](consensus/README.md)
   - [Chain validity](consensus/chainvalid.md)
   - [Chain selection](consensus/chainsel.md)

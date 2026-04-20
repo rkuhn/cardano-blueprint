@@ -36,30 +36,32 @@ terminated. Actions that are considered misbehaving are (not exclusively):
 The state machine for BlockFetch is as follows:
 
 ```mermaid
-stateDiagram
-   direction LR
-   [*] --> StIdle
-   StIdle --> [*]: MsgClientDone
-   StIdle --> StBusy: MsgRequestRange
-   StBusy --> StIdle: MsgNoBlocks
-   StBusy --> StStreaming: MsgStartBatch
-   StStreaming --> StStreaming: MsgBlock
-   StStreaming --> StIdle: MsgBatchDone
+graph LR
+   classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+   classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+   linkStyle default stroke:gray
 
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StIdle initiator
-    class StBusy responder
-    class StStreaming responder
+   StDone(((StDone)))
+
+   i(( )) --> StIdle
+   StIdle --MsgClientDone--> StDone
+   StIdle --MsgRequestRange--> StBusy
+   StBusy --MsgNoBlocks--> StIdle
+   StBusy --MsgStartBatch--> StStreaming
+   StStreaming --MsgBlock--> StStreaming
+   StStreaming --MsgBatchDone--> StIdle
+
+   class StIdle client
+   class StBusy,StStreaming server
 ```
 
 ### State agencies
 
-| State       | Agency                                                              |
-| :---------- | :------------------------------------------------------------------ |
-| StIdle      | <span style="color:#080">Initiator</span>                           |
-| StBusy      | <span style="color:#008;text-decoration:underline">Responder</span> |
-| StStreaming | <span style="color:#008;text-decoration:underline">Responder</span> |
+| State       | Agency                                          |
+| :---------- | :---------------------------------------------- |
+| StIdle      | <span class="agency-initiator">Initiator</span> |
+| StBusy      | <span class="agency-responder">Responder</span> |
+| StStreaming | <span class="agency-responder">Responder</span> |
 
 ### State transitions
 

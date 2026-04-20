@@ -32,36 +32,37 @@ actions considered as misbehaviour are (not exclusively):
 The state machine for ChainSync is as follows:
 
 ```mermaid
-stateDiagram
-    direction LR
-    [*] --> StIdle
-    StIdle --> [*]: MsgDone
-    StIdle --> StIntersect: MsgFindIntersect
-    StIdle --> StCanAwait: MsgRequestNext
-    StIntersect --> StIdle: MsgIntersectNotFound
-    StIntersect --> StIdle: MsgIntersectFound
-    StCanAwait --> StIdle: MsgRollForward
-    StCanAwait --> StIdle: MsgRollBackward
-    StCanAwait --> StMustReply: MsgAwaitReply
-    StMustReply --> StIdle: MsgRollForward
-    StMustReply --> StIdle: MsgRollBackward
+graph LR
+    classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+    classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+    linkStyle default stroke:gray
 
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StIdle initiator
-    class StCanAwait responder
-    class StIntersect responder
-    class StMustReply responder
+    StDone(((StDone)))
+
+    i(( )) --> StIdle
+    StIdle --MsgDone--> StDone
+    StIdle --MsgFindIntersect--> StIntersect
+    StIdle --MsgRequestNext--> StCanAwait
+    StIntersect --MsgIntersectNotFound--> StIdle
+    StIntersect --MsgIntersectFound--> StIdle
+    StCanAwait --MsgRollForward--> StIdle
+    StCanAwait --MsgRollBackward--> StIdle
+    StCanAwait --MsgAwaitReply--> StMustReply
+    StMustReply --MsgRollForward--> StIdle
+    StMustReply --MsgRollBackward--> StIdle
+
+    class StIdle client
+    class StCanAwait,StIntersect,StMustReply server
 ```
 
 ### State agencies
 
-| State       | Agency                                                              |
-| :---------- | :------------------------------------------------------------------ |
-| StIdle      | <span style="color:#080">Initiator</span>                           |
-| StIntersect | <span style="color:#008;text-decoration:underline">Responder</span> |
-| StCanAwait  | <span style="color:#008;text-decoration:underline">Responder</span> |
-| StMustReply | <span style="color:#008;text-decoration:underline">Responder</span> |
+| State       | Agency                                          |
+| :---------- | :---------------------------------------------- |
+| StIdle      | <span class="agency-initiator">Initiator</span> |
+| StIntersect | <span class="agency-responder">Responder</span> |
+| StCanAwait  | <span class="agency-responder">Responder</span> |
+| StMustReply | <span class="agency-responder">Responder</span> |
 
 ### State transitions
 

@@ -11,28 +11,29 @@ in their protocol parameters.
 ## State machine
 
 ```mermaid
-stateDiagram
+graph LR
+    classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+    classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+    linkStyle default stroke:gray
+    
+    StDone(((StDone)))
 
-    [*] --> StPropose
-    StPropose --> StConfirm: MsgProposeVersions
-    StConfirm --> [*]: MsgAcceptVersion
-    StConfirm --> [*]: MsgReplyVersion
-    StConfirm --> [*]: MsgRefuse
+    i(( )) --> StPropose
+    StPropose --MsgProposeVersions--> StConfirm
+    StConfirm --MsgAcceptVersion--> StDone
+    StConfirm --MsgReplyVersion--> StDone
+    StConfirm --MsgRefuse--> StDone
 
-    direction LR
-
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StPropose initiator
-    class StConfirm responder
+    class StPropose client
+    class StConfirm server
 ```
 
 ### State agencies
 
-| State     | Agency                                                              |
-| :-------- | :------------------------------------------------------------------ |
-| StPropose | <span style="color:#080">Initiator</span>                           |
-| StConfirm | <span style="color:#008;text-decoration:underline">Responder</span> |
+| State     | Agency                                          |
+| :-------- | :---------------------------------------------- |
+| StPropose | <span class="agency-initiator">Initiator</span> |
+| StConfirm | <span class="agency-responder">Responder</span> |
 
 ### State transitions
 
