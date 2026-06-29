@@ -24,10 +24,15 @@ jobs:
           ref: ${{ matrix.branch }}
 
       - name: Fetch upstream dijkstra.cddl
+        env:
+          BRANCH: ${{ matrix.branch }}
         run: |
-          curl -fsSL \
-            "https://raw.githubusercontent.com/IntersectMBO/cardano-ledger/${{ matrix.branch }}/eras/dijkstra/impl/cddl/data/dijkstra.cddl" \
-            -o src/ledger/dijkstra.cddl
+          base="https://raw.githubusercontent.com/IntersectMBO/cardano-ledger"
+          path="eras/dijkstra/impl/cddl/data/dijkstra.cddl"
+          if ! curl -fsSL "$base/$BRANCH/$path" -o src/ledger/dijkstra.cddl; then
+            echo "No matching upstream branch '$BRANCH', falling back to 'master'"
+            curl -fsSL "$base/master/$path" -o src/ledger/dijkstra.cddl
+          fi
 
       - name: Open pull request
         uses: peter-evans/create-pull-request@v7
