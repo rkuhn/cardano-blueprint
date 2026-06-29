@@ -1,0 +1,53 @@
+name: Sync ledger CDDLs
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: Sync from cardano-ledger@${{ matrix.branch }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+          - leios-prototype
+    steps:
+      - name: Checkout ${{ matrix.branch }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+
+      - name: Fetch upstream era CDDLs
+        env:
+          BRANCH: ${{ matrix.branch }}
+        run: |
+          set -euo pipefail
+          base="https://raw.githubusercontent.com/IntersectMBO/cardano-ledger"
+          eras=(allegra alonzo babbage conway dijkstra mary shelley)
+          mkdir -p src/ledger/eras
+          for era in "${eras[@]}"; do
+            path="eras/$era/impl/cddl/data/$era.cddl"
+            dest="src/ledger/eras/$era.cddl"
+            if ! curl -fsSL "$base/$BRANCH/$path" -o "$dest"; then
+              echo "No '$era.cddl' on '$BRANCH', falling back to 'master'"
+              curl -fsSL "$base/master/$path" -o "$dest"
+            fi
+          done
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          base: ${{ matrix.branch }}
+          branch: sync/ledger-cddls-${{ matrix.branch }}
+          delete-branch: true
+          commit-message: "Sync ledger CDDLs from cardano-ledger@${{ matrix.branch }}"
+          title: "Sync ledger CDDLs from cardano-ledger@${{ matrix.branch }}"
+          body: |
+            Automated update of `src/ledger/eras/*.cddl` from
+            [`IntersectMBO/cardano-ledger@${{ matrix.branch }}`](https://github.com/IntersectMBO/cardano-ledger/tree/${{ matrix.branch }}/eras).
