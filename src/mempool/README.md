@@ -19,10 +19,13 @@ validated against.
 > [!TIP]
 >
 > The Ledger layer provides mechanisms to translate transactions from older eras
-> to more recent ones. In the reference Haskell node, the original transaction
-> is the one that will be forwarded to other peers, i.e. the "translated"
-> version of the transaction _is not sent_ over the network, but this is not a
+> to more recent ones. In the reference Haskell node, the translated transaction
+> is the one that will be forwarded to other peers, but this is not a
 > requirement.
+>
+> The bytes in the serialized transaction do not change by translation, however
+> the tag in the tagged-sum will. See
+> [the TxSubmission2 codecs](../network/node-to-node/txsubmission2/index.html#codecs).
 
 Transactions are _pending_ on some Ledger State if they have not been included
 in any block since Genesis up until such Ledger State. Transactions are _valid_
