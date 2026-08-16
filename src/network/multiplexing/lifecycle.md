@@ -190,5 +190,7 @@ once.
 
 If the bearer is Idle — nothing active towards us, and we are not Using
 it — the node closes it after a short idle interval (5 seconds in the
-network specification). After a reset, implementations commonly wait 60
-seconds before reusing the same peer address.
+network specification). After a reset, the connection manager commonly
+waits 60 seconds before the same address can be reused (a TCP
+`TIME_WAIT` analogue). Whether the node then retries, forgets, or
+classifies the peer is [Peer management](../peer-management.md).

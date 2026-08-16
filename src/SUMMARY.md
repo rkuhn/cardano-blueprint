@@ -3,6 +3,7 @@
 - [Introduction](introduction/README.md)
 - [Principles](principles/README.md)
 - [Network](network/README.md)
+  - [Peer management](network/peer-management.md)
   - [Multiplexing](network/multiplexing/README.md)
     - [Protocol lifecycle](network/multiplexing/lifecycle.md)
     - [Protocol pipelining](network/multiplexing/pipelining.md)

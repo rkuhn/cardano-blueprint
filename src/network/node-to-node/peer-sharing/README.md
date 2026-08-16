@@ -34,25 +34,28 @@ The connection is torn down if:
 ## State machine
 
 ```mermaid
-stateDiagram
-    direction LR
-    [*] --> StIdle
-    StIdle --> StBusy: MsgShareRequest
-    StBusy --> StIdle: MsgSharePeers
-    StIdle --> [*]: MsgDone
+graph LR
+    classDef client color:black,fill:PaleGreen,stroke:DarkGreen;
+    classDef server color:black,fill:PowderBlue,stroke:DarkBlue;
+    linkStyle default stroke:gray
 
-    classDef initiator color:#080
-    classDef responder color:#008, text-decoration: underline
-    class StIdle initiator
-    class StBusy responder
+    StDone(((StDone)))
+
+    i(( )) --> StIdle
+    StIdle --MsgShareRequest--> StBusy
+    StBusy --MsgSharePeers--> StIdle
+    StIdle --MsgDone--> StDone
+
+    class StIdle client
+    class StBusy server
 ```
 
 ### State agencies
 
-| State  | Agency                                                              |
-| :----- | :------------------------------------------------------------------ |
-| StIdle | <span style="color:#080">Initiator</span>                           |
-| StBusy | <span style="color:#008;text-decoration:underline">Responder</span> |
+| State  | Agency                                          |
+| :----- | :---------------------------------------------- |
+| StIdle | <span class="agency-initiator">Initiator</span> |
+| StBusy | <span class="agency-responder">Responder</span> |
 
 ### State transitions
 
@@ -195,6 +198,20 @@ had, a **successful** inbound or outbound session. It should not share:
 
 The reply must not be longer than `amount`. An empty list is valid when
 nothing eligible is available.
+
+Handshake does not carry a listen address. The TCP source of this
+bearer need not be one either: a node may open outbound sockets
+from an ephemeral port. Including **its own** listen address in
+the reply is legal and is how that peer learns a dialable
+endpoint. The `amount` cap still applies.
+
+> [!TIP]
+>
+> Amaru uses an ephemeral source port on outbound connections.
+> A Haskell duplex node binds outbound sockets to its listen
+> address (`SO_REUSEADDR` / `SO_REUSEPORT`), so the acceptor
+> already saw that address as the TCP source and the Haskell
+> responder does not include itself.
 
 ### Sticky selection
 

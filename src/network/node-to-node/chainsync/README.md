@@ -18,17 +18,12 @@ diffusion](#chain-sync-pipelining-or-pipelined-diffusion).
 > There usually is one `ChainSync` client per-peer connected to the node, such
 > that the _chain state_ of each peer is tracked independently.
 
-The connection is abruptly terminated if the peer misbehaves. In particular,
-actions considered as misbehaviour are (not exclusively):
+The connection is torn down if:
 
-- The peer violates the state machine of the protocol,
-- The server sends an invalid header,
-- The server announces a fork that is more than `k` blocks deep from the
-  client's current selection.
-
-> [!WARNING]
->
-> TODO: Make this list exhaustive
+- The server sends a cryptographically or structurally invalid header,
+- The server announces a fork more than `k` blocks from the client's
+  current selection (see [the `k` security
+  parameter][k-secparam]).
 
 ## State machine
 
@@ -81,6 +76,51 @@ graph LR
 | StMustReply | MsgRollBackward      | `point_old`, `tip`       | StIdle      |
 | StIntersect | MsgIntersectFound    | `point_intersect`, `tip` | StIdle      |
 | StIntersect | MsgIntersectNotFound | `tip`                    | StIdle      |
+
+## Messages
+
+### `MsgRequestNext` — `[0]`
+
+Ask for the next update after the current read pointer: a roll-forward
+of one header, a roll-backward, or `MsgAwaitReply` if the pointer is
+already at the served tip.
+
+### `MsgAwaitReply` — `[1]`
+
+The read pointer is at the tip. The responder keeps agency in
+`StMustReply` until the served chain changes, then sends
+`MsgRollForward` or `MsgRollBackward`.
+
+### `MsgRollForward` — `[2, header, tip]`
+
+Advance the read pointer over `header`. `tip` is defined
+[below](#tip). `header` is the Cardano multi-era header; see
+[Codecs](#codecs).
+
+### `MsgRollBackward` — `[3, point, tip]`
+
+Move the read pointer back to `point` (inclusive: that point remains
+on the served chain). `point` is genesis `[]` or `[slotNo, headerHash]`.
+`headerHash` is 32 bytes.
+
+### `MsgFindIntersect` — `[4, [point…]]`
+
+The initiator offers points, highest slot first. The responder returns
+the first of those points that lies on its current chain, or none.
+
+### `MsgIntersectFound` — `[5, point, tip]`
+
+`point` is that first common point. The next `MsgRequestNext` reply is
+a `MsgRollBackward` to that point or an earlier one if the served
+chain moved.
+
+### `MsgIntersectNotFound` — `[6, tip]`
+
+None of the offered points is on the served chain.
+
+### `MsgDone` — `[7]`
+
+The initiator ends this instance.
 
 ### Tip
 
@@ -193,22 +233,24 @@ for announcing such rollbacks to clients and following rollbacks of servers.
 
 ## Codecs
 
-The messages depicted in the state machine follow this CDDL specification:
+Message schema (`header`, `point`, and `tip` are type parameters
+there):
 
-```cddl
-;; messages.cddl
-{{#include messages.cddl}}
-```
+- [chain-sync.cddl][chainsync-cddl]
+- [network.base.cddl][chainsync-base]
 
-The header is a tag-encoded value that contains CBOR-in-CBOR headers
-for the particular era:
+Cardano `point` / `tip` (this tree): genesis `[]` or
+`[slotNo, hash32]`; `tip = [point, blockNo]`. See the `point` and `tip`
+rules in [messages.cddl](messages.cddl).
 
-```cddl
-;; header.cddl
-{{#include header.cddl}}
-```
+Cardano `header` is era-tagged. The consensus wrapper (Byron
+regular/EBB vs Shelley-onwards CBOR-in-CBOR, tag 24) is
+[header.cddl](header.cddl). Era header bodies are in
+`cardano-ledger`, for example Conway
+[`header`][conway-cddl].
 
 [chainsync-base]: https://github.com/IntersectMBO/ouroboros-network/blob/ouroboros-network-protocols-0.15.2.0/ouroboros-network-protocols/cddl/specs/network.base.cddl
 [chainsync-cddl]: https://github.com/IntersectMBO/ouroboros-network/blob/ouroboros-network-protocols-0.15.2.0/ouroboros-network-protocols/cddl/specs/chain-sync.cddl
+[conway-cddl]: https://github.com/IntersectMBO/cardano-ledger/blob/9f6b6f1ab10d7cc730dae3328f4003e7fa55afe2/eras/conway/impl/cddl/data/conway.cddl
 [k-secparam]: ../../../consensus/chainsel.md#the-k-security-parameter
 [pipelining]: https://iohk.io/en/blog/posts/2022/02/01/introducing-pipelining-cardanos-consensus-layer-scaling-solution/

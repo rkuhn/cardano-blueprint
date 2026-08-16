@@ -52,7 +52,9 @@ Cardano network is:
   create the peer-to-peer (P2P) network
 
 How that bundle is started, restarted, and torn down is described in
-[Protocol lifecycle](multiplexing/lifecycle.md).
+[Protocol lifecycle](multiplexing/lifecycle.md). Whom to dial, why a
+peer is dropped, and how that differs for churn, protocol errors, and
+adversarial classification is [Peer management](peer-management.md).
 
 ## Resources
 

@@ -74,7 +74,14 @@ by the Haskell implementation.
 
 Before choosing the above strategy the expected outcomes on a whole network
 level have been simulated. The churn rate of 20% per hour has been selected
-based on the simulation outcomes — anecdotally, the choice of 40%/h might lead
-to the network falling apart into multiple disconnected pieces. This note is
-left here as a cautionary tale that changing this strategy will require
-stringent analysis.
+based on those outcomes ([Santos 2023][p2p-eng]; the Close-Random and
+header-first scoring policies are [CougaR][cougar] and
+[SCRamble][scramble]). In private discussions, the IOG network working
+group has indicated that 40%/h might lead to the network falling apart
+into multiple disconnected pieces. That possibility is not in the
+published simulations. This note is left here as a cautionary tale that
+changing this strategy will require stringent analysis.
+
+[cougar]: https://doi.org/10.1145/3524860.3539805
+[p2p-eng]: https://www.essentialcardano.io/article/engineering-dive-into-cardanos-dynamic-p2p-design
+[scramble]: https://arxiv.org/abs/2601.10277
