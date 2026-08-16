@@ -22,8 +22,10 @@ eclipse attacks (being nudged by malicious peers into connecting only to
 malicious peers). A solution to this problem has been formulated in the
 [Ouroboros Genesis paper](https://iohk.io/en/research/library/papers/ouroboros-genesis-composable-proof-of-stake-blockchains-with-dynamic-availability/).
 
-A statically configured node can avoid these issues by having a fixed
-connection to at least one known honest peer.
+A statically configured node can avoid these issues by having a fixed connection
+to at least one known honest peer (which assumes a non-adversarial network,
+usually including an honest DNS; for these reasons it may not actually solve the
+problem).
 
 ## Common setups
 
@@ -33,6 +35,31 @@ Relay nodes typically supplement dynamic selection with some static
 configuration that at least sets up the connections to their respective block
 producer. Data nodes may choose any combination of static and dynamic
 configuration.
+
+```mermaid
+graph TB
+  subgraph pool [Stake pool]
+    BP[Block producer]
+    R1[Relay]
+    R2[Relay]
+    BP --- R1
+    BP --- R2
+  end
+
+  P2P((P2P network))
+  D[Data node]
+
+  R1 --- P2P
+  R2 --- P2P
+  D --- P2P
+```
+
+Inside the pool the links are static: the producer talks only to its
+relays, and each relay keeps a static path back to the producer.
+Relays (and any data node that opts in) also select peers dynamically
+from the ledger, [PeerSharing](../network/node-to-node/peer-sharing),
+and inbound sessions. See
+[Peer management](../network/peer-management.md).
 
 ## Dynamic peer selection process
 
