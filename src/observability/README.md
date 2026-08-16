@@ -3,17 +3,35 @@
 Regarding the observability in the context of Cardano there are two levels to
 consider: the node’s performance and health needs to be monitored by its admin
 and the overall network needs to be monitored to recognise attacks and
-undesirable behaviour.
+undesirable behaviour. There are several tools for these purposes, like
+[gliveview](https://cardano-community.github.io/guild-operators/Scripts/gliveview/)
+and [nview](https://github.com/blinklabs-io/nview) for individual node stats as well as
+[pooltool](https://pooltool.io) and [Cardano Explorer](https://cexplorer.io) for whole
+network monitoring; these are just examples, the point is to illustrate the need for
+standardized observability facilities across all Cardano node implementations.
+This way admins as well as developers will be able to rely on consistent tooling.
 
 > [!WARNING]
 > This section currently is a prototype for a description of what a node
 > implementation should offer in terms of metrics so that whole network
-> monitoring can be upheld.
+> monitoring can be upheld. This shall eventually lead to the formal
+> specification of minimal observability requirements for any Cardano node.
 >
 > Individual node observability for health and performance is left up to the
 > node implementer according to their users’ wishes.
 
 ## Monitoring chain dissemination
+
+```mermaid
+graph LR
+  pull(upstream<br>network)
+  validate(validate<br>header)
+  fetch(fetch<br>body)
+  adopt(validate<br>block)
+  forward(forward<br>header<br>downstream)
+
+  pull -- "header<br>announced" --> validate -- "request<br>body" --> fetch -- "received<br>body" --> adopt -- "block<br>adopted" --> forward
+```
 
 Many useful analyses are enabled by capturing the timing of the following four
 data points for each minted block:
@@ -78,7 +96,7 @@ can the block be forwarded to downstream peers.
 ## Node performance and health monitoring
 
 It probably is a good idea to support prevalent industry standards like
-OpenTelemetry. Supporting the administrator in keeping a stake pool running
+[OpenTelemetry](https://opentelemetry.io). Supporting the administrator in keeping a stake pool running
 reliably with minimal resource usage should be the goal of any Cardano node
 implementation.
 
